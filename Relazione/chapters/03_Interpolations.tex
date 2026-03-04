@@ -1,0 +1,66 @@
+\section{Interpolations}
+\subsection{Polynomial Interpolation}
+\begin{exercise}
+    Construct a Vandermonde matrix using the power basis and $n+1$ equidistant points in the interval $[-1,1]$, where $n=4,8,\ldots,40$. 
+    Specifically, the points are given by $x_i=-1+(i-1)h$, with $i=1,2,\ldots,n+1$ and $h=2/n$. Use the Vandermonde matrix to determine the interpolating polynomials on these nodes for the functions $f_k(x)=\cos(kx)$ with $k=10,20,\ldots,100$. Study the value of these polynomials in $x=0$ for the different $n$ and $k$ values. What do you observe?
+\end{exercise}
+
+\subsection{Lagrange-Waring Interpolation}
+% \begin{exercise}
+%     Write a program that implements the barycentric form of Lagrange interpolation formula for generic node positions.
+% \end{exercise}
+
+\begin{exercise}
+    In each case, use interpolate the given function using \( n \) evenly spaced nodes in the given interval. Plot each interpolating function together with the exact function.
+    \begin{enumerate}
+        \item \( f(x) = \ln (x), \quad n = 2,3,4, \quad x\in [1,10] \)
+        \item \( f(x) = \tanh (x), \quad n = 2,3,4, \quad x \in [-3,2] \)
+        \item \( f(x) = \cosh (x), \quad n = 2,3,4, \quad x \in [-1,3] \)
+        \item \( f(x) = |x|, \quad n = 3,5,7, \quad x \in [-2,1] \)
+    \end{enumerate}
+\end{exercise}
+
+\subsection{Error on Interpolation}
+\begin{exercise}
+    Write a program that implements the barycentric form of Lagrange interpolation formula for the specialized cases of Chebyshev nodes using the analytical results for the weights. Check your implementation against your routine for generic node positions.
+\end{exercise}
+
+\begin{exercise}
+    \begin{enumerate}
+        \item For each case below, compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=4,8,12,\ldots,60$. At each value of $n$, compute the $\infty$-norm error (that is, $||f-p||_\infty=\max_{x\in[-1,1]} |p(x)-f(x)|$ evaluated for at least 4000 values of $x$). Using a log-linear scale, plot the error as a function of $n$, then determine a good approximation to the constant $K$ in {eq}`eq-spectral`. 
+        \begin{enumerate}
+            \item $f(x) = 1/(25x^2+1)$ 
+            \item $f(x) = \tanh(5 x+2)$
+            \item $f(x) = \cosh(\sin x)$
+            \item $f(x) = \sin(\cosh x)$ 
+        \end{enumerate}
+        \item Make an analogous plot using $n$ equidistant points for the interpolation.
+    \end{enumerate}
+\end{exercise}
+
+
+\begin{exercise}
+    The Chebyshev points can be used when the interval of interpolation is $[a,b]$ rather than $[-1,1]$ by means of the change of variable {eq}`eq-change-variable-chebyshev-1`. Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes. 
+\end{exercise}
+
+\begin{exercise}
+    Let $x_1,\ldots,x_n$ be standard Chebyshev points. These map to the $z$ variable as $z_i=\phi(x_i)$ for all $i$, where $\phi$ is the transformation defined in {eq}`eq-change-variable-chebyshev-2`. Suppose that $f(z)$ is a given function whose domain is the entire real line. Then the function values $y_i=f(z_i)$ can be associated with the Chebyshev nodes $x_i$, leading to a polynomial interpolant $p(x)$. This in turn implies an interpolating function on the real line, defined as
+    \[
+        q(z)=p\bigl(\phi^{-1}(z)\bigr) = p(x)\,.
+    \]
+    Implement this idea to plot an interpolant of $f(z)=(z^2-2z+2)^{-1}$ using $n=30$. Your plot should show $q(z)$ evaluated at 1000 evenly spaced points in $[-6,6]$, with markers at the nodal values (those lying within the $[-6,6]$ window). [Hint: If you prefer avoid dealing with potential infinities consider using the Chebyshev nodes of the first kind.]
+\end{exercise}
+
+\begin{exercise}
+    {prf:ref}`theorem-spectral` assumes that the function being approximated has infinitely many derivatives over $[-1,1]$. But now consider the family of functions $f_m(x)=|x|^m$. 
+    \begin{enumerate}
+        \item How many continuous derivatives over $[-1,1]$ does $f_m$ possess?
+        \item Compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=10,20,30,\ldots,100$. At each value of $n$, compute the max-norm error (that is, $\max |p(x)-f_m(x)|$ evaluated for at least 4000 values of $x$). Using a single log-log graph, plot the error as a function of $n$ for all six values $m=1,3,5,7,9,11$.
+        \item Based on the results of parts (a) and (b), form a hypothesis about the asymptotic behavior of the error for fixed $m$ as $n\rightarrow \infty$. 
+    \end{enumerate}
+
+\end{exercise}
+
+
+% \subsection{More on Interpolation}
+% \subsection{Least Squares Approximation and Orthogonal Polynomials}

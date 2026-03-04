@@ -1,0 +1,528 @@
+\section{Linear Systems}
+\subsection{Triangular Systems}
+
+\begin{exercise}
+    Test your code on the linear systems:
+        \[ 
+            \begin{bmatrix}
+                -2 & 0 & 0 \\
+                1 & -1 & 0 \\
+                3 & 2 & 1 
+            \end{bmatrix}
+            \mathbf{x} = 
+            \begin{bmatrix}
+                -4 \\ 2 \\ 1
+            \end{bmatrix};
+            \qquad
+            \begin{bmatrix}
+            4 & 0 & 0 & 0 \\
+            1 & -2 & 0 & 0 \\
+            -1 & 4 & 4 & 0 \\
+            2 & -5 & 5 & 1
+            \end{bmatrix} 
+            \mathbf{x} = \begin{bmatrix}
+            -4 \\ 1 \\ -3 \\ 5
+            \end{bmatrix}
+        \]
+    You can verify the solution by solving the system by hand and/or computing $\mathbf{L}\mathbf{x}$ and subtracting $\mathbf{b}$.
+\end{exercise}
+
+\begin{solution}
+    The systems were solved using a standard forward substitution algorithm. For a lower triangular matrix $\mathbf{L} \in \mathbb{R}^{n \times n}$, the components of the solution vector $\mathbf{x}$ are computed sequentially from $i = 1$ to $n$ according to:
+    \[
+      x_i = \frac{1}{l_{ii}} \left( b_i - \sum_{j=1}^{i-1} l_{ij} x_j \right) 
+    \]
+    The implementation utilized \texttt{Julia}'s \texttt{Float64} type. To handle multiple right-hand sides (as seen in the random matrix test), the function was extended to accept $\mathbf{B} \in \mathbb{R}^{n \times m}$, effectively solving $\mathbf{L}\mathbf{X} = \mathbf{B}$ via broadcasted substitution.
+
+    \paragraph{Results}
+    The numerical outputs for the test systems are presented in Table~\ref{tab:forward_results}.
+    \begin{center}
+        \centering
+        \captionof{table}{Forward Substitution Results}
+        \label{tab:forward_results}
+        \begin{tabular}{lcc}
+            \hline
+            System & Dimension & Computed Solution $\mathbf{x}^T$ \\
+            \hline
+            $\mathcal{S}_1$ & $3 \times 3$ & $[2.0, 0.0, -5.0]$ \\
+            $\mathcal{S}_2$ & $4 \times 4$ & $[-1.0, -1.0, 0.0, 2.0]$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Discussion}
+    The algorithm demonstrated high numerical stability. For both systems, the residual $\mathbf{L}\mathbf{x} - \mathbf{b}$ was nullified to a precision of $10^{-16}$, well within the requested $10^{-10}$ threshold. This confirms that for well-conditioned triangular matrices, forward substitution remains a robust $O(n^2)$ solver.
+
+\end{solution}
+
+\begin{exercise}
+    Test your code on the linear systems:
+    \[
+    \begin{bmatrix}
+        3 & 1 & 0  \\
+        0 & -1 & -2  \\
+        0 & 0 & 3  \\
+    \end{bmatrix} \mathbf{x} = \begin{bmatrix}
+        1 \\ 1 \\ 6
+    \end{bmatrix};
+    \qquad
+    \begin{bmatrix}
+        3 & 1 & 0 & 6 \\
+        0 & -1 & -2 & 7 \\
+        0 & 0 & 3 & 4 \\
+        0 & 0 & 0 & 5
+    \end{bmatrix} \mathbf{x} = \begin{bmatrix}
+        4 \\ 1 \\ 1 \\ 5
+    \end{bmatrix}
+    \]
+    You can verify the solution by solving the system by hand and/or computing $\mathbf{U}\mathbf{x}$ and subtracting $\mathbf{b}$.
+\end{exercise}
+
+\begin{solution}
+    Backward substitution was applied for the upper triangular matrices $\mathbf{U}$. The solution vector is computed in reverse order, from $i = n$ down to $1$:
+    \[ 
+      x_i = \frac{1}{u_{ii}} \left( b_i - \sum_{j=i+1}^{n} u_{ij} x_j \right) 
+    \]
+    
+    \paragraph{Results}
+    The numerical outputs for the test systems are presented in Table~\ref{tab:backward_results}.
+    \begin{center}
+        \centering
+        \captionof{table}{Backward Substitution Results}
+        \label{tab:backward_results}
+        \begin{tabular}{lcc}
+            \hline
+            System & Dimension & Computed Solution $\mathbf{x}^T$ \\
+            \hline
+            $\mathcal{S}_3$ & $3 \times 3$ & $[2.0, -5.0, 2.0]$ \\
+            $\mathcal{S}_4$ & $4 \times 4$ & $[-3.3333\dots, 8.0, -1.0, 1.0]$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Discussion}
+    In system $\mathcal{S}_4$, we observe the emergence of a non-terminating decimal in the first component ($x_1 = -10/3$). This introduces a minor representation error in floating-point arithmetic. However, due to the high precision of \texttt{Float64}, the verification function \texttt{check()} confirmed that the residual remained below $10^{-10}$. This highlights the efficacy of the backward substitution method even when dealing with rational numbers that cannot be represented exactly in binary.
+\end{solution}
+
+\subsection{LU Decomposition}
+% \begin{exercise}
+%     Write a function that performs the LU-decomposition of a $n\times n$ matrix.
+% \end{exercise}
+
+\begin{exercise}\label{ex:2.6}
+    For each matrix, compute their LU-factorization and verify the correctness.
+    \[
+        \begin{bmatrix}
+            2 & 3 & 4 \\
+            4 & 5 & 10 \\
+            4 & 8 & 2
+        \end{bmatrix};
+        \qquad
+        \begin{bmatrix}
+            6 & -2 & -4 & 4\\
+            3 & -3 & -6 & 1 \\
+            -12 & 8 & 21 & -8 \\
+            -6 & 0 & -10 & 7
+        \end{bmatrix};
+        \qquad
+        \begin{bmatrix}
+            1 & 4 & 5 & -5 \\
+            -1 & 0 & -1 & -5 \\
+            1 & 3 & -1 & 2 \\
+            1 & -1 & 5 & -1 
+        \end{bmatrix}
+    \]
+\end{exercise}
+
+\begin{solution}
+  The $LU$-factorization was performed using a custom implementation of Doolittle's algorithm, which decomposes a square matrix $A$ into a unit lower triangular matrix $L$ (where $L_{ii} = 1$) and an upper triangular matrix $U$. The algorithm was implemented in Julia using \texttt{Float64} precision. To assess the numerical stability and accuracy of the decomposition, we computed the residual matrix $R = A - LU$ and evaluated the determinant identity $\det(A) = \det(L)\det(U)$. Since $L$ is a unit triangular matrix, $\det(L) = 1$, reducing the check to $\det(A) = \prod_{i=1}^{n} U_{ii}$.
+
+  \paragraph{Results}
+  The resulting factors for each matrix are presented below. For all three cases, the decomposition successfully converged to the following triangular forms:
+
+  \begin{itemize}
+      \item \textbf{Matrix $A_1$ ($3\times3$):}
+      \[
+      L_1 = \begin{bmatrix}
+        1.0 & 0.0 & 0.0 \\
+        2.0 & 1.0 & 0.0 \\
+        2.0 & -2.0 & 1.0
+      \end{bmatrix}, \quad
+        U_1 = \begin{bmatrix}
+        2.0 & 3.0 & 4.0 \\
+        0.0 & -1.0 & 2.0 \\
+        0.0 & 0.0 & -2.0
+      \end{bmatrix}
+      \]
+      \item \textbf{Matrix $A_2$ ($4\times4$):}
+      \[
+      L_2 = \begin{bmatrix} 
+        1.0 & 0.0 & 0.0 & 0.0 \\
+        0.5 & 1.0 & 0.0 & 0.0 \\
+        -2.0 & -2.0 & 1.0 & 0.0 \\
+        -1.0 & 1.0 & -2.0 & 1.0
+      \end{bmatrix}, \quad
+      U_2 = \begin{bmatrix}
+        6.0 & -2.0 & -4.0 & 4.0 \\
+        0.0 & -2.0 & -4.0 & -1.0 \\
+        0.0 & 0.0 & 5.0 & -2.0 \\
+        0.0 & 0.0 & 0.0 & 8.0
+      \end{bmatrix}
+      \]
+      \item \textbf{Matrix $A_3$ ($4\times4$):}
+      \[
+      L_3 = \begin{bmatrix}
+        1.0 & 0.0 & 0.0 & 0.0 \\
+        -1.0 & 1.0 & 0.0 & 0.0 \\
+        1.0 & -0.25 & 1.0 & 0.0 \\
+        1.0 & -1.25 & -1.0 & 1.0
+      \end{bmatrix}, \quad
+      U_3 = \begin{bmatrix} 
+        1.0 & 4.0 & 5.0 & -5.0 \\
+        0.0 & 4.0 & 4.0 & -10.0 \\
+        0.0 & 0.0 & -5.0 & 4.5 \\
+        0.0 & 0.0 & 0.0 & -4.0 
+      \end{bmatrix}
+      \]
+  \end{itemize}
+
+  \paragraph{Numerical Verification}
+  The correctness of the decomposition was verified by calculating the residual $A_i - L_i U_i$. In all instances, the residual matrices yielded values of $0.0$ within the limits of machine epsilon ($\varepsilon \approx 2.22 \times 10^{-16}$ for \texttt{Float64}). Furthermore, the determinant checks yielded the following discrepancies relative to the built-in \texttt{LinearAlgebra.det()} function:
+
+  \begin{center}
+    \centering
+    \begin{tabular}{lc}
+      \hline
+      \textbf{Matrix} & \textbf{Determinant Error ($\det(L) \det(U) - \det(A)$)} \\ \hline
+      $A_1$ & $3.55 \times 10^{-15}$ \\
+      $A_2$ & $5.68 \times 10^{-14}$ \\
+      $A_3$ & $-1.42 \times 10^{-14}$ \\ \hline
+    \end{tabular}
+    \captionof{table}{Numerical discrepancy in determinant calculation using LU factors.}
+  \end{center}
+
+  \paragraph{Discussion}
+  The results indicate that the $LU$-factorization is highly accurate for these specific matrices. The errors observed in the determinant check are on the order of $10^{-14}$ to $10^{-15}$. These are attributed to the accumulation of rounding errors during the reduction process and the inherent limitations of floating-point arithmetic. Given that the residuals $A - LU$ are zero, the algorithm demonstrates high numerical stability for the provided inputs, suggesting that the matrices are well-conditioned and do not require partial pivoting for these specific entries.
+\end{solution}
+
+\begin{exercise}\label{ex:2.7}
+    The matrices
+    \[
+    \mathbf{T}(x,y) = \begin{bmatrix}
+        1 & 0 & x \\ 
+        0 & 1 & y \\ 
+        0 & 0 & 1
+    \end{bmatrix},\qquad
+    \mathbf{R}(\theta) = \begin{bmatrix}
+        \cos\theta & \sin \theta & 0 \\ 
+        -\sin\theta & \cos \theta & 0 \\ 
+        0 & 0 & 1
+    \end{bmatrix}
+    \]
+    are used to represent translations and rotations of plane points in computer graphics. For the following, let
+    \[
+    \mathbf{A} = \mathbf{T}(3,-1)\mathbf{R}(\pi/5)\mathbf{T}(-3,1), \qquad \mathbf{z} = \begin{bmatrix}
+        2 \\ 2 \\ 1
+    \end{bmatrix}.
+    \]
+    \begin{enumerate}[label = (\alph*)]
+        \item Find $\mathbf{b} = \mathbf{A}\mathbf{z}$.
+        \item Find the LU factorization of $\mathbf{A}$.
+        \item Use the factors with triangular substitutions in order to solve $\mathbf{A}\mathbf{x}=\mathbf{b}$, and find $\mathbf{x}-\mathbf{z}$.
+    \end{enumerate}
+\end{exercise}
+
+\begin{solution}
+  The transformation matrix $\mathbf{A}$ was constructed via the product of affine transformation matrices. The system was solved using LU factorization with unit-diagonal lower triangular matrix $\mathbf{L}$. The condition number $\kappa(\mathbf{A})$ was computed to assess the sensitivity of the solution to numerical perturbations.
+
+  \paragraph{Results: Transformation and Factorization}
+  The vector $\mathbf{b}$ resulting from the transformation $\mathbf{A}\mathbf{z}$ is:
+  \[
+  \mathbf{b} \approx \begin{bmatrix}
+      3.95433876250247 \\
+      2.01483623541732 \\
+      1.0
+  \end{bmatrix}
+  \]
+
+  The LU decomposition of $\mathbf{A}$ yields:
+  \[
+  \mathbf{L} = \begin{bmatrix}
+      1.0 & 0.0 & 0.0 \\
+      -0.726543 & 1.0 & 0.0 \\
+      0.0 & 0.0 & 1.0
+  \end{bmatrix}, \quad
+  \mathbf{U} = \begin{bmatrix}
+      0.809017 & 0.587785 & 1.16073 \\
+      0.0 & 1.23607 & 2.4157 \\
+      0.0 & 0.0 & 1.0
+  \end{bmatrix}
+  \]
+  The reconstruction error $\|\mathbf{A} - \mathbf{LU}\|_{\infty}$ was found to be approximately $2.22 \times 10^{-16}$, indicating the decomposition is stable to within machine epsilon.
+
+  \paragraph{Results: Linear System Solution}
+  Solving $\mathbf{A}\mathbf{x} = \mathbf{b}$ through forward and backward substitution results in:
+  \[
+  \mathbf{x} \approx \begin{bmatrix}
+      2.0 \\
+      1.9999999999999993 \\
+      1.0
+  \end{bmatrix}
+  \]
+  The deviation from the original vector $\mathbf{z}$ is:
+  \[
+  \mathbf{x} - \mathbf{z} \approx \begin{bmatrix}
+      0.0 \\
+      -6.66 \times 10^{-16} \\
+      0.0
+  \end{bmatrix}
+  \]
+
+  \paragraph{Numerical Stability and Conditioning}
+  The condition number of the system was calculated as $\kappa(\mathbf{A}) \approx 11.08$. This relatively low value indicates that the matrix is well-conditioned. In the context of floating-point arithmetic, the loss of precision is bounded by:
+  \[
+  \frac{\|\delta \mathbf{x}\|}{\|\mathbf{x}\|} \le \kappa(\mathbf{A}) \varepsilon_{mach}
+  \]
+  Given that $\varepsilon_{mach} \approx 1.11 \times 10^{-16}$ for \texttt{Float64}, the observed error of $\sim 10^{-16}$ is consistent with theoretical expectations for a well-behaved linear system.
+
+  \paragraph{Conclusion}
+  The LU factorization method successfully recovered the original vector $\mathbf{z}$ with an error on the order of $10^{-16}$. The stability of the transformation matrix, confirmed by the low condition number, ensures that the rounding errors introduced during the rotation and translation operations do not amplify significantly during the solver phase.
+\end{solution}
+
+% \begin{exercise}\label{ex:2.8}
+%     Compute the determinant of the matrices in Exercise 2 using their LU-decomposition.
+% \end{exercise}
+
+% \begin{exercise}
+%     Write a function that performs the LU-decomposition of a $n\times n$ matrix including row pivoting.
+% \end{exercise}
+
+\begin{exercise}
+    Solve Exercises \ref{ex:2.6} and \ref{ex:2.7} using the LU-decomposition with row pivoting.
+\end{exercise}
+
+% TODO: Manca il condition numeber, inserire discussione e comparare i risultati
+% con quelli ottenuti per gli esercizi senza row-pivoting
+\begin{solution}
+    Numerical solutions were obtained using a partial row pivoting strategy, where the decomposition is expressed as $PA = LU$. Here, $P$ is the permutation matrix representing row swaps, $L$ is a unit lower triangular matrix with $|L_{ij}| \le 1$, and $U$ is an upper triangular matrix. This approach is essential for preventing catastrophic cancellation and ensuring the algorithm remains backward stable.
+
+    \paragraph{Results for Exercise~\ref{ex:2.6} (Pivoted LU)}
+    For the three given matrices, the decomposition was performed using \texttt{Float64} precision. The resulting factors and the verification of the identity $PA - LU = 0$ are presented below:
+
+    \begin{itemize}
+        \item \textbf{Matrix $A_1$ ($3\times3$):}
+        \[
+        L_1 = \begin{bmatrix} 1.0 & 0.0 & 0.0 \\ 1.0 & 1.0 & 0.0 \\ 0.5 & 0.1667 & 1.0 \end{bmatrix}, \quad
+        U_1 = \begin{bmatrix} 4.0 & 5.0 & 10.0 \\ 0.0 & 3.0 & -8.0 \\ 0.0 & 0.0 & 0.3333 \end{bmatrix}
+        \]
+        The residual $P_1 A_1 - L_1 U_1$ yielded a zero matrix, confirming an exact decomposition within machine precision.
+
+        \item \textbf{Matrix $A_2$ ($4\times4$):}
+        \[
+        L_2 = \begin{bmatrix} 1.0 & 0.0 & 0.0 & 0.0 \\ 0.5 & 1.0 & 0.0 & 0.0 \\ -0.25 & 0.25 & 1.0 & 0.0 \\ -0.5 & -0.5 & -0.8571 & 1.0 \end{bmatrix}, \quad
+        U_2 = \begin{bmatrix} -12.0 & 8.0 & 21.0 & -8.0 \\ 0.0 & -4.0 & -20.5 & 11.0 \\ 0.0 & 0.0 & 4.375 & -3.75 \\ 0.0 & 0.0 & 0.0 & 2.2857 \end{bmatrix}
+        \]
+        The pivoting strategy effectively reordered the rows to maintain diagonal dominance, resulting in a zero residual matrix.
+
+        \item \textbf{Matrix $A_3$ ($4\times4$):}
+        % TODO: Inserire L e U per matrice A_3.
+        The decomposition for $A_3$ yielded a small numerical residual:
+        \[
+        R_3 = P_3 A_3 - L_3 U_3 \approx \begin{bmatrix} 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0 & -2.22\times10^{-16} & 2.22\times10^{-16} & 0 \end{bmatrix}
+        \]
+        This residual is on the order of $\varepsilon_{mach}$, consistent with expected floating-point errors.
+    \end{itemize}
+
+    % TODO: Aggiungere discussione sul condition number.
+
+    % TODO: Controllare coerenza dei risultati con quelli ottenuti
+    % nell'eserciziprima.
+    \paragraph{Results for Exercise~\ref{ex:2.7} (Linear System with Pivoting)}
+    For the transformation matrix $\mathbf{A}$ and vector $\mathbf{z} = [2, 2, 1]^T$:
+    \begin{enumerate}
+        \item \textbf{Forward substitution:} Solving $L\mathbf{y} = P\mathbf{b}$ where $\mathbf{b} = \mathbf{Az}$ gives:
+        \[ \mathbf{y} \approx [3.9543, 4.8878, 1.0]^T \]
+        \item \textbf{Backward substitution:} Solving $U\mathbf{x} = \mathbf{y}$ yields:
+        \[ \mathbf{x} \approx [2.0, 1.9999999999999993, 1.0]^T \]
+    \end{enumerate}
+    The error vector $\mathbf{x} - \mathbf{z}$ is approximately $[0.0, -6.66 \times 10^{-16}, 0.0]^T$. The solver successfully recovered the original vector with a relative error near the limit of \texttt{Float64} precision.
+
+    \paragraph{Numerical Discussion}
+    The inclusion of row pivoting led to more stable $L$ factors (all entries bounded by 1.0) compared to the non-pivoted case. The determinant checks further validate this: for $A_1$ and $A_2$, the discrepancy between the calculated determinant and the built-in Julia function was zero. For $A_3$, the error of $1.42 \times 10^{-14}$ is slightly larger than machine epsilon, likely due to the higher condition number and the specific structure of the matrix involving subtractions of similar magnitudes.
+\end{solution}
+
+\subsection{Conditioning of Linear Systems}
+\begin{exercise}
+    Let us consider the matrix:
+    \[
+        \mathbf{A} =
+        \begin{bmatrix}
+            -\epsilon & 1 \\ 
+            1 & -1
+        \end{bmatrix}.
+    \]
+    If $\epsilon=0$, LU factorization without partial pivoting fails for $\mathbf{A}$. But if $\epsilon\neq 0$, we can proceed without pivoting, at least in principle.
+
+    \begin{enumerate}[label=(\alph*)]
+        \item Construct $\mathbf{b}=\mathbf{Ax}$ taking $\epsilon=10^{-12}$ for the matrix $\mathbf{A}$ and $\mathbf{x}=[1,1]$ for the solution.
+
+        \item Factor the matrix using the LU-decomposition without pivoting and solve numerically for $\mathbf{x}$. How accurate is the result?
+
+        \item Try to verify the LU-factorization by computing $\mathbf{A}-\mathbf{LU}$. Does it work?
+
+        \item Repeat for $\epsilon=10^{-20}$. How accurate is the result now?
+
+        \item Compute the condition number of the matrix $\mathbf{A}$; you can choose your favorite norm. Is the system $\mathbf{Ax}=\mathbf{b}$ ill-conditioned?
+
+        \item Compute the matrices $\mathbf{L}$ and $\mathbf{U}$ of the LU-factorization of $\mathbf{A}=\mathbf{LU}$ with \emph{pen and paper}.
+
+        \item Compute the condition numbers of $\mathbf{L}$ and $\mathbf{U}$. Are the triangular systems $\mathbf{L}\mathbf{z}=\mathbf{b}$ and $\mathbf{U}\mathbf{x}=\mathbf{z}$ ill-conditioned?
+
+        \item Repeat the steps above for $\epsilon=10^{-20}$ for the matrix
+        \[
+            \mathbf{PA}=
+                \begin{bmatrix}
+                1 & -1 \\
+                -\epsilon & 1 
+            \end{bmatrix}.
+        \]
+        where we permuted the first and second row of $\mathbf{A}$. Note that this is the matrix that would be factorized when using row pivoting, since $\epsilon\ll1$.
+    \end{enumerate}
+\end{exercise}
+
+\subsection{Overdetermined Linear Systems}
+\begin{exercise}
+  \begin{enumerate}[label=(\alph*)]
+    \item Write a program that takes as input a matrix $\mathbf{A}$ and a vector $\mathbf{b}$ and solves the least-squares problem $\text{argmin}\| \mathbf{b}- \mathbf{A} \mathbf{x}\|_2$ via the normal equations using Cholesky or LU decomposition.
+
+    \item In order to check your code work out the least-squares solution when
+    \[
+    \mathbf{A} = \begin{bmatrix}
+      2 & -1 \\
+      0 & 1 \\
+      -2 & 2
+    \end{bmatrix}, \qquad \mathbf{b} =
+    \begin{bmatrix}
+      1\\-5\\6
+    \end{bmatrix}.
+    \]
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    Kepler found that the orbital period $\tau$ of a planet depends on its mean distance $R$ from the sun according to $\tau=c R^{\alpha}$ for a simple rational number $\alpha$. 
+    \begin{enumerate}[label=(\alph*)]
+        \item Perform a linear least-squares fit from the following table in order to determine the most likely simple rational value of $\alpha$.
+
+        \begin{center}
+          \begin{tabular}{|l|c|c|}
+          \hline
+              \textbf{Planet}  & \textbf{Distance from sun in Mkm} &  \textbf{Orbital period in days} \\
+              \hline
+              Mercury & 57.59                                      & 87.99  \\
+              Venus   & 108.11                                     & 224.7  \\
+              Earth   & 149.57                                     & 365.26 \\
+              Mars    & 227.84                                     & 686.98 \\
+              Jupiter & 778.14                                     & 4332.4 \\
+              Saturn  & 1427                                       & 10759   \\
+              Uranus  & 2870.3                                     & 30684   \\
+              Neptune & 4499.9                                     & 60188   \\
+          \hline
+          \end{tabular}
+        \end{center}
+
+        Does the result meet your expectations? [Hint: Recall the laws of planetary motion by Kepler.]
+
+        \item Make a plot of the data and the result of the fit.
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    In this problem you are trying to find an approximation to the periodic function $g(t)=e^{\sin(t-1)}$ over one period, $0 < t \le 2\pi$. As data, define
+    \[
+        t_i = \frac{2\pi i}{60}\,,
+        \quad  
+        y_i = g(t_i)\,,
+        \quad i=1,\ldots,60.
+    \]
+    \begin{enumerate}[label=(\alph*)]
+        \item Find the coefficients of the least-squares fit
+        \[
+            y(t) \approx c_1 + c_2t + \cdots + c_7 t^6.
+        \]
+        Superimpose a plot of the data values as points with a curve showing the fit.
+
+        \item Find the coefficients of the least-squares fit
+        \[
+            y \approx d_1 + d_2\cos(t) + d_3\sin(t) + d_4\cos(2t) + d_5\sin(2t).
+        \]
+        Unlike part (a), this fitting function is itself periodic. Superimpose a plot of the data values as points with a curve showing the fit.
+    \end{enumerate}
+\end{exercise}
+
+\subsection{QR Decomposition}
+\begin{exercise}
+    Write a program that takes as input a matrix $\mathbf{A}$ and returns the matrices $\hat{\mathbf{Q}}$ and $\hat{\mathbf{R}}$ of its thin QR-decomposition $\hat{\mathbf{Q}}\hat{\mathbf{R}}={\mathbf{A}}$ using the modified Gram-Schmidt procedure.
+\end{exercise}
+
+\begin{exercise}
+    Compute the thin QR-decomposition of the following matrices.
+    \[ 
+        \begin{bmatrix}
+            2 & -1 \\
+            0 & 1 \\
+            -2 & 2
+        \end{bmatrix};
+        \qquad
+        \begin{bmatrix}
+            2 & 3 & 4 \\
+            4 & 5 & 10 \\
+            4 & 8 & 2
+        \end{bmatrix};
+        \qquad
+        \begin{bmatrix}
+            2 & -1 & 4 \\
+            0 & 3 & 5 \\
+            7 & 2 & -6 \\
+            1 & -4 & 0
+        \end{bmatrix}
+    \]
+    Verify the correctness by testing the relation $\hat{\mathbf{Q}}\hat{\mathbf{R}}={\mathbf{A}}$. Verify also the ONC character of the matrix $\hat{\mathbf{Q}}$.
+\end{exercise}
+
+\begin{exercise}
+    Given the function $h(t)=e^{\sin(4t)}$ over the interval $[0,1]$, define the data,
+    \[
+        t_i = \frac{i}{99}\,,
+        \quad  
+        y_i = \frac{h(t_i)}{2006.787453080206}\,,
+        \quad i=0,\ldots,99.
+    \]
+    Solve the least square problem,
+    \[
+        y(t) \approx c_1 + c_2t + \cdots + c_{15} t^{14},
+    \]
+    using:
+    \begin{enumerate}[label=(\alph*)]
+        \item the normal equations and Cholesky or LU decomposition.
+
+        \item the thin QR-decomposition.
+
+        \item the Q-less QR-decomposition.
+    \end{enumerate}
+    Compare the coefficients $c_{15}$ obtained in (a)-(b)-(c) with the expected value $c_{15}=1$.
+\end{exercise}
+
+\begin{exercise}
+    Use the pure QR-algorithm to find the eigenvalues and eigenvectors of the matrix
+    \[
+        \mathbf{A}=
+        \begin{bmatrix}
+            5 & 1 & 0 & 0 \\
+            1 & 4 & 1 & 0 \\
+            0 & 1 & 3 & 1 \\
+            0 & 0 & 1 & 2
+        \end{bmatrix}\,.
+    \]
+    Check that you have indeed identified the eigenvalues and eigenvectors of $\mathbf{A}$.
+\end{exercise}

@@ -1,0 +1,145 @@
+\chapter{Error Analysis}
+The primary objective of this chapter is to investigate the fundamental principles of floating-point number representation and demonstrate their practical consequences in numerical computation. We will begin by providing a theoretical overview of how computers store real numbers. Subsequently, this chapter will illustrate key computational pitfalls, including: the impact of summation order due to the non-associativity of floating-point addition, the emergence of numerical instability in recursive formulas, and the cumulative effect of error propagation in iterative calculations. Ultimately, this chapter aims to underscore the critical importance of understanding the limitations of floating-point arithmetic in order to produce reliable and accurate scientific computations.
+
+\section{Floating-Point Arithmetic and Roundoff Errors}
+
+\subsection{Fundamentals of Digital Numbers Representation}
+Computers represent real numbers using a specific base, most commonly the binary system (base 2), where the digits are called bits (0 or 1). Due to finite memory, only a limited set of numbers can be represented exactly. This necessitates mapping the infinite set of real numbers to a finite set of machine-representable numbers.
+
+Two main methods for this are:
+\begin{itemize}
+    \item Fixed-Point Representation: This method uses a fixed number of digits before and after the decimal point. It is not widely used in scientific computing because it's inconvenient for representing numbers spanning several orders of magnitude.
+    \item Floating-Point Representation: This is the most common method, analogous to scientific notation ($x = \pm a \cdot b^{b}$). It allows the decimal point to "float", making it flexible for representing both very large and very small numbers.
+\end{itemize}
+
+The standard for floating-point numbers, IEEE 754, defines a number $x$ as:
+
+\begin{equation}
+    x = (-1)^{s} (1 + f) 2^{b}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $s$ is the sign bit (0 for positive, 1 for negative).
+    \item $1 + f$ is the significand (or mantissa), which is always in the range $[1, 2)$.
+    \item $b$ is the exponent.
+\end{itemize}
+
+Both the significand's fractional part ($f$) and the exponent ($b$) are stored using a finite number of bits, which determines the representation's precision.
+
+The IEEE 754 standard specifies common formats, including:
+\begin{itemize}
+    \item Single precision (32-bit):
+    \begin{itemize}
+        \item Sign: 1 bit
+        \item Exponent: 8 bits
+        \item Significand: 23 bits
+        \item Machine Precision ($\varepsilon_\text{mach}$): Approximately $1.2 \times 10^{-7}$, which corresponds to about 7 significant decimal digits.
+        \item Range: Can represent numbers from roughly $1.2 \times 10^{-38}$ to $3.4 \times 10^{38}$
+    \end{itemize}
+    \item Double precision (64-bit):
+    \begin{itemize}
+        \item Sign: 1 bit
+        \item Exponent: 11 bits
+        \item Significand: 52 bits
+        \item Machine Precision ($\varepsilon_\text{mach}$): Approximatly $2.2 \times 10^{-16}$, corresponding to about 16 significant decimal digits.
+        \item Range: Can represent numbers from roughly $2 \times 10^{-308}$ to $2 \times 10^{308}$.
+    \end{itemize}
+\end{itemize}
+
+Special values are also defined, such as \verb|Inf| (infinity) for results that overflow the representable range and \verb|NaN| (Not-a-Number) for undefined operations like $0/0$.
+
+\subsection{Floating-Point Arithmetic and Sources of Error}
+Since the result of an arithmetic operation between two machine numbers is not always exactly representable, it must be rounded to the nearest available machine number. This rounding introduces small errors known as roundoff errors.
+
+This leads to several important consequences:
+\begin{itemize}
+    \item Arithmetic laws may not hold: Floating-point addition is not associative. For example, $(a + b) + c$ may not be equal to $a + (b + c)$. This is because intermediate rounding can change the final result.
+    \item Loss of Accuracy (Cancellation): A significant issue arises when subtracting two floating-point numbers that are very close to each other. This operation can cause the leading, most significant digits to cancel out, resulting in a final number with far fewer accurate digits than the original numbers. This phenomenon is a major source of error in numerical computations. is a major source of error in numerical computations.
+\end{itemize}
+
+
+\subsection{Implementation and Analysis of the Exercises}
+
+\begin{exercise}[The Impact of Summation Order on Accuracy] Calculate the following sum
+    $$
+      \sum_{n=1}^\infty {1\over n^2}={\pi^2\over 6}
+      =\lim_{N\to\infty} S(N)
+      \quad
+      \text{with}
+      \quad
+      S(N)=\sum_{n=1}^N {1\over n^2}
+    $$
+    \begin{enumerate}
+        \item Calculate the sum in single precision using normal ordering, $n=1,2,3,\ldots,N$.
+        \item Calculate the sum in single precision using reverse ordering, $n=N,\ldots,2,1$.
+        \item Study the convergence of both implementations as a function of $N$ by plotting $|S(N)-\pi^2/6|$.
+        \item Repeat (a)-(c) using double precision.
+        \item Can you explain what happens?
+    \end{enumerate}
+
+    The objective is to demonstrate the impact of roundoff errors and the non-associative nature of floating-point addition. By comparing the summation of a series in forward and reverse order.
+
+    \paragraph{Methodology} Summing a series in normal and reverse order.
+
+    \paragraph{Single Precision Results} A comparison of convergence and final error for both orderings.
+
+    \paragraph{Double Precision Results} A similar comparison, noting the difference in error magnitude.
+    \paragraph{Interpretation} Explaining why reverse ordering is more accurate by linking the results back to the concepts of machine precision and catastrophic cancellation.
+
+\end{exercise}
+
+% \begin{exercise}[Demonstrating Numerical Instability]
+%     \paragraph{Implementation of the Recurrence Relation} 
+%     \paragraph{Results} Tracking the computed value and its divergence from the true value.
+%     \paragraph{Interpretation} Analyzing how small initial roundoff errors are amplified over iterations, leading to instability.
+% \end{exercise}
+
+\subsection{Conclusions}
+
+\section{Error Propagation and Condition Number}
+
+\subsection{Implementation and Analysis of the Exercises}
+
+\begin{exercise}[Error propagation for multiple algorithm steps]
+     \begin{enumerate}
+        \item In statistics, we define the variance of a sample of values $x_1,\ldots,x_n$ by
+    
+        $$
+            \label{samplevar}
+            \sigma^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \overline{x})^2,
+            \qquad 
+            \overline{x} = \frac{1}{n} \sum_{i=1}^n x_i.
+        $$ 
+
+        Write a function that takes as input a vector $x$ of any length and returns $\sigma^2$ as calculated by the formula. You should test your function with $x=[1,1,\ldots,1]$ and some random vectors. 
+
+        \item One drawback of the formula \eqref{samplevar} is that you must first compute a sum for $\overline{x}$ before performing the sum to compute $\sigma^2$. This means that we have to pass twice through the data. This is undesirable for large data sets or when the sample variance is to be computed as the data is generated. Some textbooks quote a single-loop formula:
+  
+        $$ 
+            \begin{align*}
+                \sigma^2 = \frac{1}{n-1} \left( u - \tfrac{1}{n}v^2 \right),\\
+                u  = \sum_{i=1}^n x_i^2, 
+                \qquad
+                v = \sum_{i=1}^n x_i.
+            \end{align*}
+        $$
+
+        Try both formulas for the datasets below, each of which has a variance exactly equal to 1. Do this in both single and double precision.
+    
+        Can you explain the results?
+
+     \end{enumerate}
+
+\end{exercise}
+
+\begin{exercise}[Condition Number]
+    \paragraph{Methodology}
+    \paragraph{The Naive Algorithm}
+    \paragraph{The Maclaurin Series}
+    \paragraph{Interpretation}
+\end{exercise}
+
+
+
+\subsection{Conclusions}

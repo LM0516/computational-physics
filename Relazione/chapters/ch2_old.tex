@@ -1,0 +1,173 @@
+\chapter{Linear Systems}
+
+\section{Triangular Systems}
+
+\begin{exercise}[Forward Substitution]
+    Write a function that performs forward substitution on a $n\times n$ lower triangular matrix.
+\end{exercise}
+
+\begin{exercise}
+    Test your code on the linear systems:
+    $$
+        \mathbf{a)}
+        \quad 
+        \begin{bmatrix}
+            -2 & 0 & 0 \\
+            1 & -1 & 0 \\
+            3 & 2 & 1 
+        \end{bmatrix} 
+        \mathbf{x} = 
+        \begin{bmatrix}
+            -4 \\ 2 \\ 1
+        \end{bmatrix};
+        \qquad
+        \mathbf{b)} 
+        \quad 
+        \begin{bmatrix}
+            4 & 0 & 0 & 0 \\
+            1 & -2 & 0 & 0 \\
+            -1 & 4 & 4 & 0 \\
+            2 & -5 & 5 & 1
+        \end{bmatrix} 
+        \mathbf{x} = 
+        \begin{bmatrix}
+            -4 \\ 1 \\ -3 \\ 5
+        \end{bmatrix}
+    $$
+    You can verify the solution by solving the system by hand and/or computing $\mathbf{L}\mathbf{x}$ and subtracting $\mathbf{b}$.
+\end{exercise}
+
+\begin{exercise}
+    Write a function that performs backward substitution on a $n\times n$ upper triangular matrix.
+\end{exercise}
+
+\begin{exercise}
+    Test your code on the linear systems:
+    $$
+    \begin{bmatrix}
+      3 & 1 & 0  \\
+      0 & -1 & -2  \\
+      0 & 0 & 3  \\
+    \end{bmatrix} \mathbf{x} = \begin{bmatrix}
+      1 \\ 1 \\ 6
+    \end{bmatrix}
+    \qquad
+    \begin{bmatrix}
+      3 & 1 & 0 & 6 \\
+      0 & -1 & -2 & 7 \\
+      0 & 0 & 3 & 4 \\
+      0 & 0 & 0 & 5
+    \end{bmatrix} \mathbf{x} = \begin{bmatrix}
+      4 \\ 1 \\ 1 \\ 5
+    \end{bmatrix}
+    $$
+    You can verify the solution by solving the system by hand and/or computing $\mathbf{U}\mathbf{x}$ and subtracting $\mathbf{b}$.
+\end{exercise}
+
+\section{LU Decomposition}
+
+\begin{exercise}
+    Write a function that performs the LU-decomposition of a $n\times n$ matrix. 
+\end{exercise}
+
+\begin{exercise}\label{LU Factorization}
+    For each matrix, compute their LU-factorization and verify the correctness.
+
+    $$
+        (a) \, \begin{bmatrix}
+            2 & 3 & 4 \\
+            4 & 5 & 10 \\
+            4 & 8 & 2
+        \end{bmatrix}\qquad
+        (b) \, \begin{bmatrix}
+            6 & -2 & -4 & 4\\
+            3 & -3 & -6 & 1 \\
+            -12 & 8 & 21 & -8 \\
+            -6 & 0 & -10 & 7
+        \end{bmatrix}\qquad
+        (c) \, \begin{bmatrix}
+            1 & 4 & 5 & -5 \\
+            -1 & 0 & -1 & -5 \\
+            1 & 3 & -1 & 2 \\
+            1 & -1 & 5 & -1 
+        \end{bmatrix}
+    $$
+\end{exercise}
+
+\begin{exercise}
+    The matrices
+    $$
+    \mathbf{T}(x,y) = \begin{bmatrix}
+        1 & 0 & x \\ 
+        0 & 1 & y \\ 
+        0 & 0 & 1
+    \end{bmatrix},\qquad
+    \mathbf{R}(\theta) = \begin{bmatrix}
+        \cos\theta & \sin \theta & 0 \\ 
+        -\sin\theta & \cos \theta & 0 
+        \\ 0 & 0 & 1
+    \end{bmatrix}
+    $$
+    are used to represent translations and rotations of plane points in computer graphics. For the following, let
+    $$
+        \mathbf{A} = \mathbf{T}(3,-1)\mathbf{R}(\pi/5)\mathbf{T}(-3,1), 
+        \qquad
+        \mathbf{z} = 
+        \begin{bmatrix}
+            2 \\ 2 \\ 1
+        \end{bmatrix}.
+    $$
+    \begin{enumerate}
+        \item Find $\mathbf{b} = \mathbf{A}\mathbf{z}$.
+        \item Find the LU factorization of $\mathbf{A}$.
+        \item Use the factors with triangular substitutions in order to solve $\mathbf{A}\mathbf{x}=\mathbf{b}$, and find $\mathbf{x}-\mathbf{z}$.
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    Compute the determinant of the matrices in Exercise \ref{LU Factorization} using their LU-decomposition.
+\end{exercise}
+
+\begin{exercise}
+    Write a function that performs the LU-decomposition of a $n\times n$ matrix including row pivoting. Apply it to the matrices (a)-(c) of Exercise \ref{LU Factorization}.
+\end{exercise}
+
+\section{Conditioning of Linear Systems}
+
+\begin{exercise} 
+    Let us consider the matrix:
+
+    $$
+        \mathbf{A} =
+        \begin{bmatrix}
+        -\epsilon & 1 \\ 
+        1 & -1
+        \end{bmatrix}.
+    $$
+
+    If $\epsilon=0$, LU factorization without partial pivoting fails for $\mathbf{A}$. But if $\epsilon\neq 0$, we can proceed without pivoting, at least in principle.
+
+    \begin{enumerate}
+        \item Construct $\mathbf{b}=\mathbf{Ax}$ taking $\epsilon=10^{-12}$ for the matrix $\mathbf{A}$ and $\mathbf{x}=[1,1]$ for solution.
+        \item Factor the matrix using the LU-decomposition without pivoting and solve numerically for $\mathbf{x}$. How accurate is the result?
+        \item Try to verify the LU-factorization by computing $\mathbf{A}-\mathbf{LU}$. Does it work?
+        \item Repeat for $\epsilon=10^{-20}$. How accurate is the result now?
+        \item Compute the condition number of the matrix $\mathbf{A}$; you can choose your favorite norm. Is the system $\mathbf{Ax}=\mathbf{b}$ ill-conditioned?
+        % \item Compute the matrices $\mathbf{L}$ and $\mathbf{U}$ of the LU-factorization of $\mathbf{A}=\mathbf{LU}$ with *pen and paper*.
+        \item Compute the condition numbers of $\mathbf{L}$ and $\mathbf{U}$. Are the triangular systems $\mathbf{L}\mathbf{z}=\mathbf{b}$ and $\mathbf{U}\mathbf{x}=\mathbf{z}$ ill-conditioned?
+        \item Repeat the steps above for $\epsilon=10^{-20}$ for the matrix
+        $$
+        \mathbf{PA}=
+            \begin{bmatrix}
+            1 & -1 \\
+            -\epsilon & 1 
+            \end{bmatrix}.
+        $$
+        where we permuted the first and second row of $\mathbf{A}$. Note that this is the matrix that would be factorized when using row pivoting, since $\epsilon\ll1$.
+    \end{enumerate}
+
+\end{exercise}
+
+\section{Overdetermined Linear Systems}
+
+

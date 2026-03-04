@@ -1,0 +1,65 @@
+\section{Roots of Nonlinear Equations}
+\subsection{Bisection Method}
+\begin{exercise}
+    \begin{enumerate}
+        \item Use the bisection method to find the solutions for $x^3 - 7x^2 +
+        14x - 6 = 0$ on $[0,\, 1]$.
+        \item Study the convergence of the bisection method to the root found in (a).
+        You can take as an approximation for the root $r = m_{n_\text{max}}$
+        where $n_\text{max}$ is the index corresponding to the last bisection
+        iteration. What is its order of convergence $q$? Can you estimate the
+        asymptotic error constant $C$? [Hint: Study $a_{n} = -\log_{10}\lvert
+        x_{n} - r \rvert$ as a function of $n$.]
+    \end{enumerate}
+\end{exercise}
+
+\subsection{Newton Method}
+
+% \begin{exercise}
+%     Write a program that implements Newton's method. (\textbf{Optional}) Include bracketing.
+% \end{exercise}
+
+\begin{exercise}
+    For each of the functions below, do the following steps.
+    
+    \begin{itemize}
+        \item Rewrite the equation into the standard form for rootfinding, $f(x) = 0$, and compute $f'(x)$. 
+
+        \item Make a plot of $f$ over the given interval and determine how many roots lie in the interval. 
+
+        \item Use Newton's method to find each root.
+
+        \item Study the error in the Newton sequence to determine numerically whether the convergence is roughly quadratic for the given root. [Hint: Study $a_{n+1}/a_{n}$ with $a_n=-\log_{10}|x_n-r|$ to check the rate of convergence $q$. Once you established it, try to estimate the asymptotic error constant $C$.]
+        
+        \begin{itemize}
+            \item $x^2=e^{-x}$, over $[-2,2]$
+
+            \item$2x = \tan x$, over $[-0.2,1.4]$
+
+            \item $e^{x+1}=2+x$, over $[-2,2]$
+        \end{itemize}
+    \end{itemize}
+\end{exercise}
+
+\begin{exercise}
+    Plot the function $f(x)=x^{-2} - \sin x$ on the interval $x \in [0.5,10]$.  For each initial value $x_1=1,\, x_1=2,\,\ldots,\, x_1=7$, apply Newton's method to $f$, and make a table showing $x_1$ and the resulting root found by the method. In which case does the iteration converge to a root other than the one closest to it? Use the plot to explain why that happened. (**Optional**) Repeat the exercise including bracketing.
+\end{exercise}
+
+\begin{exercise}
+    The most easily observed properties of the orbit of a celestial body around the Sun are the period $\tau$ and the elliptical eccentricity $\epsilon$. (A circle has $\epsilon=0$.) From these, it is possible to find at any time $t$ the *true anomaly* $\theta(t)$. This is the angle between the direction of periapsis (the point in the orbit closest to the Sun) and the current position of the body, as seen from the main focus of the ellipse (the location of the Sun). This is done through
+    
+    \[
+        \tan \frac{\theta}{2} = \sqrt{\frac{1+\epsilon}{1-\epsilon}}\,
+        \tan \frac{\psi}{2}\,,
+    \]
+    
+    where the *eccentric anomaly* $\psi(t)$ satisfies Kepler's equation:
+  
+    \[
+        \psi - \epsilon \sin \psi - \frac{2\pi t}{\tau} = 0\,.
+    \]
+
+    Equation {eq}`eq-kepler2` must be solved numerically to find $\psi(t)$, and then {eq}`eq-kepler1` can be solved analytically to find $\theta(t)$. 
+    
+    The asteroid Eros has $\tau=1.7610$ years and $\epsilon=0.2230$. Using Newton's method for {eq}`eq-kepler2`, make a plot of $\theta(t)$ for 100 values of $t$ between $0$ and $\tau$, which is one full orbit. (Note: Use `mod(Î¸,2Ï€)` to put the angle between 0 and $2\pi$ if you want the result to be a continuous function.)
+\end{exercise}

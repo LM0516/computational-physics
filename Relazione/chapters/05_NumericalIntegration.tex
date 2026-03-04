@@ -1,0 +1,67 @@
+\section{Numerical Integration}
+
+\subsection{Newton-Cotes Integration}
+
+% \begin{exercise}
+%     Write a program that implements the composite trapezoidal rule for a generic integration interval $[a,b]$.
+% \end{exercise}
+
+\begin{exercise}\label{ex:integrals}
+    For each integral below, use the trapezoidal rule to estimate the integral for $m=10\cdot 2^k$ nodes for $k=1,2,\ldots,10$. Make a log-log plot of the errors and confirm or refute second-order accuracy. (These integrals were taken from {cite}`Bailey01012005`.)
+    \begin{enumerate}
+        \item $\displaystyle \int_0^1 x\log(1+x)\, dx = \frac{1}{4}$
+
+        \item $\displaystyle \int_0^1 x^2 \tan^{-1}x\, dx = \frac{\pi-2+2\log 2}{12}$
+
+        \item $\displaystyle \int_0^{\pi/2}e^x \cos x\, dx = \frac{e^{\pi/2}-1}{2}$
+
+        \item $\displaystyle \int_0^1 {\tan^{-1}(\sqrt{2+x^2})\over (1+x^2)\sqrt{2+x^2}}dx={5\pi^2\over 96}$
+
+        \item $\displaystyle \int_0^1 \sqrt{x} \log(x) \, dx = -\frac{4}{9}$ (Hint: Although the integrand has the limiting value zero as $x\to 0$, it cannot be evaluated naively at $x=0$. One possibility is to start the integral at $x=\epsilon_{\rm mach}$. Alternatively, you can define a wrapper function $g(x)$ that returns $g(0)=0$ and $g(x)=\sqrt{x}\log(x)$ otherwise.)
+
+        \item $\displaystyle \int_0^1 \sqrt{1-x^2}\,\, dx = \frac{\pi}{4}$
+    \end{enumerate}
+\end{exercise}
+
+% \begin{exercise}
+%     Write a program that implements the composite Simpson's rule for a generic integration interval $[a,b]$.
+% \end{exercise}
+
+\begin{exercise}
+    For each integral in Exercise~\ref{ex:integrals} above, apply the Simpson formula and compare the errors to fourth-order convergence.
+\end{exercise}
+
+\subsection{Free-nodes Integration}
+
+\begin{exercise}
+    Write a program that computes the nodes and weights for the Gauss-Legendre quadrature in the interval $[-1,1]$. Below are some tips for the implementation.
+
+    \begin{itemize}
+        \item To find the roots $x_k$, with $k=1,\ldots,n$ of the Legendre polynomial $P_n(x)$ of order $n$ use Newton's method. Take as the initial condition for the $k$th root,
+        \[
+            x^{(0)}_k=\cos(\phi_k)\,,
+            \qquad
+            \phi_k={4k-1\over 4n+2}\pi\,.
+        \]
+        \item In order to use Newton's method you need to evaluate $P_n(x_k^{(i)})$ and the derivative $P'_n(x_k^{(i)})$, where $x_k^{(i)}$ is the $i$th iteration in the search for the $k$th root $x_k$. You can obtain these by first solving the recursion relation,
+
+        \[
+            (m+1)P_{m+1}(x) = (2m+1)xP_{m}(x) - mP_{m-1}(x)\,,
+        \]
+
+        for $m=1,\ldots,n-1$, where $P_0(x) = 1$ and $P_1(x) = x$, with $x=x^{(i)}_k$. The derivative is then computed using the relation,
+
+        \[
+            (x^{2}-1)P'_{n}(x)=n[xP_{n}(x)-P_{n-1}(x)]\,. 
+        \]
+
+        \item Once you reach the root $x_k$ within some tolerance, the value of the derivative $P'_n(x_k)$ allows you to obtain the corresponding weight using
+
+        \[
+            w_k= {2\over (1-x_k^2)[P'_n(x_k)]^2}\,.
+        \]
+    \end{itemize}
+
+\end{exercise}
+
+
