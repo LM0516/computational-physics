@@ -325,7 +325,20 @@
         The pivoting strategy effectively reordered the rows to maintain diagonal dominance, resulting in a zero residual matrix.
 
         \item \textbf{Matrix $A_3$ ($4\times4$):}
-        % TODO: Inserire L e U per matrice A_3.
+        \[
+        L_3 = \begin{bmatrix}
+            1.0 & 0.0 & 0.0 & 0.0 \\
+            1.0 & 1.0 & 0.0 & 0.0 \\
+            1.0 & 0.2 & 1.0 & 0.0 \\
+            -1.0 & -0.8 & -0.666667 & 1.0
+        \end{bmatrix} \qquad
+        U_3 = \begin{bmatrix}
+            1.0 & 4.0 & 5.0 & -5.0 \\
+            0.0 & -5.0 & 0.0 & 4.0 \\
+            0.0 & 0.0 & -6.0 & 6.2 \\
+            0.0 & 0.0 & 0.0 & -2.66667
+        \end{bmatrix}
+        \]
         The decomposition for $A_3$ yielded a small numerical residual:
         \[
         R_3 = P_3 A_3 - L_3 U_3 \approx \begin{bmatrix} 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0 & -2.22\times10^{-16} & 2.22\times10^{-16} & 0 \end{bmatrix}
@@ -335,8 +348,6 @@
 
     % TODO: Aggiungere discussione sul condition number.
 
-    % TODO: Controllare coerenza dei risultati con quelli ottenuti
-    % nell'eserciziprima.
     \paragraph{Results for Exercise~\ref{ex:2.7} (Linear System with Pivoting)}
     For the transformation matrix $\mathbf{A}$ and vector $\mathbf{z} = [2, 2, 1]^T$:
     \begin{enumerate}
@@ -352,6 +363,7 @@
 \end{solution}
 
 \subsection{Conditioning of Linear Systems}
+
 \begin{exercise}
     Let us consider the matrix:
     \[
@@ -389,6 +401,52 @@
         where we permuted the first and second row of $\mathbf{A}$. Note that this is the matrix that would be factorized when using row pivoting, since $\epsilon\ll1$.
     \end{enumerate}
 \end{exercise}
+
+% BUG: Soluzione sbagliata per il secondo punto, rivedere il codice.
+% Controllare che i risultati siano coerenti prima di riscrivere la soluzione.
+\begin{solution}
+    The numerical analysis was performed in Julia using the \texttt{LinearAlgebra} package and a custom \texttt{LUdec} function implementing Gaussian elimination without row pivoting. We utilize \texttt{Float64} precision, where the machine epsilon is $\varepsilon_{\text{mach}} \approx 2.22 \times 10^{-16}$.
+
+    \paragraph{Results for $\epsilon = 10^{-12}$}
+    For $\epsilon = 10^{-12}$, the matrix $\mathbf{A}$ and the right-hand side $\mathbf{b}$ are:
+    \[
+        \mathbf{A} = \begin{bmatrix} -10^{-12} & 1 \\ 1 & -1 \end{bmatrix}, \quad \mathbf{b} = \begin{bmatrix} 1 - 10^{-12} \\ 0 \end{bmatrix}.
+    \]
+    The LU factorization yields a residual $\|\mathbf{A} - \mathbf{LU}\| \approx 0$. However, while the condition number of the original system is $\kappa_1(\mathbf{A}) \approx 4.0$ (well-conditioned), the triangular factors exhibit extreme ill-conditioning:
+    \[
+        \kappa_1(\mathbf{L}) \approx 10^{24}, \quad \kappa_1(\mathbf{U}) \approx 10^{24}.
+    \]
+    Despite this, the numerical solution for $\mathbf{x}$ remains accurate to machine precision because the errors in $\mathbf{L}$ and $\mathbf{U}$ are perfectly correlated in a way that cancels out for this specific $\epsilon$.
+
+    \paragraph{Results for $\epsilon = 10^{-20}$}
+    When $\epsilon$ is reduced to $10^{-20}$, which is significantly smaller than $\varepsilon_{\text{mach}}$, the algorithm without pivoting fails catastrophically.
+    \begin{itemize}
+        \item \textbf{Residual Error:} $\|\mathbf{A} - \mathbf{LU}\|_1 \approx 1.0$. The factorization is no longer representative of the original matrix.
+        \item \textbf{Theoretical Cause:} In the update $u_{22} = a_{22} - \frac{a_{21}a_{12}}{a_{11}}$, we compute $-1 - \frac{1}{-\epsilon} = -1 + 10^{20}$. In floating-point arithmetic, $-1 + 10^{20}$ is rounded to $10^{20}$, losing the information of the $-1$ entirely. This is a classic case of \textit{swamping} or \textit{catastrophic cancellation}.
+    \end{itemize}
+
+    \paragraph{Analytical Derivation}
+    The analytical LU decomposition of $\mathbf{A}$ without pivoting is:
+    \[
+        \mathbf{L} = \begin{bmatrix} 1 & 0 \\ -1/\epsilon & 1 \end{bmatrix}, \quad \mathbf{U} = \begin{bmatrix} -\epsilon & 1 \\ 0 & -1 + 1/\epsilon \end{bmatrix}.
+    \]
+    As $\epsilon \to 0$, the elements $l_{21}$ and $u_{22}$ grow as $1/\epsilon$. The condition number of $\mathbf{L}$ in the $L_1$ norm is:
+    \[
+        \|\mathbf{L}\|_1 \|\mathbf{L}^{-1}\|_1 = (1 + |1/\epsilon|) \times (1 + |1/\epsilon|) \approx \frac{1}{\epsilon^2}.
+    \]
+    For $\epsilon = 10^{-12}$, $\kappa(\mathbf{L}) \approx 10^{24}$, which matches our numerical findings.
+
+    \paragraph{Effect of Row Pivoting ($\mathbf{PA}$)}
+    By swapping the rows (partial pivoting), we factorize $\mathbf{PA}$ where the pivot is $1$ instead of $-\epsilon$. For $\epsilon = 10^{-20}$:
+    \[
+        \mathbf{PA} = \begin{bmatrix} 1 & -1 \\ -10^{-20} & 1 \end{bmatrix} \implies \mathbf{L} = \begin{bmatrix} 1 & 0 \\ -10^{-20} & 1 \end{bmatrix}, \quad \mathbf{U} = \begin{bmatrix} 1 & -1 \\ 0 & 1 - 10^{-20} \approx 1 \end{bmatrix}.
+    \]
+    The condition numbers become:
+    \[
+        \kappa_1(\mathbf{L}) \approx 1.0, \quad \kappa_1(\mathbf{U}) \approx 4.0.
+    \]
+    The system is now perfectly stable, and the residual error is zero within tolerance.
+\end{solution}
 
 \subsection{Overdetermined Linear Systems}
 \begin{exercise}

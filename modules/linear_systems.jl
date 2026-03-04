@@ -4,8 +4,10 @@ using LinearAlgebra
 
 export forwardsub, forwardcompl, backsub, backcompl, LUdec, LUdecrp, plufact, detplu, condition_number, least_squares
 
+"""
+Solves the equation Lx = b for x using forward substitution.
+"""
 function forwardsub(L::Matrix, b)
-    #== Solves the equation Lx = b for x using forward substitution ==#
     len = length(b)
     x = zeros(Float64, len)
     for i in 1:len
@@ -14,8 +16,10 @@ function forwardsub(L::Matrix, b)
     return x
 end
 
+"""
+Solves the equation LX = B for X using forward substitution for multiple right-hand sides.
+"""
 function forwardcompl(L::Matrix, B::Matrix)
-    #== Solves the equation LX = B for X using forward substitution for multiple right-hand sides ==#
     n_row, n_col = size(B)
     X = zeros(Float64, n_row, n_col)
     for j in 1:n_col
@@ -24,8 +28,10 @@ function forwardcompl(L::Matrix, B::Matrix)
     return X
 end
 
+"""
+Solves the equation Ux = b for x using backward substitution.
+"""
 function backsub(U::Matrix, b)
-    #== Solves the equation Ux = b for x using backward substitution ==#
     len = length(b)
     x = zeros(Float64, len)
     for i in len:-1:1
@@ -38,8 +44,10 @@ function backsub(U::Matrix, b)
     return x
 end
 
+"""
+Solves the equation UX = B for X using backward substitution for multiple right-hand sides.
+"""
 function backcompl(U::Matrix, B::Matrix)
-    #== Solves the equation UX = B for X using backward substitution for multiple right-hand sides ==#
     n_row, n_col = size(B)
     X = zeros(Float64, n_row, n_col)
     for j in 1:n_col
@@ -162,7 +170,6 @@ function condition_number(A::Matrix{Float64}, norm_type::Symbol=:one)
 end
 
 function least_squares(A::Matrix, b)
-
     N = A' * A
     z = A' * b
 

@@ -17,7 +17,7 @@ function conditioning(A::Matrix, ε::Float64)
 
     b = A * x
 
-    println("\n=== LU Decomposition without row pivoting for ε = ", ε, "and M = ", A, " ===")
+    println("\n=== LU Decomposition without row pivoting for ε = ", ε, " and M = ", A, " ===")
     println("A = ")
     display(A)
     println("b = ")
@@ -44,9 +44,6 @@ function conditioning(A::Matrix, ε::Float64)
     println("\n=== Checking if L and U are ill-conditioned ===")
     println("L is ill-conditioned: ", condition_number(L) > 1e10 ? "Yes" : "No")
     println("U is ill-conditioned: ", condition_number(U) > 1e10 ? "Yes" : "No")
-
-    println("")
-    println("-"^60)
 end
 
 function main()
@@ -62,6 +59,7 @@ function main()
             -ε 1
         ]
         conditioning(A, ε)
+        println("")
         println("="^60)
         conditioning(PA, ε)
     end

@@ -48,41 +48,6 @@ function main()
     PLU_solve(A2, "A2")
     PLU_solve(A3, "A3")
 
-    #=# LU-Factorization-Row Pivoting=#
-    #=P1, L1, U1 = LUdecrp(Matrix{Float64}(A1))=#
-    #=P2, L2, U2 = LUdecrp(Matrix{Float64}(A2))=#
-    #=P3, L3, U3 = LUdecrp(Matrix{Float64}(A3))=#
-    #==#
-    #=println("A1:")=#
-    #=println("\nL, U:")=#
-    #=display(L1)=#
-    #=display(U1)=#
-    #=println("Check:")=#
-    #=display(P1*A1 - L1 * U1)=#
-    #==#
-    #=println("-"^60)=#
-    #=println("A2:")=#
-    #=println("\nL, U:")=#
-    #=display(L2)=#
-    #=display(U2)=#
-    #=println("Check:")=#
-    #=display(P2*A2 - L2 * U2)=#
-    #==#
-    #=println("-"^60)=#
-    #=println("A3:")=#
-    #=println("\nL, U:")=#
-    #=display(L3)=#
-    #=display(U3)=#
-    #=println("Check:")=#
-    #=display(P3*A3 - L3 * U3)=#
-    #==#
-    #=println("-"^60)=#
-    #=println("=== Condition Numbers ===")=#
-    #=println("-"^60)=#
-    #=println("Condizion number A1: ", condition_number(Matrix{Float64}(A1)))=#
-    #=println("Condizion number A2: ", condition_number(Matrix{Float64}(A2)))=#
-    #=println("Condizion number A3: ", condition_number(Matrix{Float64}(A3)))=#
-
     println("\n" * "="^60)
     println("=== Exercise 3 ===")
     println("="^60)
@@ -151,20 +116,6 @@ function main()
     # Verification
     println("\nVerification: A*x - b = ")
     display(A * x - b)
-
-    #=println("\n" * "="^60)=#
-    #=println("Exercise 4")=#
-    #=println("="^60)=#
-    #==#
-    #=detA1 = det(P1) * det(L1) * det(U1)=#
-    #=println("Check on A1: ", detA1 - det(A1))=#
-    #==#
-    #=detA2 = det(P2) * det(L2) * det(U2)=#
-    #=println("Check on A2: ", detA2 - det(A2))=#
-    #==#
-    #==#
-    #=detA3 = det(P3) * det(L3) * det(U3)=#
-    #=println("Check on A3: ", detA3 - det(A3))=#
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
