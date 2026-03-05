@@ -164,6 +164,8 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0)
     M = [ones(n) log_eps_n]
     b = log_eps_n1
 
+    # BUG: Dovebbe uscire C = 0.5, controllare meglio il codice.
+    
     # solve_least_squares 
     log10_C, q = solve_least_squares(M, b)
     C = 10^(log10_C)
