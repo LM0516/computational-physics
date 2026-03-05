@@ -1,3 +1,4 @@
+# FIX: Migrate from linear_systems to LinearSystemsV2
 include("../../modules/linear_systems.jl")
 using .LinearSystems
 using LinearAlgebra
@@ -14,7 +15,10 @@ function main()
         6
     ]
     x = least_squares(A, b)
+
+    println("\nLeast squares method solution:")
     println(x)
+    println("\nStandard library solution:")
     println(A \ b)
 end
 

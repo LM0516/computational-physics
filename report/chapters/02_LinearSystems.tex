@@ -454,6 +454,7 @@
 \end{solution}
 
 \subsection{Overdetermined Linear Systems}
+
 \begin{exercise}
   \begin{enumerate}[label=(\alph*)]
     \item Write a program that takes as input a matrix $\mathbf{A}$ and a vector $\mathbf{b}$ and solves the least-squares problem $\text{argmin}\| \mathbf{b}- \mathbf{A} \mathbf{x}\|_2$ via the normal equations using Cholesky or LU decomposition.
@@ -471,6 +472,43 @@
     \]
   \end{enumerate}
 \end{exercise}
+
+% TODO: Implement a way to benchmark Cholesky and LU to show the efficiency
+% differences and also calculate how the condition number behaves 
+\begin{solution}
+  To solve the overdetermined system $\mathbf{A}\mathbf{x} \approx \mathbf{b}$, we minimize the residual norm by solving the normal equations:
+  \[
+    (\mathbf{A}^T \mathbf{A}) \mathbf{x} = \mathbf{A}^T \mathbf{b}.
+  \]
+  We define the Gram matrix $\mathbf{N} = \mathbf{A}^T \mathbf{A}$ and the right-hand side $\mathbf{z} = \mathbf{A}^T \mathbf{b}$. In this implementation, the system $\mathbf{N}\mathbf{x} = \mathbf{z}$ is solved via a custom LU decomposition without pivoting, such that $\mathbf{N} = \mathbf{L}\mathbf{U}$. The solution vector $\mathbf{x}$ is obtained through a two-step substitution process:
+  \begin{enumerate}
+      \item \textbf{Forward substitution}: Solve $\mathbf{L}\mathbf{c} = \mathbf{z}$ for $\mathbf{c}$.
+      \item \textbf{Backward substitution}: Solve $\mathbf{U}\mathbf{x} = \mathbf{c}$ for $\mathbf{x}$.
+  \end{enumerate}
+
+  The implementation utilizes \texttt{Float64} precision and assumes $\mathbf{N}$ is non-singular and possesses a valid LU factorization without the need for row permutations (pivoting).
+
+  \paragraph{Results}
+  The computation yielded the following result for the test system:
+  \[
+    \mathbf{x}_{\text{LU}} = \begin{bmatrix} -2.0 \\ -1.0 \end{bmatrix}.
+  \]
+  For comparison, Julia's \texttt{A \textbackslash{} b} returns:
+  \[
+    \mathbf{x}_{\text{QR}} = \begin{bmatrix} -2.0 \\ -1.0000000000000004 \end{bmatrix}.
+  \]
+
+  \paragraph{Discussion}
+  The custom LU-based solver successfully recovered the exact integer solution. In this specific case, the normal equations approach avoided the slight floating-point noise observed in the QR-based standard library result. However, from a standpoint of \textit{numerical stability}, several factors must be considered:
+  \begin{itemize}
+      \item \textbf{Pivoting}: The current \texttt{LUdec} function lacks partial pivoting. While $\mathbf{A}^T\mathbf{A}$ is symmetric positive definite (and thus theoretically stable for non-pivoted Cholesky), a general LU decomposition without pivoting can be unstable if a small diagonal element appears during elimination.
+      \item \textbf{Efficiency}: LU decomposition requires approximately $\frac{2}{3}n^3$ flops, whereas a Cholesky decomposition (exploiting symmetry) would require only $\frac{1}{3}n^3$ flops.
+      % \item \textbf{Conditioning}: Forming $\mathbf{A}^T\mathbf{A}$ squares the condition number, $\kappa(\mathbf{A}^T\mathbf{A}) = \kappa(\mathbf{A})^2$, which remains the primary bottleneck for the accuracy of normal equations in high-precision scientific computing.
+  \end{itemize}
+
+  \paragraph{Conclusion}
+  The implementation demonstrates that LU decomposition effectively solves the normal equations for well-conditioned, small-scale problems. While the results match the analytical expectations, the transition to larger or ill-conditioned systems would necessitate the inclusion of partial pivoting or a shift toward QR-based methods to mitigate the risk of numerical instability.
+\end{solution}
 
 \begin{exercise}
     Kepler found that the orbital period $\tau$ of a planet depends on its mean distance $R$ from the sun according to $\tau=c R^{\alpha}$ for a simple rational number $\alpha$. 
@@ -499,6 +537,43 @@
         \item Make a plot of the data and the result of the fit.
     \end{enumerate}
 \end{exercise}
+
+\begin{solution}
+  The power-law relationship $\tau = c R^\alpha$ is linearized by applying a logarithmic transformation to both sides:
+  \[ 
+    \ln \tau = \ln c + \alpha \ln R 
+  \]
+  We define the linear model $y = a + \alpha x$, where $y = \ln \tau$, $x = \ln R$, and $a = \ln c$. The parameters are estimated via the \texttt{solve\_least\_squares} function, minimizing the residual sum of squares.
+
+  \paragraph{Results and Statistical Analysis}
+  The fit yields $\alpha = 1.498$ and $c = 0.201$. The statistical quality of the fit is exceptionally high, as evidenced by the following metrics:
+  \begin{center}
+    \begin{tabular}{lc}
+      \hline
+      \textbf{Metric} & \textbf{Value} \\
+      \hline
+      $\chi^2$ & 0.0641 \\
+      Degrees of Freedom & 6 \\
+      $\chi^2_{red}$ & 0.0107 \\
+      $p$-value & 1.0 \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \paragraph{Visualization}
+  The results of the regression are visualized in Figure \ref{fig:kepler_fit}. The left panel displays the linearized data in the log-log domain, confirming the linear relationship between $\ln R$ and $\ln \tau$. The right panel shows the power-law fit superimposed on the original planetary data.
+
+  \begin{center}
+      \centering
+      \includegraphics[width=0.9\textwidth]{figures/2-6/kepler-fit.pdf}
+      \captionof{figure}{Linear least-squares fit for Kepler's Third Law. Left: Log-log scale showing linear regression on transformed variables. Right: Power-law curve $\tau = 0.199 R^{1.5}$ in the original coordinate system.}
+      \label{fig:kepler_fit}
+  \end{center}
+
+  % TODO: Rivedere discussione con risultati corretti.
+  \paragraph{Discussion}
+  The calculated exponent $\alpha = 1.5$ corresponds precisely to the rational fraction $3/2$. This result confirms Kepler’s Third Law, $T^2 \propto a^3$, which is a fundamental consequence of Newtonian gravitation for circular or elliptical orbits. The numerical stability of the \texttt{log.()} transformation ensures that the large range of distances (from 57 Mkm to 4500 Mkm) does not lead to ill-conditioning of the linear system.
+  \end{solution}
 
 \begin{exercise}
     In this problem you are trying to find an approximation to the periodic function $g(t)=e^{\sin(t-1)}$ over one period, $0 < t \le 2\pi$. As data, define

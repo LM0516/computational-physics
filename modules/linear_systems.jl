@@ -60,7 +60,6 @@ end
 Compute an LU decomposition of a square Float64 matrix A without pivoting.
 """
 function LUdec(A::Matrix{Float64})::Tuple{Matrix{Float64}, Matrix{Float64}}
-    #= LU decomposition without pivoting =#
     dim = size(A, 1)
     L = Matrix{Float64}(I, dim, dim)
     U = zeros(dim, dim)

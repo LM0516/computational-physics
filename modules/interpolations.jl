@@ -1,6 +1,7 @@
 module Interpolations
+using Distributions
 using LinearAlgebra
-export barycentric_lagrange
+export barycentric_lagrange, chi_square, p_value
 
 const ∏ = prod
 const ∑ = sum
@@ -62,6 +63,31 @@ function barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Func
 
   p = numerator / denominator
   return p
+end
+
+"""
+Chi-square test for data fit.
+
+Interpretation of reduced chi-square:
+- ≈ 0 → good fit
+- >> 1 → poor fit (model doesn't describe data well)
+"""
+function chi_square(o::Vector{Float64}, e::Vector{Float64})
+    return ∑((o .- e).^2 ./ e)
+end
+
+"""
+p-value test for data fit.
+
+Interpretation:
+- p > 0.05 → fit is acceptable (fail to reject null hypothesis that model fits data)
+- p < 0.05 → fit is poor (model likely doesn't describe data well)
+- p < 0.01 → fit is very poor
+"""
+function p_value(chi2::Float64, dof::Int)
+    dist = Chisq(dof)
+    p = 1 - cdf(dist, chi2)
+    return p
 end
 
 end # module Interpolations

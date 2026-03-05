@@ -1,5 +1,9 @@
 include("../../modules/linear_systemsV2.jl")
+include("../../modules/interpolations.jl")
+include("../../modules/ConsistentPlots.jl")
 using .LinearSystemsV2
+using .Interpolations
+using .ConsistentPlots
 using LinearAlgebra
 using Plots
 using LaTeXStrings
@@ -11,31 +15,49 @@ function main()
     x = log.(R)
     y = log.(τ)
     X = [ones(length(R)) log.(R)]
-    display(X)
+    # display(X)
 
     a, α = solve_least_squares(Matrix{Float64}(X), Vector{Float64}(y))
     c = exp(a)
 
-    # --- Plot in log-log scale ---
-    p1 = scatter(x, y, label=L"Data (\log)", xlabel=L"\ln R", ylabel=L"\ln \tau", legend=:topleft)
-    plot!(x, X * [a, α], label="Linear fit", lw=2)
+    @show a, α, c
+    
+    # === Chi-square test and p-value for fit ===
+    τ_predicted = @. c * R^α
+    chi2 = chi_square(τ, τ_predicted)
 
-    # --- Plot in original scale ---
+    dof = length(τ) - 2
+    chi2_reduced = chi2 / dof
+    p = p_value(chi2, dof)
+
+    println("Chi-square: ", round(chi2, digits=4))
+    println("Degrees of freedom: ", dof)
+    println("Reduced chi-square: ", round(chi2_reduced, digits=4))
+    println("P-value: ", round(p, digits=4))
+
+    # === Plot in log-log scale ===
+    p1 = scatter(x, y, label=L"Data (\log)", xlabel=L"\ln R", ylabel=L"\ln \tau", legend=:topleft)
+    plot_add!(p1, x, X * [a, α], label="Linear fit", lw=2)
+
+    # === Plot in original scale ===
     R_fit = range(minimum(R), maximum(R), length=200)
     τ_fit = @. c * R_fit^α
 
-    p2 = plot(R, τ, seriestype=:scatter, label="Data", xlabel=L"R \, (\mathrm{Mkm})", ylabel=L"\tau \, (\mathrm{days})")
-    plot!(p2, R_fit, τ_fit, label=latexstring("Fit \$\\tau = $(round(c, sigdigits=3)) R^{$(round(α, digits=3))}\$"), lw=2)
+    p2 = plot_generic(R, τ, label="Data", seriestype=:scatter, xlabel=L"R \, (\mathrm{Mkm})", ylabel=L"\tau \, (\mathrm{days})")
+    plot_add!(p2, R_fit, τ_fit, label=latexstring("Fit \$\\tau = $(round(c, sigdigits=3)) R^{$(round(α, digits=3))}\$"), lw=2)
 
     plt = plot(
         p1, p2,
         layout=(1, 2),
         size=(1400, 1000),
     )
+
+    save_graph(plt, "kepler-fit", "2-6")
     display(plt)
     readline()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    initialize_style()
     main()
 end

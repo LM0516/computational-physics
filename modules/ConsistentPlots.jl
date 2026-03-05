@@ -60,8 +60,6 @@ function plot_convergence(x, errors; title="Convergence Plot", xlabel=L"h", ylab
 end
 
 """
-    plot_add!(p, x, y; kwargs...)
-
 Add a series to an existing plot `p` while inheriting the global style.
 """
 function plot_add!(p, x, y; label="", kwargs...)
@@ -69,7 +67,7 @@ function plot_add!(p, x, y; label="", kwargs...)
 end
 
 function save_graph(p, filename, chapter_dir)
-    path = joinpath("Relazione", "figures", string(chapter_dir), "$(filename).pdf")
+    path = joinpath("report", "figures", string(chapter_dir), "$(filename).pdf")
     mkpath(dirname(path))
     savefig(p, path)
     println("Saved figure to: $path")
