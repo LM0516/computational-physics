@@ -402,50 +402,55 @@
     \end{enumerate}
 \end{exercise}
 
-% BUG: Soluzione sbagliata per il secondo punto, rivedere il codice.
-% Controllare che i risultati siano coerenti prima di riscrivere la soluzione.
 \begin{solution}
-    The numerical analysis was performed in Julia using the \texttt{LinearAlgebra} package and a custom \texttt{LUdec} function implementing Gaussian elimination without row pivoting. We utilize \texttt{Float64} precision, where the machine epsilon is $\varepsilon_{\text{mach}} \approx 2.22 \times 10^{-16}$.
-
-    \paragraph{Results for $\epsilon = 10^{-12}$}
-    For $\epsilon = 10^{-12}$, the matrix $\mathbf{A}$ and the right-hand side $\mathbf{b}$ are:
+    For $\epsilon = 10^{-12}$ and $\mathbf{x} = [1, 1]^T$, we have:
     \[
-        \mathbf{A} = \begin{bmatrix} -10^{-12} & 1 \\ 1 & -1 \end{bmatrix}, \quad \mathbf{b} = \begin{bmatrix} 1 - 10^{-12} \\ 0 \end{bmatrix}.
+        \mathbf{b} = \mathbf{A}\mathbf{x} = \begin{bmatrix} -10^{-12} & 1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 - 10^{-12} \\ 0 \end{bmatrix}.
     \]
-    The LU factorization yields a residual $\|\mathbf{A} - \mathbf{LU}\| \approx 0$. However, while the condition number of the original system is $\kappa_1(\mathbf{A}) \approx 4.0$ (well-conditioned), the triangular factors exhibit extreme ill-conditioning:
+    Solving analytically without pivoting yields:
     \[
-        \kappa_1(\mathbf{L}) \approx 10^{24}, \quad \kappa_1(\mathbf{U}) \approx 10^{24}.
+        \mathbf{L} = \begin{bmatrix} 1 & 0 \\ -10^{12} & 1 \end{bmatrix}, \quad \mathbf{U} = \begin{bmatrix} -10^{-12} & 1 \\ 0 & 10^{12} - 1 \end{bmatrix}.
     \]
-    Despite this, the numerical solution for $\mathbf{x}$ remains accurate to machine precision because the errors in $\mathbf{L}$ and $\mathbf{U}$ are perfectly correlated in a way that cancels out for this specific $\epsilon$.
+    In \texttt{Float64}, the mantissa has 53 bits, representing integers exactly up to $\approx 9 \times 10^{15}$. Since $10^{12} \ll 9 \times 10^{15}$, the subtraction $10^{12} - 1$ evaluates accurately without losing the unit ($-1$). Thus, $\mathbf{L}$ and $\mathbf{U}$ represent $\mathbf{A}$ reliably.
+        
+    However, solving $\mathbf{L}\mathbf{y} = \mathbf{b}$ and $\mathbf{U}\mathbf{x} = \mathbf{y}$ numerically yields an error of roughly $2.21 \times 10^{-5}$. This error originates during backward substitution: $x_1$ is computed as $\frac{b_1 - x_2}{-\epsilon} = \frac{(1 - 10^{-12}) - 1}{-10^{-12}}$. The subtraction $(1 - 10^{-12}) - 1$ is affected by catastrophic cancellation because $1 - 10^{-12}$ cannot be represented perfectly in base-2 floating-point. Dividing by the tiny $-\epsilon$ amplifies this small representation error by a factor of $10^{12}$, leading to the observed loss of accuracy.
 
-    \paragraph{Results for $\epsilon = 10^{-20}$}
-    When $\epsilon$ is reduced to $10^{-20}$, which is significantly smaller than $\varepsilon_{\text{mach}}$, the algorithm without pivoting fails catastrophically.
-    \begin{itemize}
-        \item \textbf{Residual Error:} $\|\mathbf{A} - \mathbf{LU}\|_1 \approx 1.0$. The factorization is no longer representative of the original matrix.
-        \item \textbf{Theoretical Cause:} In the update $u_{22} = a_{22} - \frac{a_{21}a_{12}}{a_{11}}$, we compute $-1 - \frac{1}{-\epsilon} = -1 + 10^{20}$. In floating-point arithmetic, $-1 + 10^{20}$ is rounded to $10^{20}$, losing the information of the $-1$ entirely. This is a classic case of \textit{swamping} or \textit{catastrophic cancellation}.
-    \end{itemize}
+    Because $10^{12}-1$ did not suffer from swamping, the entries of $\mathbf{L}$ and $\mathbf{U}$ are resolved accurately. Multiplying them back together yields exactly the original matrix, meaning the residual $\|\mathbf{A} - \mathbf{LU}\|$ is exactly $0$.
 
-    \paragraph{Analytical Derivation}
-    The analytical LU decomposition of $\mathbf{A}$ without pivoting is:
+    Now, $1/\epsilon = 10^{20}$. Representing $10^{20}$ requires roughly 67 bits, exceeding the 53-bit capacity of \texttt{Float64}. When computing $u_{22} = 10^{20} - 1$, the $-1$ is completely swamped out, and the computer stores exactly $10^{20}$.
+    Consequently, $\mathbf{L}\mathbf{U}$ no longer matches $\mathbf{A}$ (the residual error is $1.0$ at the bottom-right element). Solving the system with these severely distorted matrices yields $\tilde{\mathbf{x}} =[0, 1]^T$ instead of $[1, 1]^T$, resulting in an absolute precision error of $1.0$. The algorithm has failed catastrophically.
+
+    Using the $\infty$-norm:
+    \[
+        \|\mathbf{A}\|_\infty = \max(|-\epsilon| + 1, 1 + |-1|) \approx 2.
+    \]
+    \[
+        \mathbf{A}^{-1} = \frac{1}{\epsilon - 1} \begin{bmatrix} -1 & -1 \\ -1 & -\epsilon \end{bmatrix} \approx \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix} \implies \|\mathbf{A}^{-1}\|_\infty \approx 2.
+    \]
+    Thus, the condition number is $\kappa_\infty(\mathbf{A}) \approx 4.0$. The original system is perfectly well-conditioned, meaning the massive failure is purely due to algorithmic instability, not an inherently ill-posed problem.
+    Applying Gaussian elimination without pivoting:
+    \[
+        l_{21} = \frac{1}{-\epsilon} = -\frac{1}{\epsilon}, \qquad u_{22} = -1 - \left(-\frac{1}{\epsilon}\right)(1) = -1 + \frac{1}{\epsilon}.
+    \]
     \[
         \mathbf{L} = \begin{bmatrix} 1 & 0 \\ -1/\epsilon & 1 \end{bmatrix}, \quad \mathbf{U} = \begin{bmatrix} -\epsilon & 1 \\ 0 & -1 + 1/\epsilon \end{bmatrix}.
     \]
-    As $\epsilon \to 0$, the elements $l_{21}$ and $u_{22}$ grow as $1/\epsilon$. The condition number of $\mathbf{L}$ in the $L_1$ norm is:
-    \[
-        \|\mathbf{L}\|_1 \|\mathbf{L}^{-1}\|_1 = (1 + |1/\epsilon|) \times (1 + |1/\epsilon|) \approx \frac{1}{\epsilon^2}.
-    \]
-    For $\epsilon = 10^{-12}$, $\kappa(\mathbf{L}) \approx 10^{24}$, which matches our numerical findings.
 
-    \paragraph{Effect of Row Pivoting ($\mathbf{PA}$)}
-    By swapping the rows (partial pivoting), we factorize $\mathbf{PA}$ where the pivot is $1$ instead of $-\epsilon$. For $\epsilon = 10^{-20}$:
+    \item \textbf{Condition numbers of $\mathbf{L}$ and $\mathbf{U}$:}
     \[
-        \mathbf{PA} = \begin{bmatrix} 1 & -1 \\ -10^{-20} & 1 \end{bmatrix} \implies \mathbf{L} = \begin{bmatrix} 1 & 0 \\ -10^{-20} & 1 \end{bmatrix}, \quad \mathbf{U} = \begin{bmatrix} 1 & -1 \\ 0 & 1 - 10^{-20} \approx 1 \end{bmatrix}.
+        \|\mathbf{L}\|_\infty = 1 + \left| \frac{-1}{\epsilon} \right|, \quad \mathbf{L}^{-1} = \begin{bmatrix} 1 & 0 \\ 1/\epsilon & 1 \end{bmatrix} \implies \|\mathbf{L}^{-1}\|_\infty = 1 + \frac{1}{\epsilon}.
     \]
-    The condition numbers become:
     \[
-        \kappa_1(\mathbf{L}) \approx 1.0, \quad \kappa_1(\mathbf{U}) \approx 4.0.
+        \kappa_\infty(\mathbf{L}) = \left(1 + \frac{1}{\epsilon}\right)^2 \approx \frac{1}{\epsilon^2}.
     \]
-    The system is now perfectly stable, and the residual error is zero within tolerance.
+    For $\epsilon=10^{-12}$, $\kappa_\infty(\mathbf{L}) \approx 10^{24}$, and for $\epsilon=10^{-20}$, $\kappa_\infty(\mathbf{L}) \approx 10^{40}$. The matrix $\mathbf{U}$ exhibits identically extreme conditioning ($\kappa_\infty(\mathbf{U}) \approx 1/\epsilon^2$). 
+    Yes, the triangular systems are extremely ill-conditioned. This explains why, for $\epsilon=10^{-12}$, even though the LU factorization is exact, the backward substitution still amplifies floating-point roundoff into a noticeable error.
+
+    Swapping the rows places the largest element on the diagonal. For $\mathbf{PA} = \begin{bmatrix} 1 & -1 \\ -\epsilon & 1 \end{bmatrix}$ with $\epsilon \ll 1$:
+    \[
+        \mathbf{L} = \begin{bmatrix} 1 & 0 \\ -\epsilon & 1 \end{bmatrix} \approx \mathbf{I}, \quad \mathbf{U} = \begin{bmatrix} 1 & -1 \\ 0 & 1 - \epsilon \end{bmatrix} \approx \begin{bmatrix} 1 & -1 \\ 0 & 1 \end{bmatrix}.
+    \]
+    Here, $\kappa_\infty(\mathbf{L}) \approx 1$ and $\kappa_\infty(\mathbf{U}) \approx 4$. Both matrices are perfectly stable, the residual is practically zero, and the numerical solution trivially recovers the exact truth $\mathbf{x} =[1, 1]^T$ even for $\epsilon=10^{-20}$.
 \end{solution}
 
 \subsection{Overdetermined Linear Systems}

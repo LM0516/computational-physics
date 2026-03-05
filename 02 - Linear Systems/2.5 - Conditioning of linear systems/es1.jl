@@ -18,18 +18,36 @@ function conditioning(A::Matrix, ε::Float64)
     b = A * x
 
     println("\n=== LU Decomposition without row pivoting for ε = ", ε, " and M = ", A, " ===")
+
+    L, U = LUdec(A)
+
     println("A = ")
     display(A)
     println("b = ")
     display(b)
 
+    # Solve Ly = b (forward substitution)
+    y = L \ b
+    # Solve Ux = y (backward substitution)
+    x_approx = U \ y
+
     println("\n=== Precision and residual error ===")
+
+    # NOTE: The notation `A \ b` uses partioal pivoting to see a true comparison I have to 
+    # compute `U \ (L \ b)` for a true comparison.
+
     println("Precision of x: ", norm(x - A \ b))
     println("Residual error: ", norm(b - A * (A \ b)))
+    println("Precision of x (no pivoting): ", norm(x - x_approx))
+    println("Residual error (no pivoting): ", norm(b - A * x_approx))
 
     println("\n=== LU Factorization ===")
-    L, U = LUdec(A)
+    println("L:")
+    display(L)
+    println("U:")
+    display(U)
     checkALU(A, L, U)
+
 
     println("\n=== Condition number for ε = ", ε, " ===")
     println("Condition number of A:", condition_number(A))

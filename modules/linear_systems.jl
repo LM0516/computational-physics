@@ -157,6 +157,8 @@ end
 
 """
 Calculate the condition number using `onenorm` or `infinity norm`.
+The smallest value a condition number can have is 1. In that case, the relative perturbation of 
+the solution has the same size as that of the data.
 """
 function condition_number(A::Matrix{Float64}, norm_type::Symbol=:one)
     if norm_type == :one
