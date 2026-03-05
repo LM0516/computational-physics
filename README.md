@@ -58,7 +58,7 @@ All reusable implementations live in the `modules/` directory and are structured
 ### Prerequisites
 
 - [Julia](https://julialang.org/downloads/) (≥ 1.6)
-- Julia packages: `LinearAlgebra`, `Plots`, `LaTeXStrings`, `SparseArrays`, `Measures`
+- Julia packages: `LinearAlgebra`, `Plots`, `LaTeXStrings`, `SparseArrays`, `Measures`, `Distributions`
 
 ### Running an Exercise
 
@@ -82,6 +82,13 @@ The LaTeX report is located in the `report/` directory. Build it with:
 cd report
 latexmk -pdf main.tex
 ```
+
+## TODO
+
+- Implement a script to install all the needed libraries
+- Fix the script to run all the exercises at once
+- Implement a script to benchmark all the exercises
+- Implement scripts to test the complexity of every algorithm
 
 ## Author
 
