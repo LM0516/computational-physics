@@ -20,7 +20,9 @@ function main()
     a, α = solve_least_squares(Matrix{Float64}(X), Vector{Float64}(y))
     c = exp(a)
 
-    @show a, α, c
+    println("a: ", a)
+    println("α: ", α)
+    println("c: ", c)
     
     # === Chi-square test and p-value for fit ===
     τ_predicted = @. c * R^α

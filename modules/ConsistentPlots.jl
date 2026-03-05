@@ -7,8 +7,6 @@ using Measures
 export initialize_style, plot_generic, plot_comparison, plot_convergence, plot_add!, save_graph
 
 """
-    initialize_style()
-
 Sets the global default style for Plots.jl to ensure consistency across all graphs.
 """
 function initialize_style()
@@ -66,6 +64,10 @@ function plot_add!(p, x, y; label="", kwargs...)
     plot!(p, x, y; label=label, kwargs...)
 end
 
+"""
+Saves the plot on the right folder for the repor. 
+Good for updating the figures in the report.
+"""
 function save_graph(p, filename, chapter_dir)
     path = joinpath("report", "figures", string(chapter_dir), "$(filename).pdf")
     mkpath(dirname(path))

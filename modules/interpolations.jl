@@ -7,25 +7,8 @@ const ∏ = prod
 const ∑ = sum
 
 """
-    barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Function) -> Float64
-
-Evaluate the **Lagrange interpolating polynomial** at a given point `x_eval` using the 
-**barycentric interpolation formula**.
-
-# Arguments
-- `x_eval::Float64`:  
-  The point at which the interpolating polynomial is to be evaluated.
-  
-- `x_nodes::Vector{Float64}`:  
-  A vector containing the interpolation nodes (distinct x-values).
-
-- `f::Function`:  
-  The function to be interpolated. It should accept a single `Float64` argument.
-
-# Returns
-- `p::Float64`:  
-  The interpolated value `p = P(x_eval)` of the Lagrange polynomial that passes through 
-  the points `(x_nodes[i], f(x_nodes[i]))`.
+Evaluate the Lagrange interpolating polynomial at a given point `x_eval` using the
+barycentric interpolation formula.
 """
 function barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Function; type="lagrange")
   n = length(x_nodes)
@@ -88,6 +71,10 @@ function p_value(chi2::Float64, dof::Int)
     dist = Chisq(dof)
     p = 1 - cdf(dist, chi2)
     return p
+end
+
+# TODO: Implement a t-test (z-test) to compare real results to calculated results.
+function t_test()
 end
 
 end # module Interpolations
