@@ -1,5 +1,9 @@
 include("../../modules/linear_systemsV2.jl")
+include("../../modules/interpolations.jl")
+include("../../modules/ConsistentPlots.jl")
 using .LinearSystemsV2
+using .Interpolations
+using .ConsistentPlots
 using LinearAlgebra
 using Plots
 using LaTeXStrings
@@ -15,34 +19,59 @@ function main()
     P = hcat([t .^ i for i in 0:6]...)  # columns: 1, t, t^2, ..., t^6
     coeffs = solve_least_squares(Matrix{Float64}(P), Vector{Float64}(b))
 
-    # === FFT Fit ===
+    println("\nPolynomial fit coefficients: ", coeffs)
+
+    # === FT Fit ===
     # y(t) = d1 + d2 cos(t) + d3 sin(t) + d4 cos(2t) + d5 sin(2t)
     # build F with columns for each basis function
     F = hcat(ones(length(t)), cos.(t), sin.(t), cos.(2t), sin.(2t))
-    coeffs_fft = solve_least_squares(Matrix{Float64}(F), Vector{Float64}(b))
+    coeffs_ft = solve_least_squares(Matrix{Float64}(F), Vector{Float64}(b))
+
+    println("\nFourier Transform coefficients: ", coeffs_ft)
 
     # === Plot ===
     t_plot = range(minimum(t), stop=maximum(t), length=400)
     y_pol = [sum(coeffs[j+1] * x^j for j in 0:6) for x in t_plot]
-    # evaluate FFT fit on the dense plotting grid
+    # evaluate FT fit on the dense plotting grid
     F_plot = hcat(ones(length(t_plot)), cos.(t_plot), sin.(t_plot), cos.(2 .* t_plot), sin.(2 .* t_plot))
-    y_fft = F_plot * coeffs_fft
+    y_ft = F_plot * coeffs_ft
     y_true = g(t_plot)
 
-    p1 = plot(t_plot, y_true, label=L"g(t)=e^{\sin(t-1)}", lw=2, xlabel="t", ylabel="y", title="Least squares fits")
+    p1 = plot_generic(t_plot, y_true, label=L"g(t)=e^{\sin(t-1)}", lw=2, xlabel="t", ylabel="y", title="Least squares fits")
     scatter!(p1, t, b, label="data", ms=4)
-    plot!(p1, t_plot, y_pol, label="polynomial fit (deg 6)", lw=2, ls=:dash)
-    plot!(p1, t_plot, y_fft, label="FFT fit (2 harmonics)", lw=2, ls=:dash)
+    plot_add!(p1, t_plot, y_pol, label="polynomial fit (deg 6)", lw=2, ls=:dash)
+    plot_add!(p1, t_plot, y_ft, label="FT fit (2 harmonics)", lw=2, ls=:dash)
 
-    # Chi-Square
-    χ2_poly = sum(((y_pol .- y_true) .^ 2) ./ y_true)
-    χ2_fft = sum(((y_fft .- y_true) .^ 2) ./ y_true)
-    @show χ2_poly χ2_fft
+    chi2_poly = chi_square(y_pol, y_true)
+    chi2_ft = chi_square(y_ft, y_true)
+    dof_poly = length(y_pol) - length(coeffs)
+    dof_ft = length(y_ft) - length(coeffs_ft)
+    chi2r_poly = chi2_poly / dof_poly
+    chi2r_ft = chi2_ft / dof_ft
+    p_poly = p_value(chi2_poly, dof_poly)
+    p_ft = p_value(chi2_ft, dof_ft)
 
+    println()
+    println("=== Polynomial Fit Analysis ===")
+    println()
+    println("Chi-square: ", round(chi2_poly, digits=4))
+    println("Degrees of freedom: ", dof_poly)
+    println("Reduced chi-square: ", round(chi2r_poly, digits=4))
+    println("P-value: ", round(p_poly, digits=4))
+
+    println("=== Fourier Transform Fit Analysis ===")
+    println()
+    println("Chi-square: ", round(chi2_ft, digits=4))
+    println("Degrees of freedom: ", dof_ft )
+    println("Reduced chi-square: ", round(chi2r_ft, digits=4))
+    println("P-value: ", round(p_ft, digits=4))
+
+    save_graph(p1, "multi-fit", "2-6")
     display(p1)
     readline()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    initialize_style()
     main()
 end
