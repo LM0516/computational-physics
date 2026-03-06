@@ -36,7 +36,7 @@ A collection of numerical methods and exercises written in **Julia**, developed 
 │   └── chapters/
 ├── tests/                        # Test suite & notebooks
 │   ├── test_suite.jl
-│   ├── run_all.jl
+│   ├── test_all.sh
 │   └── 3body_problem.ipynb
 └── gif/                          # Animated visualizations
 ```
@@ -71,7 +71,7 @@ julia "01 - Error Analysis/1.2 - Representation of Arithmetic and Roundoff Error
 ### Running the Test Suite
 
 ```bash
-julia tests/run_all.jl
+julia tests/test_all.sh
 ```
 
 ### Building the Report
@@ -86,7 +86,6 @@ latexmk -pdf main.tex
 ## TODO
 
 - Implement a script to install all the needed libraries
-- Fix the script to run all the exercises at once
 - Implement a script to benchmark all the exercises
 - Implement scripts to test the complexity of every algorithm
 
