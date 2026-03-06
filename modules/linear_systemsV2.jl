@@ -227,8 +227,6 @@ function qr_mgs(A)
     # Initialize Q and R
     Q = zeros(m, n)
     R = zeros(n, n)
-
-    # Work with a copy to avoid modifying input
     V = copy(A)
 
     # Modified Gram-Schmidt procedure
