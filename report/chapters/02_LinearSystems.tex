@@ -669,6 +669,58 @@
     Verify the correctness by testing the relation $\hat{\mathbf{Q}}\hat{\mathbf{R}}={\mathbf{A}}$. Verify also the ONC character of the matrix $\hat{\mathbf{Q}}$.
 \end{exercise}
 
+\begin{solution}
+  To compute the thin QR-decomposition of the given matrices, we employ the Modified Gram-Schmidt (MGS) algorithm. The MGS algorithm is preferred over the Classical Gram-Schmidt (CGS) procedure due to its superior numerical stability. Specifically, MGS mitigates the risk of catastrophic cancellation and the subsequent loss of orthogonality among the computed basis vectors.
+
+  \paragraph{Results}
+  The computed orthogonal matrices $\hat{\mathbf{Q}}$ and upper triangular matrices $\hat{\mathbf{R}}$, truncated to four decimal places for clarity, are presented below for each respective input matrix.
+
+  For the first matrix $\mathbf{A}_1 \in \mathbb{R}^{3 \times 2}$, the decomposition yields:
+  \[
+      \hat{\mathbf{Q}}_1 \approx \begin{bmatrix}
+          0.7071 & 0.4082 \\
+          0.0000 & 0.8165 \\
+          -0.7071 & 0.4082
+      \end{bmatrix}, \qquad
+      \hat{\mathbf{R}}_1 \approx \begin{bmatrix}
+          2.8284 & -2.1213 \\
+          0.0000 & 1.2247
+      \end{bmatrix}
+  \]
+
+  For the second matrix $\mathbf{A}_2 \in \mathbb{R}^{3 \times 3}$:
+  \[
+      \hat{\mathbf{Q}}_2 \approx \begin{bmatrix}
+          0.3333 & -0.1041 & 0.9370 \\
+          0.6667 & -0.6768 & -0.3123 \\
+          0.6667 & 0.7288 & -0.1562
+      \end{bmatrix}, \qquad
+      \hat{\mathbf{R}}_2 \approx \begin{bmatrix}
+          6.0000 & 9.6667 & 9.3333 \\
+          0.0000 & 2.1344 & -5.7264 \\
+          0.0000 & 0.0000 & 0.3123
+      \end{bmatrix}
+  \]
+
+  For the third matrix $\mathbf{A}_3 \in \mathbb{R}^{4 \times 3}$:
+  \[
+      \hat{\mathbf{Q}}_3 \approx \begin{bmatrix}
+          0.2722 & -0.2415 & 0.7335 \\
+          0.0000 & 0.5589 & 0.6174 \\
+          0.9526 & 0.1794 & -0.2329 \\
+          0.1361 & -0.7728 & 0.1632
+      \end{bmatrix}, \qquad
+      \hat{\mathbf{R}}_3 \approx \begin{bmatrix}
+          7.3485 & 1.0887 & -4.6268 \\
+          0.0000 & 5.3679 & 0.7521 \\
+          0.0000 & 0.0000 & 7.4180
+      \end{bmatrix}
+  \]
+
+  \paragraph{Discussion}
+  To verify the fidelity of the decomposition, we analyzed the residual norm $\|\mathbf{A} - \hat{\mathbf{Q}}\hat{\mathbf{R}}\|$. For $\mathbf{A}_1$ and $\mathbf{A}_2$, the absolute residual norm evaluates precisely to $0.0$. For the rectangular matrix $\mathbf{A}_3$, the decomposition introduces a negligible relative residual of approximately $1.05 \times 10^{-16}$. This magnitude is strictly bounded by the machine epsilon ($\epsilon \sim \mathcal{O}(10^{-16})$), confirming the theoretical guarantees of the MGS formulation. 
+\end{solution}
+
 \begin{exercise}
     Given the function $h(t)=e^{\sin(4t)}$ over the interval $[0,1]$, define the data,
     \[
@@ -691,6 +743,69 @@
     \end{enumerate}
     Compare the coefficients $c_{15}$ obtained in (a)-(b)-(c) with the expected value $c_{15}=1$.
 \end{exercise}
+
+\begin{solution}
+    To determine the coefficients $c_k$ of the degree 14 polynomial, we construct the overdetermined linear system $P\mathbf{c} \approx \mathbf{y}$, where $P \in \mathbb{R}^{100 \times 15}$ is the Vandermonde matrix with entries $P_{i,j} = t_i^{j-1}$, $\mathbf{c}$ is the vector of unknown coefficients, and $\mathbf{y}$ contains the evaluated data points. The problem is solved using three distinct numerical approaches:
+    \begin{enumerate}[label=(\alph*)]
+        \item \textbf{Normal Equations:} The system is transformed into the square system $P^T P \mathbf{c} = P^T \mathbf{y}$. The coefficients are obtained by applying an LU decomposition to the symmetric positive-definite matrix $P^T P$.
+        \item \textbf{Thin QR Decomposition:} We factor the matrix $P$ such that $P = QR$, where $Q \in \mathbb{R}^{100 \times 15}$ has orthonormal columns and $R \in \mathbb{R}^{15 \times 15}$ is upper triangular. The system simplifies to $R\mathbf{c} = Q^T \mathbf{y}$, which is solved via backward substitution.
+        \item \textbf{Q-less QR Decomposition:} To circumvent the explicit construction and storage of $Q$, we apply the Modified Gram-Schmidt (MGS) orthogonalization to the augmented matrix $[P \mid \mathbf{y}]$. This directly yields the upper triangular factor $R$ and the updated right-hand side vector $\mathbf{z}$, allowing us to solve $R\mathbf{c} = \mathbf{z}$ via backward substitution.
+    \end{enumerate}
+
+    \paragraph{Results}
+    A comparison of the highest-order coefficient $c_{15}$ against the expected analytical value of 1 is summarized in Table \ref{tab:coefficients}. 
+    
+    \begin{center}
+        \centering
+        \begin{tabular}{lrr}
+            \toprule
+            \textbf{Method} & \textbf{Computed $c_{15}$} & \textbf{Absolute Error} \\
+            \midrule
+            Normal Equations (LU) & -0.27504821 & 1.27504821 \\
+            Thin QR Decomposition & 0.97293904 & 0.02706096 \\
+            Q-less QR Decomposition & 1.00000001 & $9.72 \times 10^{-9}$ \\
+            \bottomrule
+        \end{tabular}
+        \captionof{table}{Comparison of the computed coefficient $c_{15}$ across different numerical solvers.}
+        \label{tab:coefficients}
+    \end{center}
+
+    Furthermore, the goodness-of-fit was evaluated over a highly resolved test grid of 400 points. The resulting statistical metrics are provided in Table \ref{tab:fit_stats}, and the polynomial curves are visualized in Figure \ref{fig:poly_fit}.
+
+    \begin{center}
+        \centering
+        \begin{tabular}{lrr}
+            \toprule
+            \textbf{Method} & \textbf{$\chi^2$} & \textbf{Reduced $\chi^2$} \\
+            \midrule
+            Normal Equations (LU) & $1.46 \times 10^{-10}$ & $3.78 \times 10^{-13}$ \\
+            Thin QR Decomposition & $7.01 \times 10^{-12}$ & $1.82 \times 10^{-14}$ \\
+            Q-less QR Decomposition & $6.90 \times 10^{-12}$ & $1.79 \times 10^{-14}$ \\
+            \bottomrule
+        \end{tabular}
+        \captionof{table}{Goodness-of-fit statistics evaluated against the exact function (P-value = 1.0 for all).}
+        \label{tab:fit_stats}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.8\linewidth]{figures/2-7/multiple-least-square.pdf}
+        \captionof{figure}{Comparison of polynomial fits (degree 14) obtained via different least squares algorithms.}
+        \label{fig:poly_fit}
+    \end{center}
+
+    \paragraph{Discussion}
+    The results highlight the critical impact of algorithm choice on numerical stability when handling ill-conditioned problems. Vandermonde matrices are notoriously ill-conditioned; as the polynomial degree increases, the columns become increasingly linearly dependent. 
+    
+    The Normal Equations method performs exceptionally poorly, resulting in catastrophic cancellation and an entirely inaccurate $c_{15}$ coefficient. This occurs because forming $P^T P$ squares the condition number of the system ($\kappa(P^T P) = \kappa(P)^2$), amplifying floating-point rounding errors beyond acceptable bounds. 
+    
+    The Thin QR decomposition offers a substantial improvement by avoiding the formation of $P^T P$, scaling the error linearly with $\kappa(P)$ rather than quadratically. However, standard Modified Gram-Schmidt can still suffer from a loss of orthogonality among the columns of $Q$. 
+    
+    The Q-less QR decomposition applied to the augmented matrix provides the highest numerical fidelity, isolating the solution with an absolute error on the order of $10^{-9}$. By avoiding the explicit extraction and multiplication of $Q$, the augmented approach minimizes intermediate floating-point operations, mitigating the accumulation of machine epsilon errors.
+
+    \paragraph{Conclusion}
+    For high-degree polynomial fitting, the Normal Equations represent an unstable methodology and should be avoided. The Q-less QR decomposition consistently demonstrates superior numerical robustness against ill-conditioning.
+\end{solution}
 
 \begin{exercise}
     Use the pure QR-algorithm to find the eigenvalues and eigenvectors of the matrix

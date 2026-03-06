@@ -32,7 +32,6 @@ function main()
     # === Plot ===
     t_plot = range(minimum(t), stop=maximum(t), length=400)
     y_pol = [sum(coeffs[j+1] * x^j for j in 0:6) for x in t_plot]
-    # evaluate FT fit on the dense plotting grid
     F_plot = hcat(ones(length(t_plot)), cos.(t_plot), sin.(t_plot), cos.(2 .* t_plot), sin.(2 .* t_plot))
     y_ft = F_plot * coeffs_ft
     y_true = g(t_plot)

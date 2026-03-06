@@ -1,5 +1,4 @@
-# ef642.jl
-#
+# FIX: Needs a refactor
 using Plots
 using Printf
 using LaTeXStrings

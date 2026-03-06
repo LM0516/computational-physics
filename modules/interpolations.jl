@@ -1,7 +1,7 @@
 module Interpolations
 using Distributions
 using LinearAlgebra
-export barycentric_lagrange, chi_square, p_value
+export barycentric_lagrange, chi_square, p_value, fit_goodness
 
 const ∏ = prod
 const ∑ = sum
@@ -73,8 +73,17 @@ function p_value(chi2::Float64, dof::Int)
     return p
 end
 
-# TODO: Implement a t-test (z-test) to compare real results to calculated results.
-function t_test()
+function fit_goodness(y, y_true, coeffs)
+    dof = length(y) - length(coeffs)
+    chi2 = chi_square(y, y_true)
+    chi2r = chi2 / dof 
+    p = p_value(chi2, dof)
+
+    println("Chi-square: ", chi2)
+    println("Degrees of freedom: ", dof)
+    println("Reduced chi-square: ", chi2r)
+    println("P-value: ", p)
+    println()
 end
 
 end # module Interpolations
