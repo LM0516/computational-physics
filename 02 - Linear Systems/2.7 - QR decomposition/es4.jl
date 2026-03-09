@@ -15,7 +15,7 @@ function main()
     println("Original matrix A:")
     display(A_eigen)
     
-    # Run the Pure QR algorithm
+    # Run the Pure QR algorithm to obtain eigenvalues and eigenvectors 
     eigenvalues_qr, eigenvectors_qr, n_iter = pure_qr_algorithm(A_eigen)
     
     println()
@@ -63,11 +63,11 @@ function main()
         λv = λ * v
         
         error = norm(Av - λv)
-        @printf("  Eigenvector %d: ||A*v - λ*v|| = %.2e ", i, error)
+        @printf("  Eigenvector %d: ||A*v - λ*v|| = %.2e: ", i, error)
         if error < 1e-8
-            println("✓")
+            println("correct")
         else
-            println("✗")
+            println("wrong")
         end
     end
     
