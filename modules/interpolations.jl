@@ -56,7 +56,8 @@ Interpretation of reduced chi-square:
 - >> 1 → poor fit (model doesn't describe data well)
 """
 function chi_square(o::Vector{Float64}, e::Vector{Float64})
-    return ∑((o .- e).^2 ./ e)
+    mask = abs.(e) .> 1e-10
+    return ∑((o[mask] .- e[mask]).^2 ./ e[mask])
 end
 
 """
