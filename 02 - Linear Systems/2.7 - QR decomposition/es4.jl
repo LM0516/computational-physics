@@ -1,8 +1,5 @@
 include("../../modules/linear_systemsV2.jl")
 using .LinearSystemsV2
-using LinearAlgebra
-using Plots
-using LaTeXStrings
 using Printf
 
 function main()
