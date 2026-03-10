@@ -3,9 +3,9 @@
 # Parse flags
 NOCONFIRM=false
 for arg in "$@"; do
-  case $arg in
+    case $arg in
     --noconfirm) NOCONFIRM=true ;;
-  esac
+    esac
 done
 
 # Navigate to the repository root relative to this script
@@ -15,7 +15,10 @@ echo "Looking for .jl files in folders 01 to 06..."
 echo ""
 
 # Find all .jl files in folders 01 to 06, sort them, and loop through them
-mapfile -d '' files < <(find 0[1-6]* -type f -name "*.jl" -print0 2>/dev/null | sort -z)
+# mapfile -d '' files < <(find 0[1-6]* -type f -name "*.jl" -print0 2>/dev/null | sort -z)
+while IFS= read -r -d '' f; do
+    files+=("$f")
+done < <(find 0[1-6]* -type f -name "*.jl" -print0 2>/dev/null | sort -z)
 
 for file in "${files[@]}"; do
     # Visual Separator

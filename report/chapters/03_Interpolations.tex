@@ -7,6 +7,56 @@
     Specifically, the points are given by $x_i=-1+(i-1)h$, with $i=1,2,\ldots,n+1$ and $h=2/n$. Use the Vandermonde matrix to determine the interpolating polynomials on these nodes for the functions $f_k(x)=\cos(kx)$ with $k=10,20,\ldots,100$. Study the value of these polynomials in $x=0$ for the different $n$ and $k$ values. What do you observe?
 \end{exercise}
 
+\begin{solution}
+    The problem requires finding the coefficients $\mathbf{c} = (c_0, c_1, \dots, c_n)^T$ of the interpolating polynomial $P_n(x) = \sum_{j=0}^n c_j x^j$ of degree $n$. This is achieved by solving the linear system $V \mathbf{c} = \mathbf{f}$, where $V$ is the $(n+1) \times (n+1)$ Vandermonde matrix with entries $V_{i,j} = x_i^j$, and $\mathbf{f}$ is the vector of function values $f_k(x_i) = \cos(kx_i)$ evaluated at the equidistant nodes. 
+
+    Because Vandermonde matrices are notoriously ill-conditioned, solving this system directly is prone to catastrophic cancellation, especially at higher degrees.
+
+    To study the value of the polynomials at $x = 0$, we can exploit the definition of the power basis. Evaluating $P_n(x)$ at $x = 0$ leaves only the constant term:
+    \[ P_n(0) = \sum_{j=0}^n c_j 0^j = c_0 \]
+    Thus, studying the polynomial's value at the origin is equivalent to tracking the zeroth-order coefficient $c_0$. The absolute error at $x=0$ is computed as $\epsilon = |c_0 - 1|$, since the true analytical value is $\cos(k \cdot 0) = 1$ for all $k$.
+
+    \paragraph{Results}
+    Three primary diagnostics were visualized to evaluate the interpolation scheme:
+    \begin{enumerate}
+        \item \textbf{Condition Number:} Figure \ref{fig:cond_number} demonstrates the condition number $\kappa(V)$ as a function of the polynomial degree $n$. It exhibits clear exponential growth, rapidly approaching the limit of 64-bit machine precision.
+        \item \textbf{Interpolation Error at $x=0$:} Figure \ref{fig:errors} displays the base-10 logarithm of the absolute error $\log_{10}(|c_0 - 1|)$. A striking feature in the data is a localized degradation of accuracy around $n=20$, where the evaluation error spikes noticeably before settling or becoming entirely consumed by numerical noise at higher degrees.
+        \item \textbf{Global Fit Quality:} Figure \ref{fig:chi2} presents a heatmap of the $\chi^2$ residuals. Consistent with the local error evaluation, the global $\chi^2$ values exhibit a surge at $n=20$ across multiple wave numbers $k$, indicating a severe structural breakdown of the global polynomial fit at this specific degree.
+    \end{enumerate}
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/3-1/condition-numbers.pdf}
+        \captionof{figure}{Condition number of the Vandermonde matrix $\kappa(V)$ as a function of polynomial degree $n$, plotted on a logarithmic scale.}
+        \label{fig:cond_number}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/3-1/errors-plots.pdf}
+        \captionof{figure}{Left: Heatmap of the $\log_{10}$ absolute error at $x=0$ for varying $n$ and $k$. Right: The computed value of $P_n(0)$ versus $n$ for different wave numbers $k$.}
+        \label{fig:errors}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/3-1/chi-square.pdf}
+        \captionof{figure}{Heatmap of the $\chi^2$ residuals representing the overall divergence of the interpolating polynomial from the true function $f_k(x) = \cos(kx)$.}
+        \label{fig:chi2}
+    \end{center}
+
+    \paragraph{Discussion}
+    The results highlight a complex interplay between sampling density, boundary effects, and numerical stability:
+    \begin{itemize}
+        \item \textbf{Under-sampling (Small $n$, Large $k$):} The highly oscillatory nature of $f_k(x) = \cos(kx)$ requires a sufficient number of nodal points to capture the waveform. When $n$ is too small relative to $k$, the equidistant nodes fail to resolve the oscillations (violating the analog of the Nyquist-Shannon sampling limit), leading to flat or highly inaccurate approximations.
+        \item \textbf{The $n=20$ Transition Zone:} The severe spike in both local errors and global $\chi^2$ values at $n=20$ represents a critical numerical "worst of both worlds" transition. At this degree, the polynomial is flexible enough to trigger massive Runge oscillations at the boundaries (which overwhelmingly corrupts the global $\chi^2$), yet the nodal density is not high enough to lock onto the tight frequencies of the larger $k$ modes. Simultaneously, $\kappa(V)$ crosses a critical threshold where matrix inversion errors become large enough to noticeably perturb the central coefficients, heavily skewing the evaluation at $x=0$.
+        \item \textbf{Ill-conditioning and Noise (Large $n$):} As $n$ approaches 40, $\kappa(V)$ becomes so astronomically large that the least-squares solver is effectively fitting pure floating-point noise. While the theoretical error at the center of the domain should be minimal, the catastrophic cancellation inherent to the Vandermonde matrix entirely destroys the structural integrity of the polynomial.
+    \end{itemize}
+
+    \paragraph{Conclusion}
+    The exercise demonstrates that global polynomial interpolation on equidistant nodes using the standard power basis and Vandermonde matrices is fundamentally unstable for oscillatory functions. Increasing the polynomial degree to resolve higher frequencies does not converge to the true function; instead, it forces a transition through a highly volatile state (peaking around $n=20$) before eventually collapsing entirely due to catastrophic ill-conditioning at larger $n$.
+\end{solution}
+
 \subsection{Lagrange-Waring Interpolation}
 % \begin{exercise}
 %     Write a program that implements the barycentric form of Lagrange interpolation formula for generic node positions.

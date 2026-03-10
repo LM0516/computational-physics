@@ -1,8 +1,10 @@
 include("../../modules/linear_systemsV2.jl")
 include("../../modules/interpolations.jl")
+include("../../modules/ConsistentPlots.jl")
 
 using .LinearSystemsV2
 using .Interpolations
+using .ConsistentPlots
 using LinearAlgebra
 using Plots
 using LaTeXStrings
@@ -32,6 +34,72 @@ function animations()
         end
         gif(anim, "gif/test_$k.gif", fps=2)
     end
+end
+
+function plot_condition_number(ns, condition_numbers)
+    p = plot_generic(
+        ns, condition_numbers,
+        marker = :circle,
+        linewidth = 2,
+        markersize = 6,
+        yscale = :log10,
+        xlabel = "n (polynomial degree)",
+        ylabel = "Condition Number (log scale)",
+        legend = false,
+    )
+    save_graph(p, "condition-numbers", "3-1")
+    display(p)
+    readline()
+end
+
+function plot_errors(ns, ks, errors, x0_coefs)
+    p1 = plot(
+        xlabel = "n (polynomial degree)",
+        ylabel = "Errors",
+    )
+
+    heatmap!(p1, ns, ks, log10.(errors),
+        xlabel="n",
+        ylabel="k",
+        colorbar_title="log10 error"
+    )
+
+    p2 = plot(
+        xlabel = "n (polynomial degree)",
+        ylabel = "x = 0 coefficients",
+    )
+
+    for (ki, k) in enumerate(ks)
+        plot!(p2, ns, x0_coefs[ki, :],
+            marker = :circle,
+            linewidth = 1.5,
+            markersize = 4,
+            label = "k = $k"
+        )
+    end
+
+    p = plot(p1, p2, layout = (1, 2), size = (900, 400))
+    save_graph(p, "errors-plots", "3-1")
+    display(p)
+    readline()
+end
+
+function plot_chi2_heatmap(ns, ks, x0_coefs)
+    p = plot(
+        xlabel = "n (polynomial degree)",
+        ylabel = L"\chi^2",
+    )
+
+    heatmap!(p, ns, ks, x0_coefs,
+        xlabel="n",
+        ylabel="k",
+        title="Value of interpolating polynomial at x = 0",
+        colorbar_title=L"p_n(0)"
+    )
+
+    save_graph(p, "chi-square", "3-1")
+    display(p)
+    readline()
 end
 
 """
@@ -83,73 +151,16 @@ function main()
         end
     end
 
-    # Debug
-    #=display(chi2_values)=#
-    #=readline()=#
-    #=display(x0_coefs)=#
-    #=readline()=#
+    # Calculate the errors
+    errors = abs.(x0_coefs - ones(length(ks), length(ns)))
 
-    p1 = plot(
-        ns, condition_numbers,
-        marker = :circle,
-        linewidth = 2,
-        markersize = 6,
-        color = :royalblue,
-        yscale = :log10,
-        xlabel = "n (polynomial degree)",
-        ylabel = "Condition Number (log scale)",
-        title = "Vandermonde Matrix Condition Number vs n",
-        legend = false,
-        grid = true,
-        framestyle = :box
-    )
-
-    p2 = plot(
-        xlabel = "n (polynomial degree)",
-        ylabel = "χ² (log scale)",
-        title = "Least-Squares χ² vs n for cos(kx)",
-        #=yscale = :log10,=#
-        legend = :topright,
-        grid = true,
-        framestyle = :box,
-        color_palette = :tab10
-    )
-
-    for (ki, k) in enumerate(ks)
-        plot!(p2, ns, chi2_values[ki, :],
-            marker = :circle,
-            linewidth = 1.5,
-            markersize = 4,
-            label = "k = $k"
-        )
-    end
-
-    p3 = plot(
-        xlabel = "n (polynomial degree)",
-        ylabel = "x = 0 coefficients",
-        title = "Polynomial coefficients for x = 0",
-        legend = :topright,
-        grid = true,
-        framestyle = :box,
-        color_palette = :tab10
-    )
-
-    for (ki, k) in enumerate(ks)
-        plot!(p3, ns, x0_coefs[ki, :],
-            marker = :circle,
-            linewidth = 1.5,
-            markersize = 4,
-            label = "k = $k"
-        )
-    end
-
-    combined = plot(p1, p3, layout = (1, 2), size = (1000, 700), dpi = 150)
-    display(combined)
-    readline()
-    display(p2)
-    readline()
+    # Plotting the results
+    plot_condition_number(ns, condition_numbers)
+    plot_errors(ns, ks, errors, x0_coefs)
+    plot_chi2_heatmap(ns, ks, x0_coefs)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    initialize_style()
     main()
 end
