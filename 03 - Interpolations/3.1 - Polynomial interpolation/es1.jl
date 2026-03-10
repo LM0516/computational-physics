@@ -1,5 +1,8 @@
 include("../../modules/linear_systemsV2.jl")
+include("../../modules/interpolations.jl")
+
 using .LinearSystemsV2
+using .Interpolations
 using LinearAlgebra
 using Plots
 using LaTeXStrings
@@ -7,6 +10,7 @@ using LaTeXStrings
 function main()
     a = 1
     chi2 = zeros(10, 10)
+    p_value = zeros(10, 10)
     for k in 10:10:100
         b = 1
         anim = @animate for n in 4:4:40
@@ -30,13 +34,18 @@ function main()
             plot!(x_fit, y_fit, label="Polynomial fit (degree $n)",
                 xlabel="x", ylabel="f(x)", legend=:topright)
 
-            chi2[a, b] = sum(((y_fit .- y_true) .^ 2) ./ abs.(y_true))
+            dof = length(y_fit) - length(coeffs)
+            chi2[a][b] = chi_square(y_true, y_fit)
+            p_value[a][b] = p_value(chi2[a][b], dof)
             b += 1
         end
         gif(anim, "gif/test_$k.gif", fps=2)
         a += 1
     end
+    println("Chi-square: ")
     display(chi2)
+    println("p-value: ")
+    display(p_value)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

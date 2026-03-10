@@ -73,7 +73,7 @@ function p_value(chi2::Float64, dof::Int)
     return p
 end
 
-function fit_goodness(y, y_true, coeffs)
+function fit_goodness(y::Vector{Float64}, y_true::Vector{Float64}, coeffs::Vector{Float64})
     dof = length(y) - length(coeffs)
     chi2 = chi_square(y, y_true)
     chi2r = chi2 / dof 
@@ -84,6 +84,7 @@ function fit_goodness(y, y_true, coeffs)
     println("Reduced chi-square: ", chi2r)
     println("P-value: ", p)
     println()
+    return chi2, dof, chi2r, p
 end
 
 end # module Interpolations
