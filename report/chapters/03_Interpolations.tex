@@ -58,9 +58,6 @@
 \end{solution}
 
 \subsection{Lagrange-Waring Interpolation}
-% \begin{exercise}
-%     Write a program that implements the barycentric form of Lagrange interpolation formula for generic node positions.
-% \end{exercise}
 
 \begin{exercise}
     In each case, use interpolate the given function using \( n \) evenly spaced nodes in the given interval. Plot each interpolating function together with the exact function.
@@ -72,7 +69,64 @@
     \end{enumerate}
 \end{exercise}
 
+\begin{solution}
+    To approximate the given functions, we implement polynomial interpolation over evenly spaced nodes. The interpolating polynomials are evaluated using the barycentric form of Lagrange interpolation, which provides superior numerical stability in double-precision floating-point arithmetic (\texttt{Float64}). 
+
+    For a given interval $[a, b]$ and $n$ nodes, the evenly spaced interpolation nodes are generated as $x_k = a + k \frac{b-a}{n-1}$ for $k = 0, \dots, n-1$. The interpolation algorithm is evaluated over a high-resolution grid of 200 points. To visualize the accuracy, the results are presented in a side-by-side format: the left panel overlays the exact function and the interpolant, while the right panel displays the absolute residual error, $E(x) = |P_{n-1}(x) - f(x)|$, on a logarithmic base-10 scale.
+
+    \paragraph{Results}
+    The resulting pseudo-$\chi^2$ error metrics for each function and node configuration are summarized in Table \ref{tab:interp_errors}. The visual representations of the interpolations and their corresponding absolute residuals are shown in Figures \ref{fig:interp_smooth} and \ref{fig:interp_abs}.
+
+    \begin{center}
+        \centering
+        \captionof{table}{Pseudo-$\chi^2$ error metrics for polynomial interpolation using $n$ evenly spaced nodes.}
+        \label{tab:interp_errors}
+        \begin{tabular}{l c r r r}
+            \hline
+            Function & Interval & $n_1$ Error & $n_2$ Error & $n_3$ Error \\
+            \hline
+            $f(x) = \ln(x)$  & $[1, 10]$ & (n=2) 31.101 & (n=3) 3.285 & (n=4) 0.572 \\
+            $f(x) = \tanh(x)$& $[-3, 2]$ & (n=2) -29.363 & (n=3) 18.957 & (n=4) -3.529 \\
+            $f(x) = \cosh(x)$& $[-1, 3]$ & (n=2) 1171.471 & (n=3) 26.629 & (n=4) 2.105 \\
+            $f(x) = |x|$     & $[-2, 1]$ & (n=3) 112.930 & (n=5) 30.394 & (n=7) 5.374 \\
+            \hline
+        \end{tabular}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/3-2/log(x)-plot.pdf}
+        \vspace{0.5cm} \\
+        \includegraphics[width=0.8\textwidth]{figures/3-2/tanh(x)-plot.pdf}
+        \vspace{0.5cm} \\
+        \includegraphics[width=0.8\textwidth]{figures/3-2/cosh(x)-plot.pdf}
+        \captionof{figure}{Side-by-side evaluation of polynomial interpolations and absolute residual errors for the smooth functions $\ln(x)$, $\tanh(x)$, and $\cosh(x)$.}
+        \label{fig:interp_smooth}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/3-2/abs_x-plot.pdf}
+        \captionof{figure}{Interpolation and absolute residual error for the non-smooth function $f(x) = |x|$. Note the localized error peak near the non-differentiable cusp at $x=0$.}
+        \label{fig:interp_abs}
+    \end{center}
+
+    \paragraph{Discussion}
+    % FIX: Valutare se rimuovere questa parte, non presente nella teoria
+    The theoretical error bound for polynomial interpolation is:
+    \[
+        E(x) = f(x) - P_{n-1}(x) = \frac{f^{(n)}(\xi)}{n!} \prod_{i=0}^{n-1} (x - x_i)
+    \]
+    where $\xi \in (a, b)$. The residual plots in Figure \ref{fig:interp_smooth} clearly illustrate this behavior. At exactly the node locations $x_i$, the interpolation condition $P_{n-1}(x_i) = f(x_i)$ is met, and the logarithmic residual sharply plummets to the machine epsilon ($\approx 10^{-16}$). Between the nodes, the error bulges, typically reaching its maximum near the center of the sub-intervals or toward the boundaries of the domain. 
+
+    For the smooth functions seen in Figure \ref{fig:interp_smooth}, increasing the number of nodes systematically suppresses the entire residual curve. However, as shown in Figure \ref{fig:interp_abs} for $f(x) = |x|$, the function is non-differentiable at $x = 0$. Consequently, the residual plot shows a localized peak in the error near this cusp that does not diminish as rapidly as the error in smooth regions, demonstrating the fundamental limitation of global polynomial interpolation on non-smooth functions.
+
+    \paragraph{Conclusion}
+    The side-by-side visualizations effectively confirm that barycentric Lagrange interpolation successfully captures the global behavior of the evaluated functions for low-degree polynomials. However, the residual analysis is far more reliable than the global pseudo-$\chi^2$ metric. As seen with $\tanh(x)$, the $\chi^2$ metric yields non-physical negative values because the exact function crosses zero. The logarithmic residual plots provide a much clearer, strictly positive evaluation of the spatial distribution of the interpolation error.
+\end{solution}
+
 \subsection{Error on Interpolation}
+
 \begin{exercise}
     Write a program that implements the barycentric form of Lagrange interpolation formula for the specialized cases of Chebyshev nodes using the analytical results for the weights. Check your implementation against your routine for generic node positions.
 \end{exercise}

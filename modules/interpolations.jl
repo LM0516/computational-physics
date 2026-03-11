@@ -55,9 +55,14 @@ Interpretation of reduced chi-square:
 - ≈ 0 → good fit
 - >> 1 → poor fit (model doesn't describe data well)
 """
-function chi_square(o::Vector{Float64}, e::Vector{Float64})
-    mask = abs.(e) .> 1e-10
-    return ∑((o[mask] .- e[mask]).^2 ./ e[mask])
+function chi_square(o::AbstractVector, e::AbstractVector)
+    # eachindex(o, e) ensures both vectors have the exact same length, 
+    # throwing an error automatically if they don't.
+    return ∑(eachindex(o, e); init=0.0) do i
+        ei = e[i]
+        # Only compute if the expected value is not near zero
+        abs(ei) > 1e-10 ? (o[i] - ei)^2 / ei : 0.0
+    end
 end
 
 """
