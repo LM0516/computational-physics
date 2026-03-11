@@ -19,17 +19,17 @@ function estimate_K(n_values, errors)
     return K, slope
 end
 
-function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, foo; interp_type="chebyshev")
+function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, function_name; interp_type="chebyshev")
     # Create evaluation points
     x_eval_range = range(a, b, length=4000)
-    inf_norm = zeros(Float64, length(n_values))
+    inf_norm = Vector{Float64}(undef, length(n_values))
 
     # Set plot title based on interpolation type
     title_str = interp_type == "chebyshev" ? "Barycentric Chebyshev Interpolation" : "Barycentric Lagrange Interpolation"
     
     # Plot for f
     p1 = plot(x_eval_range, f.(x_eval_range),
-        label="y = $foo", linewidth=1,
+        label="y = $function_name", linewidth=2,
         xlabel="x", ylabel=L"\log(y)", title=title_str,
         yaxis=:log, legend=true)
 
@@ -49,11 +49,12 @@ function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, f
 
         # Plot interpolation
         plot!(p1, x_eval_range, p_interp,
-            label="n = $n nodes", linewidth=1, linestyle=:dash)
+            label="n = $n nodes", linewidth=1, linestyle=:dot,
+            seriestype=:steppre, linealpha=:0.5)
 
         # Plot nodes
-        scatter!(p1, x_nodes, f.(x_nodes),
-            label="", markersize=4, color=:black, alpha=0.5)
+        #=scatter!(p1, x_nodes, f.(x_nodes),=#
+        #=    label="", markersize=4, color=:black, alpha=0.5)=#
 
         # Compute infinity norm
         norm = @. abs(f(x_eval_range) - p_interp)
@@ -61,12 +62,12 @@ function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, f
     end
 
     K, slope = estimate_K(n_values, inf_norm)
-    println("Function: $foo | Type: $interp_type | K ≈ $K (slope ≈ $slope)")
+    println("Function: $function_name | Type: $interp_type | K ≈ $K (slope ≈ $slope)")
 
     # Plot infinity norm with log scale
     p2 = plot(n_values, inf_norm,
-              linewidth=2, xlabel="n", ylabel=L"||f - p||_{\infty}",
-        yaxis=:log, marker=:circle, markersize=4,
+              linewidth=1, xlabel="n", ylabel=L"||f - p||_{\infty}",
+        yaxis=:log, marker=:circle, markersize=2,
         title="Interpolation Error", legend=false)
 
     # Plot both plots
@@ -80,7 +81,7 @@ function main()
     b = 1
     n = collect(4:4:60)
 
-    f_a(x) = 1 / (25 * x^2 + 1)
+    f_a(x) = 1 / (25 * x^2 + 1.0)
     f_b(x) = tanh(5 * x + 2)
     f_c(x) = cosh(sin(x))
     f_d(x) = sin(cosh(x))
