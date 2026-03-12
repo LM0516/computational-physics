@@ -52,10 +52,6 @@ function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, f
             label="n = $n nodes", linewidth=1, linestyle=:dot,
             seriestype=:steppre, linealpha=:0.5)
 
-        # Plot nodes
-        #=scatter!(p1, x_nodes, f.(x_nodes),=#
-        #=    label="", markersize=4, color=:black, alpha=0.5)=#
-
         # Compute infinity norm
         norm = @. abs(f(x_eval_range) - p_interp)
         inf_norm[idx] = maximum(norm)
