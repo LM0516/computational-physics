@@ -7,18 +7,7 @@ using .LinearSystemsV2
 export bisection, bisection_plot, convergence, plot_convergence_analysis, newton_method, secant_method, inverse_quadratic_interpolation
 
 """
-    bisection(f::Function, a, b; tol=1e-14)
-
 Finds a root of the function `f` within the interval `[a, b]` using the bisection method.
-
-# Arguments
-- `f::Function`: The function for which to find a root.
-- `a`: The lower bound of the interval.
-- `b`: The upper bound of the interval.
-- `tol::Float64`: (Optional) The desired tolerance for the interval width. Defaults to `1e-14`.
-
-# Returns
-- `Float64`: The approximate root of `f`.
 """
 function bisection(f::Function, a, b; tol=1e-14)
     while b - a > tol
@@ -34,20 +23,7 @@ function bisection(f::Function, a, b; tol=1e-14)
 end
 
 """
-    bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String)
-
 Finds a root of the function `f` within the interval `[a, b]` using the bisection method and plots the convergence.
-
-# Arguments
-- `f::Function`: The function for which to find a root.
-- `a::Float64`: The lower bound of the interval.
-- `b::Float64`: The upper bound of the interval.
-- `f_equation::String`: A string representation of the function `f` for plotting purposes (e.g., "x^2 - 2").
-
-# Returns
-- `Tuple{Vector{Float64}, Float64}`: A tuple containing:
-    - `x_history::Vector{Float64}`: A vector of approximate roots at each iteration.
-    - `sol::Float64`: The final approximate root.
 """
 function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String)
     count = 0
@@ -92,19 +68,7 @@ function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String)
 end
 
 """
-    convergence(x::Vector{Float64}, r::Float64; skip::Int=10)
-
 Analyzes the order of convergence and asymptotic error constant for a sequence of approximations.
-
-# Arguments
-- `x::Vector{Float64}`: A vector of approximations obtained from an iterative method.
-- `r::Float64`: The true root (exact solution).
-- `skip::Int`: (Optional) Number of initial iterations to skip for the analysis. Defaults to `10`.
-
-# Returns
-- `Tuple{Float64, Float64}`: A tuple containing:
-    - `q::Float64`: The order of convergence.
-    - `C::Float64`: The asymptotic error constant.
 """
 function convergence(x, r; skip::Int=10)
     # Number of initial iterations to skip for the analysis
@@ -135,19 +99,9 @@ function convergence(x, r; skip::Int=10)
 end
 
 """
-    plot_convergence_analysis(x::Vector{Float64}, r::Float64; skip_initial::Int=0)
-
 Generates a plot to visually analyze the convergence of an iterative method.
 It plots `log10(|ε_{n+1}|)` against `log10(|ε_n|)` and fits a line to determine
 the order of convergence and the asymptotic error constant.
-
-# Arguments
-- `x::Vector{Float64}`: A vector of approximations obtained from an iterative method.
-- `r::Float64`: The true root (exact solution).
-- `skip_initial::Int`: (Optional) Number of initial iterations to skip for the plot and analysis. Defaults to `0`.
-
-# Returns
-- `Plots.Plot`: The generated convergence analysis plot.
 """
 function plot_convergence_analysis(x, r; skip_initial::Int=0)
     # Use only the tail of the data
@@ -164,8 +118,6 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0)
     M = [ones(n) log_eps_n]
     b = log_eps_n1
 
-    # BUG: Dovebbe uscire C = 0.5, controllare meglio il codice.
-    
     # solve_least_squares 
     log10_C, q = solve_least_squares(M, b)
     C = 10^(log10_C)
@@ -204,25 +156,7 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0)
 end
 
 """
-    newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real=b, xtol::Float64=1e-14, ftol::Float64=1e-14, max_iter::Int=100, bracketing::Bool=true)
-
 Finds a root of the function `f` using Newton's method.
-
-# Arguments
-- `f::Function`: The function for which to find a root.
-- `df::Function`: The derivative of the function `f`.
-- `a::Real`: The lower bound of the bracketing interval (used if `bracketing` is true).
-- `b::Real`: The upper bound of the bracketing interval (used if `bracketing` is true).
-- `x_init::Real`: (Optional) The initial guess for the root. Defaults to `b`.
-- `xtol::Float64`: (Optional) The desired tolerance for the change in `x`. Defaults to `1e-14`.
-- `ftol::Float64`: (Optional) The desired tolerance for the function value at the root. Defaults to `1e-14`.
-- `max_iter::Int`: (Optional) The maximum number of iterations. Defaults to `100`.
-- `bracketing::Bool`: (Optional) If `true`, falls back to bisection if the Newton's method diverges outside `[a, b]`. Defaults to `true`.
-
-# Returns
-- `Tuple{Float64, Vector{Float64}}`: A tuple containing:
-    - `Float64`: The approximate root of `f`.
-    - `Vector{Float64}`: A vector of approximations generated during the iterations.
 """
 function newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real=b, xtol::Float64=1e-13, ftol::Float64=1e-13, max_iter::Int=100, bracketing::Bool=true)
     # Initial 2 x values
@@ -259,23 +193,7 @@ function newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real
 end
 
 """
-    secant_method(f::Function, x_0::Real, x_1::Real; xtol::Float64=1e-14, ftol::Float64=1e-14, max_iter::Int=100, bracketing::Bool=true)
-
 Finds a root of the function `f` using the secant method.
-
-# Arguments
-- `f::Function`: The function for which to find a root.
-- `x_0::Real`: The first initial guess.
-- `x_1::Real`: The second initial guess.
-- `xtol::Float64`: (Optional) The desired tolerance for the change in `x`. Defaults to `1e-14`.
-- `ftol::Float64`: (Optional) The desired tolerance for the function value at the root. Defaults to `1e-14`.
-- `max_iter::Int`: (Optional) The maximum number of iterations. Defaults to `100`.
-- `bracketing::Bool`: (Optional) If `true`, falls back to bisection if the secant method diverges outside the initial interval. Defaults to `true`.
-
-# Returns
-- `Tuple{Float64, Vector{Float64}}`: A tuple containing:
-    - `Float64`: The approximate root of `f`.
-    - `Vector{Float64}`: A vector of approximations generated during the iterations.
 """
 function secant_method(f::Function, x_0::Real, x_1::Real; xtol::Float64=1e-14, ftol::Float64=1e-14, max_iter::Int=100, bracketing::Bool=true)
     x_prev = float(x_0)
@@ -312,24 +230,8 @@ function secant_method(f::Function, x_0::Real, x_1::Real; xtol::Float64=1e-14, f
 end
 
 """
-    inverse_quadratic_interpolation(f::Function, x0::Real, x1::Real, x2::Real; xtol::Float64=1e-14, ftol::Float64=1e-14, max_iter::Int=100)
-
 Finds a root of the function `f` using the inverse quadratic interpolation method.
 This method requires three initial guesses.
-
-# Arguments
-- `f::Function`: The function for which to find a root.
-- `x0::Real`: The first initial guess.
-- `x1::Real`: The second initial guess.
-- `x2::Real`: The third initial guess.
-- `xtol::Float64`: (Optional) The desired tolerance for the change in `x` or interval width. Defaults to `1e-14`.
-- `ftol::Float64`: (Optional) The desired tolerance for the function value at the root. Defaults to `1e-14`.
-- `max_iter::Int`: (Optional) The maximum number of iterations. Defaults to `100`.
-
-# Returns
-- `Tuple{Float64, Vector{Float64}}`: A tuple containing:
-    - `Float64`: The approximate root of `f`.
-    - `Vector{Float64}`: A vector of approximations generated during the iterations.
 """
 function inverse_quadratic_interpolation(f::Function, x0::Real, x1::Real, x2::Real; xtol::Float64=1e-14, ftol::Float64=1e-14, max_iter::Int=100)
     a, b, c = float(x0), float(x1), float(x2)

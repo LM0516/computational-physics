@@ -5,12 +5,12 @@ using LaTeXStrings
 
 function analyze_smoothness()
     """
-    Part (a): Analyze how many continuous derivatives f_m(x) = |x|^m has
+    Analyze how many continuous derivatives f_m(x) = |x|^m has
     """
     m_values = [1, 3, 5, 7, 9, 11]
     
     println("\n" * "="^70)
-    println("PART (a): Smoothness Analysis of f_m(x) = |x|^m")
+    println("Smoothness Analysis of f_m(x) = |x|^m")
     println("="^70)
     
     println("\nFor f_m(x) = |x|^m, the function has ν = floor(m) continuous derivatives.")

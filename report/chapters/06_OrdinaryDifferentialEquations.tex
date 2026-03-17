@@ -1,0 +1,152 @@
+\section{Ordinary Differential Equations}
+
+\subsection{Basics of one-step methods}
+
+\begin{exercise}
+    For each IVP, solve the problem using Euler's method. (i) Plot the solution for $n=320$. (ii) For $n=10\cdot2^k$, $k=2,3,\ldots,10$, compute the error as $||u-\hat{u}||_\infty=\max_{0\leq i\leq n} |u_i-\hat{u}(t_i)|$ and at the final time, $|u_n-\hat{u}(t_n)|$. Make a log-log convergence plot, including a reference line for first-order convergence.
+    \begin{enumerate}
+        \item $u' = -2t u$, $\ 0 \le t \le 2$, $\ u(0) = 2$; \\
+        \[
+            \hat{u}(t) = 2e^{-t^2}
+        \]
+
+        \item $u' = u + t$, $\ 0 \le t \le 1$, $\ u(0) = 2$; \\
+        \[
+            \hat{u}(t) = -1-t+3e^t
+        \]
+
+        \item $(1+t^3)uu' = t^2$, $\ 0 \le t \le 3$, $\ u(0) =1$; \\
+        \[
+            \hat{u}(t) =[1+(2/3)\ln (1+t^3)]^{1/2}
+        \]
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    Solve the following IVPs using Euler's method with $n=1000$ steps. Plot the solution and its first derivative together on one plot, and plot the error in each component as functions of time on another.
+    \begin{enumerate}
+        \item $y''+ 9y = \sin(2t)$, $\ 0< t< 2\pi$, $\ y(0) = 2$, $\ y'(0) = 1$; \\
+        \[
+            \hat{y}(t) = (1/5) \sin(3t) + 2 \cos (3t)+  (1/5) \sin (2t)
+        \]
+        \item $y''- 4y = 4t$, $\: 0< t< 1.5$, $\: y(0) = 2$, $\: y'(0) = -1$; \\
+        \[
+            \hat{y}(t) = e^{2t} + e^{-2t}-t
+        \]
+        \item $y''+ 4y'+ 4y = t$, $\: 0< t< 4$, $\: y(0) = 1$,$\: y'(0) = 3/4$; \\
+        \[
+            \hat{y}(t) = (3t+5/4)e^{-2t} + (t-1)/4
+        \]
+    \end{enumerate}
+\end{exercise}
+
+\subsection{Runge-Kutta methods}
+
+\begin{exercise}
+    \begin{enumerate}
+        \item Write a program to solve a system of differential equations using the IE2 method.
+        \item Write a program to solve a system of differential equations using the RK4 method.
+        \item Test your implementation for the IE2 and RK4 methods on the IVP
+        \[
+            u' = -2t u, \quad 0 \le t \le 2, \quad u(0) = 2; \quad \hat{u}(t) = 2e^{-t^2}
+        \]
+        Solve with $n=30,60,90,\ldots,300$ and plot the max-error $||u-\hat{u}||_\infty=\max_{0\leq i\leq n} |u_i-\hat{u}(t_i)|$ as a function of the \emph{number of function evaluations} in a log-log plot, together with a line showing the expected rate of convergence.
+        \item (\textbf{Optional}) Add the case of the ME2 and Heun's method. 
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    In each case below, use the RK4 integrator to solve the given ODE for $0\le t \le 10$ with the given initial conditions. (To this end, you must find a sensible procedure to choose the number of steps $n$ to take.) Plot the results together as curves in the phase plane, that is, with $x$ and $y$ as the axes of the plot. 
+    \begin{enumerate}
+        \item 
+        \begin{align*}
+          x'(t) & = - 4y + x(1-x^2-y^2) \\
+          y'(t) & = 4x + y(1-x^2-y^2)
+        \end{align*}
+        with $[x(0),y(0)]=[0.1,0]$ and $[x(0),y(0)]=[0,1.9]$.
+        \item 
+        \begin{align*}
+          x'(t) & = - 4y - \frac{1}{4}x(1-x^2-y^2)(4-x^2-y^2) \\
+          y'(t) & = 4x - \frac{1}{4}y(1-x^2-y^2)(4-x^2-y^2)
+        \end{align*}
+        with $[x(0),y(0)]=[0.95,0]$, $[0,1.05]$, and $[-2.5,0]$.
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    Solve the \emph{predator-prey model} of the Lotka-Volterra equations for $0\leq t\leq 60$ with parameters $\alpha=0.1$, $\beta=0.25$, and initial conditions $y(0)=1$, $z(0)=0.01$. Plot the solutions for $y(t)$ and $z(t)$ as a function of $t$ on one plot, while on another figure plot the results together as curves in the phase plane $(y(t),z(t))$.
+\end{exercise}
+
+\subsection{Some interesting equation}
+
+\begin{exercise}
+    \begin{enumerate}
+        \item Solve the Schr\"odinger equation with $V(x)=0$ considering as initial wave function the Gaussian wave packet with $x_0=0$, $\sigma=1$, and $k_0=0$. Consider the interval $-10\leq x\leq 10$ for the $x$ variable and $0\leq t\leq 20$ for the time. Plot the absolute value squared of the wave function at the times $t=0,2,3,4,5$.[\emph{Hint}: Values of $\Delta x=0.1$ and $\Delta t=0.01$ are reasonable starting values for this study.]
+        
+        \item Verify that the norm of the wave function is approximately conserved in time.
+        
+        \item \textbf{(Optional)} Use the analytic solution to determine the error due to the discretizations.
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    \begin{enumerate}
+        \item Solve the Schr\"odinger equation with $V(x)=0$ considering as initial wave function the Gaussian wave packet with $x_0=20$, $\sigma=2$, and $k_0=2$. Consider the interval $0\leq x\leq 100$ for the $x$ variable and $0\leq t\leq 20$ for the time. Plot the absolute value squared of the wave function at the times $t=0,10,20$.[\emph{Hint}: Values of $\Delta x=0.1$ and $\Delta t=0.01$ are reasonable starting values for this study.]
+        \item Verify that the norm of the wave function is approximately conserved in time.
+        \item \textbf{(Optional)} Use the analytic solution to determine the error due to the discretizations.
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    \begin{enumerate}
+        \item Solve the Schr\"odinger equation with the potential
+        \[
+            V(x)=
+            \begin{cases}
+                2 & \text{if}\  -1 \leq x \leq 1\,,\\[2ex]
+                0 & \text{otherwise}\,,
+            \end{cases}
+        \]
+        considering as initial wave function the Gaussian wave packet with $x_0=-20$, $\sigma=2$, and $k_0=2$. Consider the interval $-100\leq x\leq 100$ for the $x$ variable and $0\leq t\leq 40$ for the time. Plot the absolute value squared of the wave function at the times $t=0,10,30$. 
+        \item Compute the reflection and transmission coefficients and verify that $R+T\approx 1$.[\emph{Hint}: Consider a value of $t_{\rm max}\approx 30$.]
+        \item \textbf{(Optional)} Study the behavior of $R$ and $T$ as you vary the height and width of the potential and/or the parameters of the wave function.
+    \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+    Solve the time-independent Schr\"odinger equation with the potential
+    \[
+        V(x)=
+        \begin{cases}
+            -10 & \text{if}\  -1 \leq x \leq 1\,,\\[2ex]
+            0 & \text{otherwise}\,.
+        \end{cases}
+    \]
+    \begin{enumerate}
+        \item Find the energies $E_n$ and wave functions $\varphi_n(x)$. How many bound states do you find?[\emph{Hint}: Consider discretizing the Hamiltonian in the interval $-5\leq x\leq 5$ with $\Delta x=0.05$. Use the QR-algorithm for solving the eigenvalue problem with a number of iterations $n\gtrsim 200$.]
+        \item Plot the results for the corresponding $|\varphi_n(x_i)|^2$ and binding energies together with the potential.[\emph{Hint}: Remember to normalize the wave functions. Do you really need to compute the integral of the squared wave function for that?]
+        \item \textbf{(Optional)} Compare the results that you found in point (a) for the energies $E_n$ with the exact solutions of the transcendental equations for the finite square well
+        \[
+            V(x)=
+            \begin{cases}
+                -V_0 & \text{if}\  -a \leq x \leq a\,,\\[2ex]
+                0 & \text{otherwise}\,.
+            \end{cases}
+        \]
+        We recall that, given,
+        \[
+            \rho=\sqrt{-{2mE\over \hbar}}\,,
+            \qquad
+            k = \sqrt{2m(E+V_0)\over \hbar^2}\,,
+            \qquad
+            -V_0<E<0\,,
+        \]
+        the bound state solutions must satisfy,
+        \[
+            \text{Even parity:} \quad  \tan (ka) = {\rho\over k}\,;
+            \qquad
+            \text{Odd parity:} \quad \cot (ka) = -{\rho\over k}\,.
+        \]
+        Use your favorite rootfinding algorithm to solve these equations for $E$.
+    \end{enumerate}
+\end{exercise}
