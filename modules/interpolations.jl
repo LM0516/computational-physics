@@ -6,6 +6,9 @@ export barycentric_lagrange, chi_square, p_value, fit_goodness
 const ∏ = prod
 const ∑ = sum
 
+# NOTE: For better performance look 'dispatch', there is an if that is called to
+# many times.
+# TODO: Check memory allocations
 """
 Evaluate the Lagrange interpolating polynomial at a given point `x_eval` using the
 barycentric interpolation formula.
