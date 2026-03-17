@@ -44,7 +44,7 @@ function main()
     
     # Part (b): Compute convergence and plot
     println("="^70)
-    println("PART (b): Computing convergence rates...")
+    println("Computing convergence rates...")
     println("="^70)
     
     a = -1
