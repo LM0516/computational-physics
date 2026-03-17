@@ -2,7 +2,7 @@ module LinearSystems
 
 using LinearAlgebra
 
-export forwardsub, forwardcompl, backsub, backcompl, LUdec, LUdecrp, plufact, detplu, condition_number, least_squares
+export forwardsub, forwardcompl, backsub, backcompl, LUdec, LUdecrp, plufact, detplu, condition_number, least_squares, ∞norm
 
 """
 Solves the equation Lx = b for x using forward substitution.

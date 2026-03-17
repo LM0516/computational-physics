@@ -25,10 +25,6 @@ function phi_inverse(z)
 end
 
 function main()
-    println("\n" * "="^60)
-    println("Exercise 4: Real Line Interpolation")
-    println("="^60)
-    
     n = 30
     
     # Generate Chebyshev nodes on (-1, 1)
@@ -43,9 +39,6 @@ function main()
     
     # Get function values at transformed nodes
     y_nodes = f.(z_nodes)
-    
-    # Create polynomial interpolant on x-interval
-    # (We interpolate f(φ(x)) as a function of x)
     
     # Evaluation points on real line
     z_eval = range(-6.0, 6.0, length=1000)

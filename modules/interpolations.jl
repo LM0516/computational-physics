@@ -79,6 +79,9 @@ function p_value(chi2::Float64, dof::Int)
     return p
 end
 
+"""
+Combined version of `chi_square` and `p_value` functions.
+"""
 function fit_goodness(y::Vector{Float64}, y_true::Vector{Float64}, coeffs::Vector{Float64})
     dof = length(y) - length(coeffs)
     chi2 = chi_square(y, y_true)

@@ -85,9 +85,10 @@ latexmk -pdf main.tex
 
 ## TODO
 
-- Implement a script to install all the needed libraries
-- Implement a script to benchmark all the exercises
+- Implement a script to benchmark all the exercise (Use Benchmarks)
 - Implement scripts to test the complexity of every algorithm
+- Write an introduction for every section of every major chapter
+- Check if it is worth using Make to compile LaTeX
 
 ## Author
 

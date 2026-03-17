@@ -8,7 +8,7 @@ export forward_substitution, forward_substitution_multiple,
     plu_factorization, determinant_plu,
     matrix_condition_number, solve_least_squares,
     qr_mgs, test_qr, qr_mgs_augmented,
-    pure_qr_algorithm
+    pure_qr_algorithm, matrix_infinity_norm
 
 """
 Solve the lower triangular system Lx = b using forward substitution.

@@ -128,10 +128,6 @@
 \subsection{Error on Interpolation}
 
 \begin{exercise}
-    Write a program that implements the barycentric form of Lagrange interpolation formula for the specialized cases of Chebyshev nodes using the analytical results for the weights. Check your implementation against your routine for generic node positions.
-\end{exercise}
-
-\begin{exercise}
     \begin{enumerate}
         \item For each case below, compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=4,8,12,\ldots,60$. At each value of $n$, compute the $\infty$-norm error (that is, $||f-p||_\infty=\max_{x\in[-1,1]} |p(x)-f(x)|$ evaluated for at least 4000 values of $x$). Using a log-linear scale, plot the error as a function of $n$, then determine a good approximation to the constant $K$ in {eq}`eq-spectral`. 
         \begin{enumerate}
@@ -144,13 +140,16 @@
     \end{enumerate}
 \end{exercise}
 
-
 \begin{exercise}
     The Chebyshev points can be used when the interval of interpolation is $[a,b]$ rather than $[-1,1]$ by means of the change of variable {eq}`eq-change-variable-chebyshev-1`. Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes. 
 \end{exercise}
 
 \begin{exercise}
-    Let $x_1,\ldots,x_n$ be standard Chebyshev points. These map to the $z$ variable as $z_i=\phi(x_i)$ for all $i$, where $\phi$ is the transformation defined in {eq}`eq-change-variable-chebyshev-2`. Suppose that $f(z)$ is a given function whose domain is the entire real line. Then the function values $y_i=f(z_i)$ can be associated with the Chebyshev nodes $x_i$, leading to a polynomial interpolant $p(x)$. This in turn implies an interpolating function on the real line, defined as
+    Let $x_1,\ldots,x_n$ be standard Chebyshev points. These map to the $z$ variable as $z_i=\phi(x_i)$ for all $i$, where $\phi$ is the transformation defined in 
+    \[
+        z = \phi(x) = \frac{2x}{1-x^2}.
+    \]
+    Suppose that $f(z)$ is a given function whose domain is the entire real line. Then the function values $y_i=f(z_i)$ can be associated with the Chebyshev nodes $x_i$, leading to a polynomial interpolant $p(x)$. This in turn implies an interpolating function on the real line, defined as
     \[
         q(z)=p\bigl(\phi^{-1}(z)\bigr) = p(x)\,.
     \]

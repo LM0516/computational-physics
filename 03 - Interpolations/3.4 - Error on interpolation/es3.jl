@@ -1,5 +1,6 @@
 include("../../modules/interpolations.jl")
 using .Interpolations
+using LinearAlgebra
 using Plots
 using LaTeXStrings
 
@@ -10,7 +11,7 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
     # Set plot title based on interpolation type
     title_str = interp_type == "chebyshev" ? "Barycentric Chebyshev Interpolation" : "Barycentric Lagrange Interpolation"
     
-    # Plot for f
+    # Plot for f in log-scale
     p1 = plot(x_eval_range, f.(x_eval_range),
         label="y = $foo", linewidth=1,
         xlabel="x", ylabel=L"\log(y)", title=title_str,
@@ -37,26 +38,22 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
     scatter!(p1, x_nodes, f.(x_nodes),
         label="", markersize=4, color=:black, alpha=0.5)
 
-    # Compute infinity norm
-    norm = @. abs(f(x_eval_range) - p_interp)
-    inf_norm = maximum(norm)
+    # Maximum error
+    norm = @. abs(f.(x_eval_range) - p_interp)
+    max_error = maximum(norm)
 
-
-    return p1, inf_norm
+    return p1, max_error
 end
 
 function main()
-    println("\n="^60)
-    println("Exercise 3")
-    println("="^60)
     a = 0.0
     b = 2*π
     n = 40
 
     f(x) = cosh(sin(x))
-    p, inf_norm = plot_interpolation(n, a, b, f, L"\cosh(\sin(x))", interp_type="chebyshev")
+    p, max_error = plot_interpolation(n, a, b, f, L"\cosh(\sin(x))", interp_type="chebyshev")
 
-    println("infinity norm = $inf_norm")
+    println("Maximum error: $max_error")
 
     display(p)
     readline()
