@@ -144,6 +144,35 @@
     The Chebyshev points can be used when the interval of interpolation is $[a,b]$ rather than $[-1,1]$ by means of the change of variable {eq}`eq-change-variable-chebyshev-1`. Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes. 
 \end{exercise}
 
+\begin{solution}
+    To interpolate the function $f(x) = \cosh(\sin x)$ over the arbitrary interval $[a, b] = [0, 2\pi]$, we first generate the standard Chebyshev nodes of the first kind on the canonical interval $[-1, 1]$:
+    \[
+      t_i = \cos\left(\frac{2i - 1}{2n}\pi\right), \quad i = 1, \dots, n
+    \]
+    These nodes are subsequently mapped to the target interval $[a, b]$ via the affine transformation:
+    \[
+      x_i = \frac{b - a}{2} t_i + \frac{a + b}{2}
+    \]
+    The polynomial interpolant is evaluated using the barycentric formulation of Lagrange interpolation. When implemented correctly with Chebyshev weights, this provides a numerically stable algorithm capable of evaluating the interpolant in $\mathcal{O}(n)$ operations. All computations are performed using Julia's standard \texttt{Float64} precision.
+
+    \paragraph{Results}
+    The interpolation was performed using $n=40$ nodes over 1000 evaluation points. The maximum absolute error over the interval was found to be:
+    \[
+      \max_{x \in [0, 2\pi]} |f(x) - p_{40}(x)| \approx 5.468 \times 10^{-5}
+    \]
+    The resulting interpolant, alongside the target function evaluated on a logarithmic scale, is visualized in Figure \ref{fig:cheb_interp}.
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/3-4/cosh(sinh(x)) graph.pdf}
+        \caption{Barycentric Chebyshev interpolation of $f(x) = \cosh(\sin x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a logarithmic scale.}
+        \label{fig:cheb_interp}
+    \end{center}
+
+    \paragraph{Discussion and Conclusion}
+    The results confirm the absence of the Runge phenomenon, successfully demonstrating that clustering nodes near the domain boundaries mitigates the unbounded oscillations typical of equispaced Lagrange interpolation. However, the observed maximum error of roughly $5.5 \times 10^{-5}$ for $n=40$ is higher than theoretically expected for an entire function. While the visual fit is excellent, achieving near machine epsilon is generally anticipated for non-oscillatory, smooth functions evaluated at this polynomial degree. 
+\end{solution}
+
 \begin{exercise}
     Let $x_1,\ldots,x_n$ be standard Chebyshev points. These map to the $z$ variable as $z_i=\phi(x_i)$ for all $i$, where $\phi$ is the transformation defined in 
     \[

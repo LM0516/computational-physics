@@ -1,4 +1,7 @@
 include("../../modules/interpolations.jl")
+include("../../modules/ConsistentPlots.jl")
+
+using .ConsistentPlots
 using .Interpolations
 using LinearAlgebra
 using Plots
@@ -55,11 +58,13 @@ function main()
 
     println("Maximum error: $max_error")
 
+    save_graph(p, "cosh(sinh(x)) graph", "3-4")
     display(p)
     readline()
 end
 
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    initialize_style()
     main()
 end
