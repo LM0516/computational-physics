@@ -140,6 +140,7 @@
     \end{enumerate}
 \end{exercise}
 
+% FIX: Theere is an error in the text of this exercise
 \begin{exercise}
     The Chebyshev points can be used when the interval of interpolation is $[a,b]$ rather than $[-1,1]$ by means of the change of variable {eq}`eq-change-variable-chebyshev-1`. Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes. 
 \end{exercise}
@@ -153,8 +154,10 @@
     \[
       x_i = \frac{b - a}{2} t_i + \frac{a + b}{2}
     \]
-    The polynomial interpolant is evaluated using the barycentric formulation of Lagrange interpolation. When implemented correctly with Chebyshev weights, this provides a numerically stable algorithm capable of evaluating the interpolant in $\mathcal{O}(n)$ operations. All computations are performed using Julia's standard \texttt{Float64} precision.
+    The polynomial interpolant is evaluated using the barycentric formulation of Lagrange interpolation. When implemented correctly with Chebyshev weights, this provides a numerically stable algorithm capable of evaluating the interpolant in $\mathcal{O}(n)$ operations.
 
+    % TODO: Verificare che effettivamente il risultato teorico sia compatibile
+    % con la discussione che sto facendo qui sotto.
     \paragraph{Results}
     The interpolation was performed using $n=40$ nodes over 1000 evaluation points. The maximum absolute error over the interval was found to be:
     \[
@@ -165,7 +168,7 @@
     \begin{center}
         \centering
         \includegraphics[width=0.8\textwidth]{figures/3-4/cosh(sinh(x)) graph.pdf}
-        \caption{Barycentric Chebyshev interpolation of $f(x) = \cosh(\sin x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a logarithmic scale.}
+        \captionof{figure}{Barycentric Chebyshev interpolation of $f(x) = \cosh(\sin x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a logarithmic scale.}
         \label{fig:cheb_interp}
     \end{center}
 
@@ -185,6 +188,28 @@
     Implement this idea to plot an interpolant of $f(z)=(z^2-2z+2)^{-1}$ using $n=30$. Your plot should show $q(z)$ evaluated at 1000 evenly spaced points in $[-6,6]$, with markers at the nodal values (those lying within the $[-6,6]$ window). [Hint: If you prefer avoid dealing with potential infinities consider using the Chebyshev nodes of the first kind.]
 \end{exercise}
 
+\begin{solution}
+  To interpolate $f(z)$ on the infinite domain, we utilize a mapping $\phi: (-1, 1) \to \mathbb{R}$. We employ Chebyshev nodes of the first kind to avoid the singularities at $x = \pm 1$. The inverse mapping is defined as:
+  \[
+      x = \phi^{-1}(z) = \frac{-1 + \sqrt{1 + z^2}}{z}, \quad z \neq 0
+  \]
+  The interpolation $p(x)$ is computed using the barycentric form of the Lagrange interpolant, which provides superior numerical stability for high-order polynomials ($n=30$).
+
+  \paragraph{Results and Visualization}
+  The maximum absolute error recorded over the interval $z \in [-6, 6]$ was $\|f(z) - q(z)\|_{\infty} \approx 4.399 \times 10^{-4}$. As illustrated in Figure \ref{fig:cheb_interp}, the interpolant $q(z)$ tracks the target function with high fidelity.
+
+  \begin{center}
+      \centering
+      \includegraphics[width=0.85\textwidth]{figures/3-4/cheb_interpolation_plot.pdf}
+      \captionof{figure}{Interpolation of $f(z) = (z^2-2z+2)^{-1}$ on the real line using $n=30$ transformed Chebyshev nodes. The markers indicate the nodal points $z_i$ that fall within the viewing window.}
+      \label{fig:cheb_interp}
+  \end{center}
+
+  \paragraph{Discussion}
+  The high accuracy achieved with only 30 nodes is a consequence of the analyticity of $f(z)$ in a neighborhood of the real axis. The transformation $\phi(x)$ effectively concentrates nodes near the "feature" of the function (the peak near $z=1$), while naturally sparsifying nodes in the tails where the function decays towards zero. This prevents the numerical instabilities typically encountered when using large numbers of equidistant points on wide domains.
+\end{solution}
+
+% FIX: Theere is an error in the text of this exercise
 \begin{exercise}
     {prf:ref}`theorem-spectral` assumes that the function being approximated has infinitely many derivatives over $[-1,1]$. But now consider the family of functions $f_m(x)=|x|^m$. 
     \begin{enumerate}
@@ -194,7 +219,3 @@
     \end{enumerate}
 
 \end{exercise}
-
-
-% \subsection{More on Interpolation}
-% \subsection{Least Squares Approximation and Orthogonal Polynomials}

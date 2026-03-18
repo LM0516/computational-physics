@@ -1,4 +1,7 @@
 include("../../modules/interpolations.jl")
+include("../../modules/ConsistentPlots.jl")
+
+using .ConsistentPlots
 using .Interpolations
 using Plots
 using LaTeXStrings
@@ -51,29 +54,30 @@ function main()
                 for x in x_eval]
     
     # Plot
-    p = plot(z_eval, f.(z_eval),
-        label="f(z) = (z² - 2z + 2)⁻¹", linewidth=2,
+    p = plot_generic(z_eval, f.(z_eval),
+        label=L"f(z) = (z^2 - 2z + 2)^{-1}", linewidth=1,
         xlabel="z", ylabel="f(z)",
-        title="Real Line Interpolation via Chebyshev Nodes",
-        legend=:topright)
+        title="Real Line Interpolation via Chebyshev Nodes")
     
-    plot!(p, z_eval, p_interp,
+    plot_add!(p, z_eval, p_interp,
         label="Interpolant q(z)", linewidth=2, linestyle=:dash)
     
     # Mark nodes (only those in [-6,6])
     z_nodes_in_range = z_nodes[findall(z -> -6 ≤ z ≤ 6, z_nodes)]
     scatter!(p, z_nodes_in_range, f.(z_nodes_in_range),
-        label="Nodes in [-6,6]", markersize=5, color=:red)
+        label="Nodes in [-6,6]", markersize=2)
     
     # Compute error
     error = abs.(f.(z_eval) - p_interp)
     max_error = maximum(error)
     println("Maximum interpolation error: $max_error")
     
+    save_graph(p, "cheb_interpolation_plot", "3-4")
     display(p)
     readline()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    initialize_style()
     main()
 end
