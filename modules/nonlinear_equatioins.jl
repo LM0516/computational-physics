@@ -1,10 +1,12 @@
 module NonlinearEquations
 include("../modules/linear_systemsV2.jl")
+include("../modules/ConsistentPlots.jl")
 using LinearAlgebra
 using LaTeXStrings
 using Plots
 using .LinearSystemsV2
-export bisection, bisection_plot, convergence, plot_convergence_analysis, newton_method, secant_method, inverse_quadratic_interpolation
+using .ConsistentPlots
+export bisection, bisection_plot, convergence, plot_convergence_analysis, newton_method, secant_method, inverse_quadratic_interpolation, plot_global_convergence
 
 """
 Finds a root of the function `f` within the interval `[a, b]` using the bisection method.
@@ -25,7 +27,8 @@ end
 """
 Finds a root of the function `f` within the interval `[a, b]` using the bisection method and plots the convergence.
 """
-function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String)
+function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String; save_dir::String="test")
+    initialize_style()
     count = 0
     tol = 1e-14
     epsilon = 1.0
@@ -34,7 +37,7 @@ function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String)
     x_history = Float64[]
 
     # Plot the function
-    p = plot(f, a, b, label=latexstring(f_equation), xlabel=L"x", ylabel=L"y", legend=:topleft)
+    p = plot(f, a, b, label=latexstring(f_equation), xlabel=L"x", ylabel=L"y")
 
     # Plot the zeros
     hline!([0.0], label="")
@@ -59,8 +62,11 @@ function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String)
     end
     sol = 1 / 2 * (a + b)
 
-    scatter!(p, [sol], [f(sol)], label="Exact solution: x = $sol with $count iterations", ms=4)
-    println()
+    label = "Exact solution: x = $sol with $count iterations"
+
+    scatter!(p, [sol], [f(sol)], label=label, ms=4)
+
+    save_graph(p, label, save_dir)
     display(p)
     readline()
 
@@ -103,7 +109,8 @@ Generates a plot to visually analyze the convergence of an iterative method.
 It plots `log10(|ε_{n+1}|)` against `log10(|ε_n|)` and fits a line to determine
 the order of convergence and the asymptotic error constant.
 """
-function plot_convergence_analysis(x, r; skip_initial::Int=0)
+function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="test")
+    initialize_style()
     # Use only the tail of the data
     x_tail = x[skip_initial+1:end]
 
@@ -146,10 +153,9 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0)
         log_eps_n,
         y_fit,
         label="Least-Squares Fit (slope q ≈ $(round(q, digits=3)))",
-        color=:red,
-        linewidth=2
     )
 
+    save_graph(conv_plot, "conv-analysis-with-$skip_initial-skipped", save_dir)
     display(conv_plot)
     readline()
     return conv_plot
@@ -263,6 +269,68 @@ function inverse_quadratic_interpolation(f::Function, x0::Real, x1::Real, x2::Re
     end
 
     return c, x_history
+end
+
+"""
+Plots a_n = -log10|x_n - r| as a function of n, directly addressing the exercise hint.
+It calculates the global asymptotic error constant C from the slope.
+"""
+function plot_global_convergence(x, r; save_dir::String="test")
+    initialize_style()
+    
+    # Calculate absolute errors
+    epsilon = @. abs(x - r)
+    
+    # Filter out exact zeros (usually the very last iteration) to avoid log10(0)
+    valid_indices = epsilon .> 0
+    epsilon = epsilon[valid_indices]
+    
+    # Calculate a_n = -log10(epsilon) as requested by the prompt
+    a_n = @. -log10(epsilon)
+    
+    # Create iteration array n (x-axis)
+    n_iter = collect(1:length(a_n))
+    
+    # Fit a line to find the slope
+    # Since epsilon_n ≈ C^n * epsilon_0, then a_n ≈ -n*log10(C) - log10(epsilon_0)
+    # So the slope of a_n vs n is -log10(C)
+    M = [ones(length(n_iter)) n_iter]
+    intercept, slope = solve_least_squares(M, a_n)
+    
+    # Calculate C from the slope
+    C_global = 10^(-slope)
+    
+    println("Global Analysis based on n vs a_n:")
+    println("Slope ≈ $slope")
+    println("Global Asymptotic error constant C ≈ $C_global")
+    
+    global_plot = scatter(
+        n_iter, 
+        a_n,
+        label=L"Data $(n, a_n)$",
+        xlabel=L"Iteration $n$",
+        ylabel=L"a_n = -\log_{10}|\epsilon_n|",
+        title="Global Convergence Analysis",
+        legend=:topleft,
+        markershape=:circle,
+        markerstrokewidth=0
+    )
+    
+    # Calculate the y-values for the fitted line
+    y_fit = @. intercept + slope * n_iter
+    
+    plot!(
+        global_plot,
+        n_iter,
+        y_fit,
+        label=L"Linear Fit (Slope $\approx$ $(round(slope, digits=3)))"
+    )
+    
+    save_graph(global_plot, "global-convergence-an", save_dir)
+    display(global_plot)
+    readline()
+    
+    return global_plot
 end
 
 end

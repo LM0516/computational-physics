@@ -1,5 +1,7 @@
 \section{Roots of Nonlinear Equations}
+
 \subsection{Bisection Method}
+
 \begin{exercise}
     \begin{enumerate}
         \item Use the bisection method to find the solutions for $x^3 - 7x^2 +
@@ -12,6 +14,91 @@
         x_{n} - r \rvert$ as a function of $n$.]
     \end{enumerate}
 \end{exercise}
+
+\begin{solution}
+  The root-finding problem for the non-linear function $f(x) = x^3 - 7x^2 + 14x - 6$ was computationally investigated over the interval $[0, 1]$ utilizing the bisection method. The iterative process was designed to terminate when the interval width, representing the maximum absolute error, dropped below a strictly defined tolerance of $\texttt{tol} = 10^{-14}$.
+
+  To empirically determine the order of convergence $q$ and the asymptotic error constant $C$, we define the absolute error at the $n$-th iteration as $\epsilon_n = |x_n - r|$, where $r$ is our terminal approximation. Assuming the error propagates according to the asymptotic relation $\epsilon_{n+1} \approx C \epsilon_n^q$, we can linearize the expression via a base-10 logarithm:
+  \[
+      \log_{10}|\epsilon_{n+1}| \approx q \log_{10}|\epsilon_n| + \log_{10}C
+  \]
+  A linear least-squares regression was applied to the sequence of coordinate pairs $(\log_{10}|\epsilon_n|, \log_{10}|\epsilon_{n+1}|)$. Because initial iterations often fall outside the asymptotic regime, we performed a sensitivity analysis by systematically truncating the first $k$ iterations (where $k \in \{1, 3, 5, \dots, 19\}$) to isolate the asymptotic behavior of the sequence's tail.
+
+  \paragraph{Results}
+  The bisection algorithm successfully converged to the root $r \approx 0.5857864376269042$ after 47 iterations. The geometric progression of the root extraction is illustrated in Figure \ref{fig:bisection_exact}.
+
+  \begin{center}
+      \centering
+      % Ensure path matches your standard inclusion macros
+      \includegraphics[width=0.8\linewidth]{figures/4-2/Exact solution: x = 0.5857864376269042 with 47 iterations.pdf}
+      \captionof{figure}{Function plot and the convergence of the bisection method to the exact root after 47 iterations.}
+      \label{fig:bisection_exact}
+  \end{center}
+
+  The empirical evaluation of the order of convergence $q$ and error constant $C$ yielded varied results depending on the truncation of the initial estimates. A selection of these results is tabulated below:
+
+  \begin{center}
+      \centering
+      \renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{cccc}
+          \hline
+          \textbf{Skipped Iterations ($k$)} & \textbf{Analyzed Tail} & \textbf{Convergence Order ($q$)} & \textbf{Error Constant ($C$)} \\
+          \hline
+          1 & 46 & 0.9789 & 0.3431 \\
+          5 & 42 & 0.9744 & 0.3078 \\
+          9 & 38 & 0.9688 & 0.2616 \\
+          15 & 32 & 0.9558 & 0.1822 \\
+          19 & 28 & 0.9391 & 0.1165 \\
+          \hline
+      \end{tabular}
+      \captionof{table}{Empirical convergence parameters $q$ and $C$ as a function of skipped initial iterations.}
+      \label{tab:convergence_params}
+  \end{center}
+
+  The log-log regression for the case where 1 initial iteration was skipped is visually represented in Figure \ref{fig:conv_analysis_1}, yielding $q \approx 0.979$ and $C \approx 0.343$.
+
+  \begin{center}
+      \centering
+      \includegraphics[width=0.8\linewidth]{figures/4-2/conv-analysis-with-1-skipped.pdf}
+      \captionof{figure}{Linear least-squares fit for convergence analysis, skipping the first initial iteration.}
+      \label{fig:conv_analysis_1}
+  \end{center}
+
+  \paragraph{Discussion}
+  The theoretical expectation for the bisection method is strict linear convergence, characterized by an order of $q = 1$ and an asymptotic error constant of $C = 0.5$, reflecting the halving of the search interval at each step. Our empirical findings ($q \approx 0.94 - 0.98$ and $C \approx 0.12 - 0.34$) loosely approximate, but slightly underestimate, these theoretical markers. 
+
+  This discrepancy arises from the nature of the bisection method: while the \textit{maximum bound} of the error decreases monotonically by exactly $1/2$ at each step, the \textit{actual} error $\epsilon_n = |x_n - r|$ does not strictly decrease monotonically. Depending on the geometry of the interval, a given approximation $x_n$ can occasionally land extremely close to the true root early on, introducing high variance and non-smooth progression in the $\log_{10}|\epsilon_n|$ sequence. Consequently, performing a least-squares fit on consecutive actual errors yields a noisy representation of the underlying linear upper bound envelope.
+
+  \paragraph{Global Convergence Analysis}
+  To further validate the linear convergence of the bisection method, we investigated the relationship between the iteration index $n$ and the logarithmic error measure $a_n = -\log_{10}|\epsilon_n|$, as suggested. Under the assumption of linear convergence, the error evolves as $\epsilon_n \approx \epsilon_0 C^n$. Taking the negative base-10 logarithm yields:
+  \[
+      a_n \approx -n \log_{10}(C) - \log_{10}(\epsilon_0)
+  \]
+  This implies that a plot of $a_n$ versus $n$ should yield a linear trajectory with a slope $S = -\log_{10}(C)$. This global perspective is numerically more robust than step-by-step ratios, as it averages the non-monotonic fluctuations inherent in the bisection method over the entire iterative history.
+
+  \paragraph{Results \& Data Visualization}
+  The bisection method converged to $r \approx 0.5857864376269042$ in 47 iterations (Fig. \ref{fig:bisection_exact}). The global convergence analysis (Fig. \ref{fig:global_conv}) shows a highly linear trend ($R^2 \approx 1$). The calculated slope $S \approx 0.301$ corresponds to an empirical error constant of:
+  \[
+      C = 10^{-S} \approx 10^{-0.301} \approx 0.5000
+  \]
+  This result aligns perfectly with the theoretical expectation for the bisection method, where the uncertainty interval is halved ($C = 0.5$) at each step.
+
+  \begin{center}
+      \centering
+      \includegraphics[width=0.8\linewidth]{figures/4-2/global-convergence-an.pdf}
+      \captionof{figure}{Global convergence analysis: $a_n = -\log_{10}|\epsilon_n|$ as a function of the iteration index $n$. The linear fit confirms a steady increase in significant digits.}
+      \label{fig:global_conv}
+  \end{center}
+
+  \paragraph{Discussion}
+  The discrepancy noted in the previous step-by-step analysis—where $q$ and $C$ fluctuated based on the number of skipped iterations—is resolved by the global $a_n$ vs. $n$ approach. While the distance between the midpoint $m_n$ and the true root $r$ can fluctuate non-monotonically (causing "noise" in the $\epsilon_{n+1}/\epsilon_n$ ratio), the maximum possible error is strictly halved. 
+
+  The slope of $a_n$ effectively measures the rate of "information gain" in bits or digits. A slope of $\approx 0.301$ indicates that we gain approximately $0.301$ decimal digits of precision per iteration. Since $\log_{10}(2) \approx 0.30103$, this confirms that each iteration provides exactly one bit of additional precision, consistent with the binary nature of the bisection algorithm. The saturation or slight deviation observed as $n \to 47$ is attributed to the \texttt{Float64} precision limit, where the error $\epsilon_n$ approaches the machine epsilon $\varepsilon_{mach} \approx 2.22 \times 10^{-16}$.
+
+  \paragraph{Conclusion}
+  The bisection implementation proved highly stable, converging to a tight tolerance within the operational limits of double-precision arithmetic. While empirical analysis confirms the fundamentally linear nature of the convergence ($q \to 1$), it also highlights the difference between tracking strict theoretical error bounds versus highly variable actual sequence errors in deterministic interval-halving algorithms.
+
+\end{solution}
 
 \subsection{Newton Method}
 
