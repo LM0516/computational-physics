@@ -33,6 +33,18 @@ function plot_generic(x, y; title="", xlabel="", ylabel="", label="", kwargs...)
 end
 
 """
+Creates a standard 2D scatter plot with optional titles and labels.
+"""
+function scatter_generic(x, y; title="", xlabel="", ylabel="", label="", kwargs...)
+    return scatter(x, y;
+        title=title,
+        xlabel=xlabel,
+        ylabel=ylabel,
+        label=label,
+        kwargs...)
+end
+
+"""
 Adds a line series to an existing plot `p`.
 """
 function plot_add!(p, x, y; label="", kwargs...)

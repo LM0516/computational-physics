@@ -1,8 +1,4 @@
-include("../../modules/interpolations.jl")
-include("../../modules/ConsistentPlots.jl")
-
-using .ConsistentPlots
-using .Interpolations
+using ComputationalPhysics
 using LinearAlgebra
 using Plots
 using LaTeXStrings
@@ -15,7 +11,7 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
     title_str = interp_type == "chebyshev" ? "Barycentric Chebyshev Interpolation" : "Barycentric Lagrange Interpolation"
     
     # Plot for f in log-scale
-    p1 = plot(x_eval_range, f.(x_eval_range),
+    p1 = plot_generic(x_eval_range, make_log_safe(f.(x_eval_range)),
         label="y = $foo", linewidth=1,
         xlabel="x", ylabel=L"\log(y)", title=title_str,
         yaxis=:log, legend=true)
@@ -34,11 +30,11 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
     p_interp = [barycentric_lagrange(x, x_nodes, f, type=interp_type) for x in x_eval_range]
 
     # Plot interpolation
-    plot!(p1, x_eval_range, p_interp,
+    plot_add!(p1, x_eval_range, make_log_safe(p_interp),
         label="n = $n_values nodes", linewidth=1, linestyle=:dash)
 
     # Plot nodes
-    scatter!(p1, x_nodes, f.(x_nodes),
+    scatter_add!(p1, x_nodes, f.(x_nodes),
         label="", markersize=4, color=:black, alpha=0.5)
 
     # Maximum error
@@ -58,13 +54,13 @@ function main()
 
     println("Maximum error: $max_error")
 
-    save_graph(p, "cosh(sinh(x)) graph", "3-4")
+    save_plot(p, "cosh(sinh(x)) graph", "3-4")
     display(p)
     readline()
 end
 
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    initialize_style()
+    plot_init()
     main()
 end

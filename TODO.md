@@ -6,12 +6,6 @@
 ## Review
 - Review all the exercises before writing any other parts of the report.
 
-### Error Analysis
-#### Representation of Arithmetic and Roundoff Errors
-- `es1.jl`
-#### A case study: the quadratic equation
-- `es1.jl`
-- `es2.jl`
 ### Linear Systems
 #### Triangular systems
 - `es1.jl`
@@ -35,7 +29,6 @@
 #### Lagrange–Waring interpolation
 - `es2.jl`
 #### Error on interpolation
-- `es2.jl`
 - `es3.jl`
 - `es4.jl`
 - `es5.jl`

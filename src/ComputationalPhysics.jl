@@ -6,15 +6,18 @@ using Plots
 using Distributions
 using Measures
 using SparseArrays
+using ForwardDiff
 
 # Module for consistent plotting
 include("visualizations.jl")
-export plot_init, plot_generic, plot_add!, scatter_add!, multi_plot
+export plot_init, plot_generic, scatter_generic, plot_add!, scatter_add!, multi_plot
 export plot_comparison, plot_convergence, save_plot, save_gif
 
 # Main modules 
 include("error_analysis.jl")
-export mclaurin_series
+export var_double_pass32, var_double_pass64
+export var_single_pass32, var_single_pass64
+export mclaurin_series, kappa_f
 
 include("linear_systems.jl")
 export forwardsub, forwardcompl, backsub, backcompl, LUdec, LUdecrp, plufact, detplu, condition_number, least_squares, ∞norm

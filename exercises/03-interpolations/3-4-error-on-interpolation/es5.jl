@@ -1,5 +1,4 @@
-include("../../modules/interpolations.jl")
-using .Interpolations
+using ComputationalPhysics
 using Plots
 using LaTeXStrings
 
@@ -101,7 +100,7 @@ function main()
         println("$m  | $nu                      | $(round(observed_slope, digits=3))           | $predicted_slope")
         
         # Plot this curve
-        plot!(p_errors, n_values, errors,
+        plot_add!(p_errors,n_values, make_log_safe(errors),
               label="m = $m (predicted slope ≈ $predicted_slope)",
               marker=:circle,
               linewidth=2.5,
@@ -110,10 +109,12 @@ function main()
     
     println()
     
+    save_plot(p_errors, "convergence-rates", "3-4")
     display(p_errors)
     readline()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    plot_init()
     main()
 end
