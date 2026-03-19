@@ -275,7 +275,7 @@ end
 Plots a_n = -log10|x_n - r| as a function of n, directly addressing the exercise hint.
 It calculates the global asymptotic error constant C from the slope.
 """
-function plot_global_convergence(x, r; save_dir::String="test")
+function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::String="test", plot_name::String="global-convergence-an")
     initialize_style()
     
     # Calculate absolute errors
@@ -323,10 +323,10 @@ function plot_global_convergence(x, r; save_dir::String="test")
         global_plot,
         n_iter,
         y_fit,
-        label=L"Linear Fit (Slope $\approx$ $(round(slope, digits=3)))"
+        label = LaTeXString("Linear Fit (Slope \$\\approx $(round(slope, digits=3))\$)")
     )
     
-    save_graph(global_plot, "global-convergence-an", save_dir)
+    save_graph(global_plot, plot_name, save_dir)
     display(global_plot)
     readline()
     

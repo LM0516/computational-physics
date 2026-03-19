@@ -77,9 +77,9 @@
   This implies that a plot of $a_n$ versus $n$ should yield a linear trajectory with a slope $S = -\log_{10}(C)$. This global perspective is numerically more robust than step-by-step ratios, as it averages the non-monotonic fluctuations inherent in the bisection method over the entire iterative history.
 
   \paragraph{Results \& Data Visualization}
-  The bisection method converged to $r \approx 0.5857864376269042$ in 47 iterations (Fig. \ref{fig:bisection_exact}). The global convergence analysis (Fig. \ref{fig:global_conv}) shows a highly linear trend ($R^2 \approx 1$). The calculated slope $S \approx 0.301$ corresponds to an empirical error constant of:
+  The bisection method converged to $r \approx 0.5857864376269042$ in 47 iterations (Fig. \ref{fig:bisection_exact}). The global convergence analysis (Fig. \ref{fig:global_conv}) shows a highly linear trend ($R^2 \approx 1$). The calculated slope $S \approx 0.299$ corresponds to an empirical error constant of:
   \[
-      C = 10^{-S} \approx 10^{-0.301} \approx 0.5000
+      C = 10^{-S} \approx 10^{-0.299} \approx 0.5000
   \]
   This result aligns perfectly with the theoretical expectation for the bisection method, where the uncertainty interval is halved ($C = 0.5$) at each step.
 
@@ -92,8 +92,6 @@
 
   \paragraph{Discussion}
   The discrepancy noted in the previous step-by-step analysis—where $q$ and $C$ fluctuated based on the number of skipped iterations—is resolved by the global $a_n$ vs. $n$ approach. While the distance between the midpoint $m_n$ and the true root $r$ can fluctuate non-monotonically (causing "noise" in the $\epsilon_{n+1}/\epsilon_n$ ratio), the maximum possible error is strictly halved. 
-
-  The slope of $a_n$ effectively measures the rate of "information gain" in bits or digits. A slope of $\approx 0.301$ indicates that we gain approximately $0.301$ decimal digits of precision per iteration. Since $\log_{10}(2) \approx 0.30103$, this confirms that each iteration provides exactly one bit of additional precision, consistent with the binary nature of the bisection algorithm. The saturation or slight deviation observed as $n \to 47$ is attributed to the \texttt{Float64} precision limit, where the error $\epsilon_n$ approaches the machine epsilon $\varepsilon_{mach} \approx 2.22 \times 10^{-16}$.
 
   \paragraph{Conclusion}
   The bisection implementation proved highly stable, converging to a tight tolerance within the operational limits of double-precision arithmetic. While empirical analysis confirms the fundamentally linear nature of the convergence ($q \to 1$), it also highlights the difference between tracking strict theoretical error bounds versus highly variable actual sequence errors in deterministic interval-halving algorithms.
