@@ -20,7 +20,11 @@ export var_single_pass32, var_single_pass64
 export mclaurin_series, kappa_f
 
 include("linear_systems.jl")
-export forwardsub, forwardcompl, backsub, backcompl, LUdec, LUdecrp, plufact, detplu, condition_number, least_squares, ∞norm
+export forward_substitution, forward_substitution_multiple, backward_substitution, backward_substitution_multiple
+export lu_decomposition, lu_decomposition_pivoting
+export plu_factorization, determinant_plu
+export matrix_condition_number, solve_least_squares
+export qr_mgs, test_qr, qr_mgs_augmented, pure_qr_algorithm, matrix_infinity_norm
 
 include("interpolations.jl")
 export barycentric_lagrange, chi_square, p_value, fit_goodness

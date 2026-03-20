@@ -18,7 +18,7 @@ end
 Finds a root of the function `f` within the interval `[a, b]` using the bisection method and plots the convergence.
 """
 function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String; save_dir::String="test")
-    initialize_style()
+    plot_init()
     count = 0
     tol = 1e-14
     epsilon = 1.0
@@ -56,7 +56,7 @@ function bisection_plot(f::Function, a::Float64, b::Float64, f_equation::String;
 
     scatter!(p, [sol], [f(sol)], label=label, ms=4)
 
-    save_graph(p, label, save_dir)
+    save_plot(p, label, save_dir)
     display(p)
     readline()
 
@@ -100,7 +100,7 @@ It plots `log10(|ε_{n+1}|)` against `log10(|ε_n|)` and fits a line to determin
 the order of convergence and the asymptotic error constant.
 """
 function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="test")
-    initialize_style()
+    plot_init()
     # Use only the tail of the data
     x_tail = x[skip_initial+1:end]
 
@@ -123,7 +123,7 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="
     println("Order of convergence q ≈ $q")
     println("Asymptotic error constant C ≈ $C")
 
-    conv_plot = scatter(
+    conv_plot = scatter_generic(
         log_eps_n,
         log_eps_n1,
         label=L"Data ($\log_{10}|\epsilon_{n+1}|) vs (\log_{10}|\epsilon_n|))$",
@@ -138,14 +138,14 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="
     # Calculate the y-values for the fitted line
     y_fit = @. log10_C + q * log_eps_n
 
-    plot!(
+    plot_add!(
         conv_plot,
         log_eps_n,
         y_fit,
         label="Least-Squares Fit (slope q ≈ $(round(q, digits=3)))",
     )
 
-    save_graph(conv_plot, "conv-analysis-with-$skip_initial-skipped", save_dir)
+    save_plot(conv_plot, "conv-analysis-with-$skip_initial-skipped", save_dir)
     display(conv_plot)
     readline()
     return conv_plot
@@ -266,7 +266,7 @@ Plots a_n = -log10|x_n - r| as a function of n, directly addressing the exercise
 It calculates the global asymptotic error constant C from the slope.
 """
 function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::String="test", plot_name::String="global-convergence-an")
-    initialize_style()
+    plot_init()
     
     # Calculate absolute errors
     epsilon = @. abs(x - r)
@@ -294,7 +294,7 @@ function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::Strin
     println("Slope ≈ $slope")
     println("Global Asymptotic error constant C ≈ $C_global")
     
-    global_plot = scatter(
+    global_plot = scatter_generic(
         n_iter, 
         a_n,
         label=L"Data $(n, a_n)$",
@@ -309,14 +309,14 @@ function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::Strin
     # Calculate the y-values for the fitted line
     y_fit = @. intercept + slope * n_iter
     
-    plot!(
+    plot_add!(
         global_plot,
         n_iter,
         y_fit,
         label = LaTeXString("Linear Fit (Slope \$\\approx $(round(slope, digits=3))\$)")
     )
     
-    save_graph(global_plot, plot_name, save_dir)
+    save_plot(global_plot, plot_name, save_dir)
     display(global_plot)
     readline()
     

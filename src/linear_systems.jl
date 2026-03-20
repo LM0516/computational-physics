@@ -1,36 +1,36 @@
 """
-Solves the equation Lx = b for x using forward substitution.
+Solve the lower triangular system Lx = b using forward substitution.
 """
-function forwardsub(L::Matrix, b)
-    len = length(b)
-    x = zeros(Float64, len)
-    for i in 1:len
+function forward_substitution(L::Matrix, b::Vector)
+    n = length(b)
+    x = zeros(Float64, n)
+    for i in 1:n
         x[i] = (b[i] - dot(L[i, 1:i-1], x[1:i-1])) / L[i, i]
     end
     return x
 end
 
 """
-Solves the equation LX = B for X using forward substitution for multiple right-hand sides.
+Solve the lower triangular system LX = B for multiple right-hand sides using forward substitution.
 """
-function forwardcompl(L::Matrix, B::Matrix)
+function forward_substitution_multiple(L::Matrix, B::Matrix)
     n_row, n_col = size(B)
     X = zeros(Float64, n_row, n_col)
     for j in 1:n_col
-        X[:, j] = forwardsub(L, B[:, j])
+        X[:, j] = forward_substitution(L, B[:, j])
     end
     return X
 end
 
 """
-Solves the equation Ux = b for x using backward substitution.
+Solve the upper triangular system Ux = b using backward substitution.
 """
-function backsub(U::Matrix, b)
-    len = length(b)
-    x = zeros(Float64, len)
-    for i in len:-1:1
-        if i < len
-            x[i] = (b[i] - dot(U[i, i+1:len], x[i+1:len])) / U[i, i]
+function backward_substitution(U::Matrix, b::Vector)
+    n = length(b)
+    x = zeros(Float64, n)
+    for i in n:-1:1
+        if i < n
+            x[i] = (b[i] - dot(U[i, i+1:n], x[i+1:n])) / U[i, i]
         else
             x[i] = b[i] / U[i, i]
         end
@@ -39,138 +39,254 @@ function backsub(U::Matrix, b)
 end
 
 """
-Solves the equation UX = B for X using backward substitution for multiple right-hand sides.
+Solve the upper triangular system UX = B for multiple right-hand sides using backward substitution.
 """
-function backcompl(U::Matrix, B::Matrix)
+function backward_substitution_multiple(U::Matrix, B::Matrix)
     n_row, n_col = size(B)
     X = zeros(Float64, n_row, n_col)
     for j in 1:n_col
-        X[:, j] = backward_sub(U, B[:, j])
+        X[:, j] = backward_substitution(U, B[:, j])
     end
     return X
 end
 
 """
-Compute an LU decomposition of a square Float64 matrix A without pivoting.
+Compute an LU decomposition of a square matrix A without pivoting: A = LU.
+Uses Gaussian elimination without row pivoting to decompose A into the product of 
+a lower triangular matrix L and an upper triangular matrix U.
 """
-function LUdec(A::Matrix{Float64})::Tuple{Matrix{Float64}, Matrix{Float64}}
-    dim = size(A, 1)
-    L = Matrix{Float64}(I, dim, dim)
-    U = zeros(dim, dim)
-
+function lu_decomposition(A::Matrix{Float64})
+    n = size(A, 1)
+    L = diagm(ones(n))
+    U = zeros(n, n)
     A_work = copy(A)
 
-    for i in 1:dim-1
+    for i in 1:n-1
         U[i, :] = A_work[i, :]
         L[:, i] = A_work[:, i] / U[i, i]
         A_work -= L[:, i] * U[i, :]'
     end
-    U[dim, dim] = A_work[dim, dim]
+    U[n, n] = A_work[n, n]
+
     return L, U
 end
 
 """
-Compute an LU decomposition of a square Float64 matrix A using partial (row) pivoting.
+Compute an LU decomposition of a square matrix A using partial row pivoting: PA = LU.
 """
-function LUdecrp(A::Matrix{Float64})
-    #= LU decomposition with row pivoting =#
+function lu_decomposition_pivoting(A::Matrix{Float64})
     n = size(A, 1)
-    L_prime, U = zeros(n, n), zeros(n, n)
+    L_prime = zeros(n, n)
+    U = zeros(n, n)
     pivot_rows = zeros(Int, n)
     A_work = copy(A)
-    # Perform the decomposition
+
+    # Perform decomposition with pivoting
     for i in 1:n
-        # Select pivot row
         pivot_rows[i] = argmax(abs.(A_work[:, i]))
-        # Swap rows in working matrix
         U[i, :] = A_work[pivot_rows[i], :]
-        # Build L'
         L_prime[:, i] = A_work[:, i] / U[i, i]
-        # Update working matrix
         A_work -= L_prime[:, i] * U[i, :]'
     end
-    # Build permutation matrix P and final L
-    P = Matrix(I, n, n)
-    # Reorder rows of P according to pivot_rows
+
+    # Build permutation matrix P
+    P = Matrix{Float64}(I, n, n)
     P = P[pivot_rows, :]
+
+    # Compute final L with unit diagonal
     L = P * L_prime
+
     return P, L, U
 end
 
-# BUG: Sistemare algorimo, questo è sbagliato
 """
-Compute an LU decomposition of a square Float64 matrix A using partial (row) pivoting.
+Compute a PLU factorization of a square matrix A using partial row pivoting.
 """
-function plufact(A::Matrix{Float64})
+function plu_factorization(A::Matrix{Float64})
     n = size(A, 1)
-    L_prime, U = zeros(n, n), zeros(n, n)
+    L_prime = zeros(n, n)
+    U = zeros(n, n)
     p = collect(1:n)
     A_work = copy(A)
+
     for i in 1:n
+        # Find pivot in column i from row i onward
         pivot_index = argmax(abs.(A_work[i:n, i])) + i - 1
+
+        # Swap in permutation vector
         p[i], p[pivot_index] = p[pivot_index], p[i]
+
+        # Swap rows in working matrix
         A_work[i, :], A_work[pivot_index, :] = A_work[pivot_index, :], A_work[i, :]
+
+        # Store in U and L_prime
         U[i, :] = A_work[i, :]
         L_prime[:, i] = A_work[:, i] / U[i, i]
+
+        # Update working matrix
         A_work -= L_prime[:, i] * U[i, :]'
     end
+
     return L_prime, U, p
 end
 
 """
-Compute an LU decomposition of a square Float64 matrix A using partial (row) pivoting.
+Compute the determinant of a square matrix using PLU factorization.
 """
-function detplu(A)
-    _, U, p = plufact(A)
-    d = prod(diag(U))
-    S = 0
+function determinant_plu(A::Matrix{Float64})
+    _, U, p = plu_factorization(A)
+
+    # Determinant is product of diagonal of U
+    det = prod(diag(U))
+
+    # Count number of swaps to adjust sign
+    num_swaps = 0
     for i in 1:length(p)
         while p[i] != i
+            # Swap to move element to correct position
             p[p[i]], p[i] = p[i], p[p[i]]
-            S += 1
+            num_swaps += 1
         end
     end
-    d *= (-1)^S
-    return d
+
+    # Adjust sign based on number of swaps
+    det *= (-1)^num_swaps
+
+    return det
 end
 
 """
-Compute the matrix one norm (induced 1-norm), defined as the maximum absolute column sum of A.
+Compute the matrix 1-norm (maximum absolute column sum).
 """
-function onenorm(A::Matrix{Float64})
+function matrix_one_norm(A::Matrix{Float64})
     return maximum(sum(abs, A, dims=1))
 end
 
 """
-Compute the matrix infinity norm (induced ∞-norm), defined as the maximum absolute row sum of A.
+Compute the matrix ∞-norm (maximum absolute row sum).
 """
-function ∞norm(A::Matrix{Float64})
+function matrix_infinity_norm(A::Matrix{Float64})
     return maximum(sum(abs, A, dims=2))
 end
 
 """
-Calculate the condition number using `onenorm` or `infinity norm`.
-The smallest value a condition number can have is 1. In that case, the relative perturbation of 
-the solution has the same size as that of the data.
+Compute the condition number of a square invertible matrix A.
 """
-function condition_number(A::Matrix{Float64}, norm_type::Symbol=:one)
+function matrix_condition_number(A::Matrix{Float64}, norm_type::Symbol=:one)
     if norm_type == :one
-        nor_function = onenorm
+        norm_func = matrix_one_norm
     elseif norm_type == :infinity
-        nor_function = ∞norm
+        norm_func = matrix_infinity_norm
     else
         error("Unsupported norm type. Use :one or :infinity.")
     end
-    return nor_function(A) * nor_function(inv(A))
+
+    return norm_func(A) * norm_func(inv(A))
 end
 
-function least_squares(A::Matrix, b)
-    N = A' * A
-    z = A' * b
+"""
+Solve the linear least squares problem min ||Ax - b||₂ using normal equations.
+"""
+function solve_least_squares(A::Matrix, b::Vector)
+    # Form normal equations: A'Ax = A'b
+    N = A' * A  # Gram matrix (n×n)
+    z = A' * b  # Projected right-hand side (length n)
 
-    L, U = LUdec(Matrix{Float64}(N))
-    c = forwardsub(L, z)
-    x = backsub(U, c)
+    # Solve Nx = z using LU decomposition
+    L, U = lu_decomposition(Matrix{Float64}(N))
+    c = forward_substitution(L, z)
+    x = backward_substitution(U, c)
 
     return x
+end
+
+"""
+Compute the thin QR decomposition of matrix A using the Modified Gram-Schmidt algorithm.
+Returns Q̂ (m×n ONC matrix) and R̂ (n×n upper triangular matrix) such that A = Q̂R̂.
+"""
+function qr_mgs(A)
+    m, n = size(A)
+
+    # Check dimensions
+    if m < n
+        error("Matrix must have m ≥ n for thin QR decomposition")
+    end
+
+    # Initialize Q and R
+    Q = zeros(m, n)
+    R = zeros(n, n)
+    V = copy(A)
+
+    # Modified Gram-Schmidt procedure
+    for j in 1:n
+        # Start with v_j^(1) = a_j (already in V[:, j])
+
+        # Apply projectors P_⊥q_i for i = 1, ..., j-1
+        for i in 1:j-1
+            # Compute r_ij = q_i^T * v_j^(i)
+            R[i, j] = dot(Q[:, i], V[:, j])
+
+            # Update v_j^(i+1) = v_j^(i) - q_i * (q_i^T * v_j^(i))
+            V[:, j] -= R[i, j] * Q[:, i]
+        end
+
+        # Compute r_jj = ||v_j||
+        R[j, j] = norm(V[:, j])
+
+        # Normalize to get q_j = v_j / ||v_j||
+        Q[:, j] = V[:, j] / R[j, j]
+    end
+
+    return Q, R
+end
+
+
+# Q-less QR for augmented matrix
+function qr_mgs_augmented(A::Matrix{T}, b::Vector{T}) where T<:Real
+    m, n = size(A)
+    A_aug = hcat(A, b)
+    Q_aug, R_aug = qr_mgs(A_aug)
+
+    R = R_aug[1:n, 1:n]
+    z = R_aug[1:n, n+1]
+
+    return R, z
+end
+
+# Pure QR Algorithm
+function pure_qr_algorithm(A; max_iter=1000, tol=1e-10)
+    n = size(A, 1)
+    A_k = copy(A)
+    Q_total = Matrix{Float64}(I, n, n)
+
+    for k in 1:max_iter
+        # QR decomposition of A^(k-1)
+        Q_k, R_k = qr_mgs(A_k)
+
+        # Recombine in reverse order: A^(k) = R^(k) Q^(k)
+        A_k_new = R_k * Q_k
+
+        # Accumulate eigenvector matrix
+        Q_total = Q_total * Q_k
+
+        # Check convergence (off-diagonal elements should go to zero)
+        off_diag_norm = 0.0
+        for i in 1:n
+            for j in 1:n
+                if i != j
+                    off_diag_norm += abs(A_k_new[i, j])
+                end
+            end
+        end
+
+        if off_diag_norm < tol
+            println("Converged after $k iterations")
+            return diag(A_k_new), Q_total, k
+        end
+
+        A_k = A_k_new
+    end
+
+    println("Warning: Did not converge within $max_iter iterations")
+    return diag(A_k), Q_total, max_iter
 end
