@@ -1,9 +1,8 @@
-include("../../modules/numerical_integration.jl")
-using .NumericalIntegration
+using ComputationalPhysics
 using Plots
 using SpecialFunctions
 
-function solutions(f::Function, a::Real, b::Real, exact::Real, function_name)
+function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fig_name::String="test")
     sol = zeros(19)
     alt = zeros(19)
     i = 1
@@ -20,10 +19,11 @@ function solutions(f::Function, a::Real, b::Real, exact::Real, function_name)
     alt_err = @. log(abs(alt - exact))
 
     println("Plotting the errors...")
-    p = scatter(err, label=function_name)
-    scatter!(alt_err, label="Clenshaw-Curtis")
+    p = scatter_generic(1:length(err), err, label=function_name)
+    scatter_add!(p, 1:length(alt_err), alt_err, label="Clenshaw-Curtis")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Error")
+    save_plot(p, "clenshaw-curtis-plot-$fig_name", "5-3")
     display(p)
     readline()
 end
@@ -34,28 +34,28 @@ function main()
     a1 = -1
     b1 = 1
     exact_sol1 = sinh(4) / 2
-    solutions(f1, a1, b1, exact_sol1, L"\frac{\sinh(4)}{2}")
+    solutions(f1, a1, b1, exact_sol1, L"\frac{\sinh(4)}{2}", fig_name="1")
 
     # exp(-9x^2)
     f2 = x -> exp(-9x^2)
     a2 = -1
     b2 = 1
     exact_sol2 = sqrt(pi) * erf(3) / 3
-    solutions(f2, a2, b2, exact_sol2, L"\exp(-9x^2)")
+    solutions(f2, a2, b2, exact_sol2, L"\exp(-9x^2)", fig_name="2")
 
     # sech(x)
     f3 = x -> sech(x)
     a3 = -1
     b3 = 1
     exact_sol3 = 2 * atan(sinh(1))
-    solutions(f3, a3, b3, exact_sol3, L"sech(x)")
+    solutions(f3, a3, b3, exact_sol3, L"sech(x)", fig_name="3")
 
     # 1 / (1 + 9x^2)
     f4 = x -> 1 / (1 + 9x^2)
     a4 = -1
     b4 = 1
     exact_sol4 = 2 / 3 * atan(3)
-    solutions(f4, a4, b4, exact_sol4, L"\frac{1}{1 + 9x^2}")
+    solutions(f4, a4, b4, exact_sol4, L"\frac{1}{1 + 9x^2}", fig_name="4")
 
     # x^2 sin(8x)
     f5_original = x -> x^2 * sin(8x)
@@ -70,9 +70,10 @@ function main()
     a5 = -1
     b5 = 1
     exact_sol5 = -(3 * π^2) / 32
-    solutions(f5, a5, b5, exact_sol5, L"x^2 \sin(8x)")
+    solutions(f5, a5, b5, exact_sol5, L"x^2 \sin(8x)", fig_name="5")
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
+    plot_init()
     main()
 end

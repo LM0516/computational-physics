@@ -1,10 +1,9 @@
-include("../../modules/numerical_integration.jl")
-using .NumericalIntegration
+using ComputationalPhysics
 using Plots
 using SpecialFunctions
 using LaTeXStrings
 
-function solutions(f::Function, exact::Real, function_name)
+function solutions(f::Function, exact::Real, function_name; fig_name::String="test")
     errors = Float64[]
     num_nodes_values = Vector{Float64}(undef, 29)
     errors = zeros(Float64, 29)
@@ -30,10 +29,11 @@ function solutions(f::Function, exact::Real, function_name)
         i += 1
     end
 
-    p = scatter(num_nodes_values, errors, label=function_name, yaxis=:log, marker=:circle, legend=:bottomleft)
+    p = scatter_generic(num_nodes_values, errors, label=function_name, yaxis=:log, marker=:circle, legend=:bottomleft)
     xlabel!(p, "Number of nodes (N)")
     ylabel!(p, "Absolute Error")
     title!(p, "Error vs. Number of Nodes")
+    save_plot(p, "double-exponential-quadrature-$fig_name", "5-3")
     display(p)
     readline()
 end
@@ -74,14 +74,15 @@ function main()
     exact_int5 = sqrt(π)
 
     # Solutions
-    solutions(g1, exact_int1, L"\frac{1}{1 + x^2 + x^4}")
-    solutions(g2, exact_int2, L"\exp(-x^2) \cos(x)")
-    solutions(g3, exact_int3, L"(1 + x^2)^{-\frac{2}{3}}")
-    solutions(g4, exact_int4, L"\frac{1}{1 + x^2}")
-    solutions(g5, exact_int5, L"\frac{\exp(-x)}{\sqrt{x}}")
+    solutions(g1, exact_int1, L"\frac{1}{1 + x^2 + x^4}", fig_name="1")
+    solutions(g2, exact_int2, L"\exp(-x^2) \cos(x)", fig_name="2")
+    solutions(g3, exact_int3, L"(1 + x^2)^{-\frac{2}{3}}", fig_name="3")
+    solutions(g4, exact_int4, L"\frac{1}{1 + x^2}", fig_name="4")
+    solutions(g5, exact_int5, L"\frac{\exp(-x)}{\sqrt{x}}", fig_name="5")
 
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
+    plot_init()
     main()
 end

@@ -1,7 +1,7 @@
-include("../../modules/numerical_integration.jl")
-using .NumericalIntegration
+using ComputationalPhysics
 using GaussQuadrature
 
+# FIX: Something's wrong with this, I think it's missing the plot
 function check_results(r::Vector{Float64}, w::Vector{Float64}, n::Int)
     println("Checking results for n = $n...")
     real_nodes, real_weights = legendre(n)

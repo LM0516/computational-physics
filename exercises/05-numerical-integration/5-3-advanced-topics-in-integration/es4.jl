@@ -1,5 +1,4 @@
-include("../../modules/numerical_integration.jl")
-using .NumericalIntegration
+using ComputationalPhysics
 using Plots
 using SpecialFunctions
 using LaTeXStrings
@@ -38,16 +37,17 @@ function glq_solutions(f::Function, a::Real, b::Real, n::Int)
     return sum(mapped_weights .* f.(mapped_nodes))
 end
 
-function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float64}, exact::Float64, function_eq)
+function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float64}, exact::Float64, function_eq; fig_name="test")
     println("Calculating the errors...")
     glq_err = @. log(abs(glq_integrals - exact))
     deq_err = @. log(abs(deq_integrals - exact))
 
     println("Plotting the errors...")
-    p = scatter(glq_err, label="Gauss-Legendre integration", title=function_eq)
-    scatter!(deq_err, label="Double exponential quadrature integration")
+    p = scatter_generic(1:length(glq_err), glq_err, label="Gauss-Legendre integration", title=function_eq)
+    scatter_add!(p, 1:length(deq_err), deq_err, label="Double exponential quadrature integration")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Errors")
+    save_plot(p, "comparison-gl-deq-$fig_name", "5-3")
     display(p)
     readline()
 end
@@ -95,6 +95,7 @@ function main()
     # La versione con gli estermi giusti da warning perchè decade troppo lentamente e quindi gli viene assegnato
     # un valore di t_m prestabilito, tm = 10, scelto in modo arbitrario.
 
+    count = 1
     for f in functions
         println("Function: $(f.label)")
         i = 1
@@ -106,8 +107,9 @@ function main()
             deq_sol[i] = deq_solutions(f.f, f.a, f.b, Int(N))
             i += 1
         end
-        plot_errors(glq_sol, deq_sol, f.exact, f.label)
+        plot_errors(glq_sol, deq_sol, f.exact, f.label; fig_name=count)
         println("="^60)
+        count+=1
     end
 end
 

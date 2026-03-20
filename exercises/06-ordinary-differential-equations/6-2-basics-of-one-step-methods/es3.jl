@@ -1,5 +1,4 @@
-include("../../modules/ode.jl")
-using .ODE
+using ComputationalPhysics
 using Plots
 using LaTeXStrings
 
@@ -22,8 +21,8 @@ function main()
             b=1.5,
             u0=[2.0, -1.0],
             g=t -> [
-                exp(2t) + exp(-2t) - t,       # y(t)
-                2 * exp(2t) - 2 * exp(-2t) - 1    # y'(t)
+                exp(2t) + exp(-2t) - t,          # y(t)
+                2 * exp(2t) - 2 * exp(-2t) - 1   # y'(t)
             ],
             title=L"y'' - 4y = 4t"
         ),
@@ -34,7 +33,7 @@ function main()
             u0=[1.0, 0.75],
             g=t -> [
                 (3t + 5 / 4) * exp(-2t) + (t - 1) / 4,      # y(t)
-                (3 - 2 * (3t + 5 / 4)) * exp(-2t) + 1 / 4     # y'(t)
+                (3 - 2 * (3t + 5 / 4)) * exp(-2t) + 1 / 4   # y'(t)
             ],
             title=L"y'' + 4y' + 4y = t"
         )
@@ -55,28 +54,29 @@ function main()
         yp_exact = [val[2] for val in exact]
 
         # Plot solution and derivative
-        p1 = plot(t, y_num, label="Numerical y(t)", xlabel="Time (t)", ylabel="Value", title=func.title, lw=2)
-        plot!(p1, t, yp_num, label="Numerical y'(t)", lw=2, linestyle=:dash)
-        plot!(p1, t, y_exact, label="Exact y(t)", color=:black, linestyle=:dot)
-        plot!(p1, t, yp_exact, label="Exact y'(t)", color=:grey, linestyle=:dot)
+        p1 = plot_generic(t, y_num, label="Numerical y(t)", xlabel="Time (t)", ylabel="Value", title=func.title, lw=2)
+        plot_add!(p1, t, yp_num, label="Numerical y'(t)", lw=2, linestyle=:dash)
+        plot_add!(p1, t, y_exact, label="Exact y(t)", color=:black, linestyle=:dot)
+        plot_add!(p1, t, yp_exact, label="Exact y'(t)", color=:grey, linestyle=:dot)
 
+        save_plot(p1, "euler-method-es3-$i", "6-2")
         display(p1)
-        println("Press Enter to see error plot for problem $(i)...")
         readline()
 
         # Plot errors
         error_y = abs.(y_num .- y_exact)
         error_yp = abs.(yp_num .- yp_exact)
 
-        p2 = plot(t, error_y, label="Error y(t)", xlabel="Time (t)", ylabel="Absolute Error", title="Error for $(func.title)", lw=2)
-        plot!(p2, t, error_yp, label="Error y'(t)", lw=2, linestyle=:dash)
+        p2 = plot_generic(t, error_y, label="Error y(t)", xlabel="Time (t)", ylabel="Absolute Error", title="Error for $(func.title)", lw=2)
+        plot_add!(p2, t, error_yp, label="Error y'(t)", lw=2, linestyle=:dash)
 
+        save_plot(p2, "euler-method-error-es3-$i", "6-2")
         display(p2)
-        println("Press Enter to continue...")
         readline()
     end
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
+    plot_init()
     main()
 end

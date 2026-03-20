@@ -1,5 +1,4 @@
-include("../../modules/numerical_integration.jl")
-using .NumericalIntegration
+using ComputationalPhysics
 using Plots
 using LaTeXStrings
 
@@ -20,7 +19,7 @@ function solutions(a::Real, b::Real, f::Function, nodes, label, exact; rule::Str
     end
 
     # Plot solutions
-    p = scatter(nodes, s, label=label)
+    p = scatter_generic(nodes, s, label=label)
     hline!([exact], label="Exact solution: $(round(exact, digits=4))", linestyle=:dash)
     xlabel!("Nodes")
     ylabel!("Solution")
@@ -109,23 +108,27 @@ function main()
     println("Solution: $(s6[end])")
     rp6, ap6 = errors(s6, exact6)
 
+    # FIX: Improve this plots, there are too many on one page, think of splitting them
+    # TODO: Save the plot for the report
+
     # Show the results
-    p_results = plot(p1, p2, p3, p4, p5, p6, layout=(2, 3), size=(1200, 800))
+    p_results = multi_plot(p1, p2, p3, p4, p5, p6, layout=(2, 3), size=(1200, 800))
     display(p_results)
     readline()
 
     # Show the relative errors
-    p_relative = plot(rp1, rp2, rp3, rp4, rp5, rp6, layout=(2, 3), size=(1200, 800))
+    p_relative = multi_plot(rp1, rp2, rp3, rp4, rp5, rp6, layout=(2, 3), size=(1200, 800))
     display(p_relative)
     readline()
 
     # Show the absolute errors
-    p_absolute = plot(ap1, ap2, ap3, ap4, ap5, ap6, layout=(2, 3), size=(1200, 800))
+    p_absolute = multi_plot(ap1, ap2, ap3, ap4, ap5, ap6, layout=(2, 3), size=(1200, 800))
     display(p_absolute)
     readline()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    plot_init()
     main()
 end
 
