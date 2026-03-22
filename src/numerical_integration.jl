@@ -47,8 +47,8 @@ function composite_simpson(a::Real, b::Real, f::Function, m::Int)
 end
 
 function gauss_legendre_quadrature(n::Int; a::Real=-1.0, b::Real=1.0)
-    nodes = zeros(n)
-    weights = zeros(n)
+    nodes = Vector{Float64}(undef, n)
+    weights = Vector{Float64}(undef, n)
 
     function P(x, degree)
         p0, p1 = 1.0, x
@@ -102,7 +102,7 @@ function clenshaw_curtis_rule(f::Function, n::Int)
     nodes = cos.(θ)
 
     # Calculate weights
-    weights = zeros(n + 1)
+    weights = Vector{Float64}(undef, n + 1)
     for k in 0:n
         ck_val = (k == 0 || k == n) ? 1.0 : 2.0
 
