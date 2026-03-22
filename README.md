@@ -1,94 +1,108 @@
 # Computational Physics
 
-A collection of numerical methods and exercises written in **Julia**, developed as part of a Computational Physics course. Each topic includes from-scratch implementations of core algorithms, worked exercises, and a companion LaTeX report.
+A collection of numerical methods and exercises written in **Julia**, developed as part of a Computational Physics course. Algorithms are implemented from scratch, paired with worked exercises and a companion LaTeX report.
 
 ## Topics
 
 | # | Topic | Key Algorithms |
-|---|-------|---------------|
-| 1 | **Error Analysis** | Machine epsilon, roundoff errors, quadratic equation stability |
-| 2 | **Linear Systems** | Forward/backward substitution, LU decomposition (with/without pivoting), QR decomposition, condition numbers, least squares |
-| 3 | **Interpolations** | Polynomial interpolation, Lagrange–Waring (barycentric formula), Chebyshev nodes, interpolation error analysis |
-| 4 | **Roots of Nonlinear Equations** | Bisection method, Newton's method, secant method, inverse quadratic interpolation, convergence analysis |
-| 5 | **Numerical Integration** | Composite trapezoidal & Simpson rules, Gauss–Legendre quadrature, Clenshaw–Curtis rule, double-exponential quadrature |
-| 6 | **Ordinary Differential Equations** | Euler method, improved Euler (IE2), Runge–Kutta (RK4), Schrödinger equation solver, three-body problem |
+|---|-------|----------------|
+| 1 | **Error Analysis** | Machine epsilon, roundoff errors, stable quadratic formula |
+| 2 | **Linear Systems** | Forward/backward substitution, LU decomposition (with/without pivoting), QR (MGS), condition numbers, least squares |
+| 3 | **Interpolation** | Barycentric Lagrange interpolation, Chebyshev nodes, χ² fit quality |
+| 4 | **Roots of Nonlinear Equations** | Bisection, Newton, secant, inverse quadratic interpolation, convergence analysis |
+| 5 | **Numerical Integration** | Composite trapezoidal & Simpson, Gauss–Legendre, Fejér, Clenshaw–Curtis, double-exponential |
+| 6 | **Ordinary Differential Equations** | Euler, improved Euler (IE2), Runge–Kutta (RK4), Schrödinger equation solver, three-body problem |
 
 ## Repository Structure
 
 ```
-├── 01 - Error Analysis/          # Exercises on floating-point arithmetic
-├── 02 - Linear Systems/          # LU, QR, least squares exercises
-├── 03 - Interpolations/          # Lagrange interpolation exercises
-├── 04 - Roots of Nonlinear Equations/  # Root-finding exercises
-├── 05 - Numerical Integration/   # Quadrature exercises
-├── 06 - Ordinary Differential Equations/  # ODE solver exercises
-├── modules/                      # Reusable Julia modules
-│   ├── linear_systems.jl         # Linear algebra routines
-│   ├── interpolations.jl         # Barycentric Lagrange interpolation
-│   ├── nonlinear_equatioins.jl   # Root-finding methods & convergence tools
-│   ├── numerical_integration.jl  # Quadrature rules
-│   ├── ode.jl                    # ODE solvers (Euler, IE2, RK4)
-│   ├── schrodinger_equation.jl   # 1D Schrödinger equation solver
-│   ├── ConsistentPlots.jl        # Uniform plotting style across all graphs
+computational-physics/
+├── src/                              # Julia package source (ComputationalPhysics module)
+│   ├── ComputationalPhysics.jl       # Main module — re-exports all submodules
+│   ├── error_analysis.jl             # Variance estimators, Maclaurin series, condition number
+│   ├── linear_systems.jl             # LU/PLU, QR, substitution, norms, least squares
+│   ├── interpolations.jl             # Barycentric Lagrange, χ², p-value, fit quality
+│   ├── nonlinear_equatioins.jl       # Bisection, Newton, secant, IQI, convergence tools
+│   ├── numerical_integration.jl      # Trapezoidal, Simpson, GL, Fejér, CC, DE quadrature
+│   ├── ode.jl                        # Euler, IE2, RK4 for scalar and vector-valued ODEs
+│   ├── schrodinger_equation.jl       # Sparse Hamiltonian, 1D solver, reflection/transmission
+│   ├── visualizations.jl             # Consistent plot style and save helpers
+│   └── helpers.jl                    # Utility functions (e.g., make_log_safe)
+├── exercises/                        # One subdirectory per course topic
+│   ├── 01-error-analysis/
+│   ├── 02-linear-systems/
+│   ├── 03-interpolations/
+│   ├── 04-roots-of-nonlinear-equations/
+│   ├── 05-numerical-integration/
+│   └── 06-ordinary-differential-equations/
+├── notebooks/                        # Jupyter/Pluto notebooks for exploration
+│   ├── 3body_problem.ipynb
 │   └── ...
-├── report/                       # LaTeX report with full solutions
+├── test/                             # Test suite
+│   ├── runtests.jl                   # Standard Julia test entry point
+│   ├── test_suite.jl
+│   └── test_all.sh
+├── report/                           # LaTeX report with full write-ups
 │   ├── main.tex
 │   └── chapters/
-├── tests/                        # Test suite & notebooks
-│   ├── test_suite.jl
-│   ├── test_all.sh
-│   └── 3body_problem.ipynb
-└── gif/                          # Animated visualizations
+├── output/                           # Generated figures and GIFs
+├── Project.toml                      # Julia package manifest
+└── Manifest.toml
 ```
 
 ## Modules
 
-All reusable implementations live in the `modules/` directory and are structured as Julia modules that can be included in any exercise:
+All implementations live in `src/` and are exposed through the `ComputationalPhysics` package. Include the package in any exercise with `using ComputationalPhysics`.
 
-- **`LinearSystems`** — Forward/backward substitution, LU decomposition (no pivoting, row pivoting), PLU factorization, determinant via PLU, matrix norms, condition number, least squares.
-- **`Interpolations`** — Barycentric Lagrange interpolation with support for equispaced and Chebyshev nodes.
-- **`NonlinearEquations`** — Bisection, Newton, secant, and inverse quadratic interpolation methods. Includes convergence order analysis and plotting utilities.
-- **`NumericalIntegration`** — Composite trapezoidal & Simpson rules, Gauss–Legendre quadrature, Fejér rule, Clenshaw–Curtis rule, double-exponential quadrature.
-- **`ODE`** — Euler method, improved Euler (IE2), and 4th-order Runge–Kutta (RK4) for scalar and vector-valued ODEs.
-- **`SchrodingerEquation`** — Time-independent Hamiltonian construction (sparse matrices), 1D Schrödinger solver via RK4, reflection/transmission coefficient computation, wavefunction visualization.
-- **`ConsistentPlots`** — Shared plotting defaults and helper functions for uniform graph style across all exercises.
+| Module file | Exported functions |
+|---|---|
+| `error_analysis.jl` | `var_double_pass32/64`, `var_single_pass32/64`, `mclaurin_series`, `kappa_f` |
+| `linear_systems.jl` | `forward_substitution`, `backward_substitution`, `lu_decomposition`, `lu_decomposition_pivoting`, `plu_factorization`, `determinant_plu`, `matrix_condition_number`, `solve_least_squares`, `qr_mgs`, `pure_qr_algorithm`, `matrix_infinity_norm` |
+| `interpolations.jl` | `barycentric_lagrange`, `chi_square`, `p_value`, `fit_goodness` |
+| `nonlinear_equatioins.jl` | `bisection`, `newton_method`, `secant_method`, `inverse_quadratic_interpolation`, `convergence`, `plot_convergence_analysis`, `plot_global_convergence` |
+| `numerical_integration.jl` | `composite_trapezoidal`, `composite_simpson`, `gauss_legendre_quadrature`, `fajer_rule`, `clenshaw_curtis_rule`, `double_exponential_quadrature` |
+| `ode.jl` | `euler_method`, `ie2`, `rk4` |
+| `schrodinger_equation.jl` | `t_independent_hamiltonian`, `schrodinger_solver1D`, `plot_snapshots`, `compute_RT` |
+| `visualizations.jl` | `plot_init`, `plot_generic`, `scatter_generic`, `plot_add!`, `scatter_add!`, `multi_plot`, `plot_comparison`, `plot_convergence`, `save_plot`, `save_gif` |
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Julia](https://julialang.org/downloads/) (≥ 1.6)
-- Julia packages: `LinearAlgebra`, `Plots`, `LaTeXStrings`, `SparseArrays`, `Measures`, `Distributions`
+- [Julia](https://julialang.org/downloads/) ≥ 1.10
+- Dependencies are managed by `Project.toml` — no manual installation needed.
+
+### Install dependencies
+
+```bash
+julia --project=. -e "using Pkg; Pkg.instantiate()"
+```
 
 ### Running an Exercise
 
-Each exercise is a standalone Julia script. To run one:
+Each exercise is a standalone Julia script that loads the package via a relative path. To run one:
 
 ```bash
-julia "01 - Error Analysis/1.2 - Representation of Arithmetic and Roundoff Errors/es1.jl"
+julia --project=. exercises/01-error-analysis/1-2-representation-of-arithmetic-and-roundoff-errors/es1.jl
 ```
 
 ### Running the Test Suite
 
 ```bash
-julia tests/test_all.sh
+julia --project=. test/runtests.jl
+```
+
+or using the shell script:
+
+```bash
+bash test/test_all.sh
 ```
 
 ### Building the Report
 
-The LaTeX report is located in the `report/` directory. Build it with:
-
 ```bash
-cd report
-latexmk -pdf main.tex
+cd report && latexmk -pdf main.tex
 ```
-
-## TODO
-
-- Implement a script to benchmark all the exercise (Use Benchmarks)
-- Implement scripts to test the complexity of every algorithm
-- Write an introduction for every section of every major chapter
-- Check if it is worth using Make to compile LaTeX
 
 ## Author
 
