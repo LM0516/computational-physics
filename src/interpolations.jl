@@ -3,7 +3,6 @@ const ∑ = sum
 
 # NOTE: For better performance look 'dispatch', there is an if that is called to
 # many times.
-# TODO: Check memory allocations
 """
 Evaluate the Lagrange interpolating polynomial at a given point `x_eval` using the
 barycentric interpolation formula.
@@ -15,7 +14,7 @@ function barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Func
   f_values = [f(x) for x in x_nodes]
 
   # Compute barycentric weights λ
-  λ = zeros(n)
+  λ = Vector{Float64}(undef, n)
   if type == "lagrange"
     for j in 1:n
       # Product of (x[j] - x[i]) for all i ≠ j

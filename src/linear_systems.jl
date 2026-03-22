@@ -3,7 +3,7 @@ Solve the lower triangular system Lx = b using forward substitution.
 """
 function forward_substitution(L::Matrix, b::Vector)
     n = length(b)
-    x = zeros(Float64, n)
+    x = Vector{Float64}(undef, n)
     for i in 1:n
         x[i] = (b[i] - dot(L[i, 1:i-1], x[1:i-1])) / L[i, i]
     end
@@ -15,7 +15,7 @@ Solve the lower triangular system LX = B for multiple right-hand sides using for
 """
 function forward_substitution_multiple(L::Matrix, B::Matrix)
     n_row, n_col = size(B)
-    X = zeros(Float64, n_row, n_col)
+    X = Matrix{Float64}(undef, n_row, n_col)
     for j in 1:n_col
         X[:, j] = forward_substitution(L, B[:, j])
     end
@@ -27,7 +27,7 @@ Solve the upper triangular system Ux = b using backward substitution.
 """
 function backward_substitution(U::Matrix, b::Vector)
     n = length(b)
-    x = zeros(Float64, n)
+    x = Vector{Float64}(undef, n)
     for i in n:-1:1
         if i < n
             x[i] = (b[i] - dot(U[i, i+1:n], x[i+1:n])) / U[i, i]
@@ -43,7 +43,7 @@ Solve the upper triangular system UX = B for multiple right-hand sides using bac
 """
 function backward_substitution_multiple(U::Matrix, B::Matrix)
     n_row, n_col = size(B)
-    X = zeros(Float64, n_row, n_col)
+    X = Matrix{Float64}(undef, n_row, n_col)
     for j in 1:n_col
         X[:, j] = backward_substitution(U, B[:, j])
     end
@@ -58,7 +58,7 @@ a lower triangular matrix L and an upper triangular matrix U.
 function lu_decomposition(A::Matrix{Float64})
     n = size(A, 1)
     L = diagm(ones(n))
-    U = zeros(n, n)
+    U = Matrix{Float64}(undef, n, n)
     A_work = copy(A)
 
     for i in 1:n-1
@@ -76,9 +76,9 @@ Compute an LU decomposition of a square matrix A using partial row pivoting: PA 
 """
 function lu_decomposition_pivoting(A::Matrix{Float64})
     n = size(A, 1)
-    L_prime = zeros(n, n)
-    U = zeros(n, n)
-    pivot_rows = zeros(Int, n)
+    L_prime = Matrix{Float64}(undef, n, n)
+    U = Matrix{Float64}(undef, n, n)
+    pivot_rows = Vector{Int}(undef, n)
     A_work = copy(A)
 
     # Perform decomposition with pivoting
@@ -104,8 +104,8 @@ Compute a PLU factorization of a square matrix A using partial row pivoting.
 """
 function plu_factorization(A::Matrix{Float64})
     n = size(A, 1)
-    L_prime = zeros(n, n)
-    U = zeros(n, n)
+    L_prime = Matrix{Float64}(undef, n, n)
+    U = Matrix{Float64}(undef, n, n)
     p = collect(1:n)
     A_work = copy(A)
 
@@ -213,8 +213,8 @@ function qr_mgs(A)
     end
 
     # Initialize Q and R
-    Q = zeros(m, n)
-    R = zeros(n, n)
+    Q = Matrix{Float64}(undef, m, n)
+    R = Matrix{Float64}(undef, n, n)
     V = copy(A)
 
     # Modified Gram-Schmidt procedure

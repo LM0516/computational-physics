@@ -160,7 +160,7 @@ function newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real
     x2 = x1 - f(x1) / df(x1)
 
     iter = 0
-    x = zeros(max_iter)
+    x = Vector{Int}(undef, max_iter)
     x[1], x[2] = x1, x2
 
     while ((abs(x1 - x2) >= xtol) || (abs(f(x1)) >= ftol)) && iter < max_iter
