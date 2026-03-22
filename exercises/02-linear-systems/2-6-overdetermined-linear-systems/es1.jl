@@ -12,7 +12,7 @@ function main()
         -5
         6
     ]
-    x = least_squares(A, b)
+    x = solve_least_squares(A, b)
 
     println("\nLeast squares method solution:")
     println(x)

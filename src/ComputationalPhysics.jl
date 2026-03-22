@@ -29,14 +29,14 @@ export qr_mgs, test_qr, qr_mgs_augmented, pure_qr_algorithm, matrix_infinity_nor
 include("interpolations.jl")
 export barycentric_lagrange, chi_square, p_value, fit_goodness
 
-include("nonlinear_equatioins.jl")
+include("nonlinear_equations.jl")
 export bisection, bisection_plot, convergence, plot_convergence_analysis, newton_method, secant_method, inverse_quadratic_interpolation, plot_global_convergence
 
 include("numerical_integration.jl")
 export composite_trapezoidal, composite_simpson, gauss_legendre_quadrature, fajer_rule, clenshaw_curtis_rule, double_exponential_quadrature
 
 include("ode.jl")
-export euler_method, ie2, rk4_old, rk4
+export euler_method, ie2, rk4
 
 # Extras
 include("schrodinger_equation.jl")

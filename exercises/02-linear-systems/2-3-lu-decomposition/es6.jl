@@ -5,7 +5,7 @@ function PLU_solve(A, label::String)
     println("-"^60)
     println("=== ", label, " ===")
     println("-"^60)
-    P, L, U = LUdecrp(Matrix{Float64}(A))
+    P, L, U = lu_decomposition_pivoting(Matrix{Float64}(A))
 
     println("L:")
     display(L)
@@ -14,7 +14,7 @@ function PLU_solve(A, label::String)
     println("Check:")
     display(P*A - L * U)
 
-    println("Condizion number of $label: ", condition_number(Matrix{Float64}(A)))
+    println("Condizion number of $label: ", matrix_condition_number(Matrix{Float64}(A)))
 
     detA = det(P) * det(L) * det(U)
     println("Check on $label: ", detA - det(A))
@@ -80,7 +80,7 @@ function main()
     println("-"^60)
 
     # LU-Factorization of A
-    P, L, U = LUdecrp(Matrix{Float64}(A))
+    P, L, U = lu_decomposition_pivoting(Matrix{Float64}(A))
 
     println("\nL = ")
     display(L)
@@ -95,13 +95,13 @@ function main()
     println("-"^60)
 
     # Solve L*y = b using forward substitution
-    y = forwardsub(L, b)
+    y = forward_substitution(L, b)
     println("\nSolve L*y = b")
     println("y = ")
     display(y)
 
     # Solve U*x = y using backward substitution
-    x = backsub(U, y)
+    x = backward_substitution(U, y)
     println("\nSolve U*x = y")
     println("x = ")
     display(x)

@@ -32,7 +32,7 @@ function main()
     println("="^60)
 
     # LU-Factorization of A
-    L, U = LUdec(Matrix{Float64}(A))
+    L, U = lu_decomposition(Matrix{Float64}(A))
 
     println("\nL = ")
     display(L)
@@ -47,13 +47,13 @@ function main()
     println("="^60)
 
     # Solve L*y = b using forward substitution
-    y = forwardsub(L, b)
+    y = forward_substitution(L, b)
     println("\nSolve L*y = b")
     println("y = ")
     display(y)
 
     # Solve U*x = y using backward substitution
-    x = backsub(U, y)
+    x = backward_substitution(U, y)
     println("\nSolve U*x = y")
     println("x = ")
     display(x)
@@ -69,7 +69,7 @@ function main()
     display(A * x - b)
 
     # Condition number
-    cond_number = condition_number(A)
+    cond_number = matrix_condition_number(A)
     println("\nCondition number: $cond_number")
 end
 

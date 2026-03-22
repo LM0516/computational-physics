@@ -18,7 +18,7 @@ function conditioning(A::Matrix, ε::Float64)
 
     println("\n=== LU Decomposition without row pivoting for ε = ", ε, " and M = ", A, " ===")
 
-    L, U = LUdec(A)
+    L, U = lu_decomposition(A)
 
     println("A = ")
     display(A)
@@ -49,18 +49,18 @@ function conditioning(A::Matrix, ε::Float64)
 
 
     println("\n=== Condition number for ε = ", ε, " ===")
-    println("Condition number of A:", condition_number(A))
-    println("Condition number of L: ", condition_number(L))
-    println("Condition number of U: ", condition_number(U))
+    println("Condition number of A:", matrix_condition_number(A))
+    println("Condition number of L: ", matrix_condition_number(L))
+    println("Condition number of U: ", matrix_condition_number(U))
 
     println("\n=== Condition number check with LinearAlgebra ===")
-    println("Condition number of A (LinearAlgebra): ", abs(cond(A, 1) - condition_number(A)) < 1e-10 ? "Match" : "Mismatch")
-    println("Condition number of L (LinearAlgebra): ", abs(cond(L, 1) - condition_number(L)) < 1e-10 ? "Match" : "Mismatch")
-    println("Condition number of U (LinearAlgebra): ", abs(cond(U, 1) - condition_number(U)) < 1e-10 ? "Match" : "Mismatch")
+    println("Condition number of A (LinearAlgebra): ", abs(cond(A, 1) - matrix_condition_number(A)) < 1e-10 ? "Match" : "Mismatch")
+    println("Condition number of L (LinearAlgebra): ", abs(cond(L, 1) - matrix_condition_number(L)) < 1e-10 ? "Match" : "Mismatch")
+    println("Condition number of U (LinearAlgebra): ", abs(cond(U, 1) - matrix_condition_number(U)) < 1e-10 ? "Match" : "Mismatch")
 
     println("\n=== Checking if L and U are ill-conditioned ===")
-    println("L is ill-conditioned: ", condition_number(L) > 1e10 ? "Yes" : "No")
-    println("U is ill-conditioned: ", condition_number(U) > 1e10 ? "Yes" : "No")
+    println("L is ill-conditioned: ", matrix_condition_number(L) > 1e10 ? "Yes" : "No")
+    println("U is ill-conditioned: ", matrix_condition_number(U) > 1e10 ? "Yes" : "No")
 end
 
 function main()

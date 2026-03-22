@@ -2,8 +2,6 @@
 
 ## Correctness & Algorithm Quality
 - Audit all algorithm implementations against reference textbooks for correctness
-- Fix the typo in `nonlinear_equatioins.jl` (rename to `nonlinear_equations.jl` and update all references in `ComputationalPhysics.jl` and exercises)
-- Remove `rk4_old` export from `ComputationalPhysics.jl` (dead code)
 
 ## Testing
 - Populate `test/runtests.jl` with unit tests using Julia's `Test` stdlib

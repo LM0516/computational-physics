@@ -19,9 +19,9 @@ function main()
         1 3 -1 2
         1 -1 5 -1
     ]
-    L1, U1 = LUdec(Matrix{Float64}(A1))
-    L2, U2 = LUdec(Matrix{Float64}(A2))
-    L3, U3 = LUdec(Matrix{Float64}(A3))
+    L1, U1 = lu_decomposition(Matrix{Float64}(A1))
+    L2, U2 = lu_decomposition(Matrix{Float64}(A2))
+    L3, U3 = lu_decomposition(Matrix{Float64}(A3))
 
     println("="^60)
     println("LU-Factorization")

@@ -22,7 +22,7 @@ function main()
 
     # Energies E_n 
     H = t_independent_hamiltonian(x_grid, V_func)
-    eigenvalues, eigenvectors, _ = pure_qr_algorithm(H, max_iter=600)
+    eigenvalues, eigenvectors, _ = pure_qr_algorithm(H, max_iter=200)
 
     # Sort and Filter Bound States (E < 0)
     bound_indices = findall(e -> e < 0, eigenvalues)
@@ -41,8 +41,6 @@ function main()
         φ_n = φ_sorted[:, n] ./ sqrt(dx)
 
         plot!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label = L"\mathrm{State}\ %$n: |\varphi_{%$n}|^2 + E_{%$n}")
-        #=plot_add!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label=latexstring("\\text{State } $n: |\\varphi_{$n}|^2 + E_{$n}"))=#
-        #=plot_add!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label=L"\text{State } %$n: |\varphi_{%$n}|^2 + E_{%$n}")=#
     end
 
     save_plot(p, "schrodinger-equation-5", "6-5")

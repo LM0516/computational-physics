@@ -11,14 +11,14 @@ done
 # Navigate to the repository root relative to this script
 cd "$(dirname "$0")/.." || exit 1
 
-echo "Looking for .jl files in folders 01 to 06..."
+echo "Looking for .jl files in exercises/01 to exercises/06..."
 echo ""
 
 # Find all .jl files in folders 01 to 06, sort them, and loop through them
 # mapfile -d '' files < <(find 0[1-6]* -type f -name "*.jl" -print0 2>/dev/null | sort -z)
 while IFS= read -r -d '' f; do
     files+=("$f")
-done < <(find 0[1-6]* -type f -name "*.jl" -print0 2>/dev/null | sort -z)
+done < <(find exercises/0[1-6]* -type f -name "*.jl" -print0 2>/dev/null | sort -z)
 
 for file in "${files[@]}"; do
     # Visual Separator
@@ -29,9 +29,9 @@ for file in "${files[@]}"; do
     # Run the julia file
     # If --noconfirm, pipe endless newlines into julia to auto-confirm any readline() calls
     if [ "$NOCONFIRM" = true ]; then
-        yes "" | julia "$file"
+        yes "" | julia --project=. "$file"
     else
-        julia "$file"
+        julia --project=. "$file"
     fi
 
     # Pause for user input (mimics readline())

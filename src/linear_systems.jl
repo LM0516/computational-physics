@@ -214,7 +214,7 @@ function qr_mgs(A)
 
     # Initialize Q and R
     Q = Matrix{Float64}(undef, m, n)
-    R = Matrix{Float64}(undef, n, n)
+    R = zeros(Float64, n, n)
     V = copy(A)
 
     # Modified Gram-Schmidt procedure
