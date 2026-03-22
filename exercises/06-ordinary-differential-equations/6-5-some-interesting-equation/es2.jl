@@ -1,5 +1,4 @@
-include("../../modules/schrodinger_equation.jl")
-using .SchrodingerEquation
+using ComputationalPhysics
 
 function gaussian_packet(x, x_0, k_0, σ)
     norm = (2 * π * σ^2)^(-0.25)
@@ -34,7 +33,11 @@ function main()
 
     # === Plotting ===
     target_times = [0.0, 10.0, 20.0]
-    plot_snapshots(target_times, snap, x_grid, t_min, dt, dx)
+    p = plot_snapshots(target_times, snap, x_grid, t_min, dt, dx)
+
+    save_plot(p, "schrodinger-equation-2", "6-5")
+    display(p)
+    readline()
 
 end
 

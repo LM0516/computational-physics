@@ -33,7 +33,11 @@ function main()
 
     # === Plotting ===
     target_times = [0.0, 2.0, 3.0, 4.0, 5.0]
-    plot_snapshots(target_times, snap, x_grid, t_min, dt, dx)
+    p = plot_snapshots(target_times, snap, x_grid, t_min, dt, dx)
+
+    save_plot(p, "schrodinger-equation-1", "6-5")
+    display(p)
+    readline()
 
 end
 

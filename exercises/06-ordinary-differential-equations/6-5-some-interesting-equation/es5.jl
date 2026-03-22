@@ -1,7 +1,4 @@
-include("../../modules/schrodinger_equation.jl")
-include("../../modules/linear_systemsV2.jl")
-using .SchrodingerEquation
-using .LinearSystemsV2
+using ComputationalPhysics
 using Plots
 using LaTeXStrings
 
@@ -25,7 +22,7 @@ function main()
 
     # Energies E_n 
     H = t_independent_hamiltonian(x_grid, V_func)
-    eigenvalues, eigenvectors, _ = pure_qr_algorithm(H, max_iter=200)
+    eigenvalues, eigenvectors, _ = pure_qr_algorithm(H, max_iter=600)
 
     # Sort and Filter Bound States (E < 0)
     bound_indices = findall(e -> e < 0, eigenvalues)
@@ -37,19 +34,24 @@ function main()
     E_sorted = E_bound[p]
     φ_sorted = φ_bound[:, p]
 
-    p = plot(x_grid, V_func.(x_grid), label="Potential V(x)", color=:black, lw=2)
+    p = plot_generic(x_grid, V_func.(x_grid), label="Potential V(x)", color=:black, lw=2)
 
     for n in 1:length(E_sorted)
         # Normalize: wave_function / sqrt(dx)
         φ_n = φ_sorted[:, n] ./ sqrt(dx)
 
-        plot!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label=L"\text{State } %$n: |\varphi_{%$n}|^2 + E_{%$n}")
+        plot!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label = L"\mathrm{State}\ %$n: |\varphi_{%$n}|^2 + E_{%$n}")
+        #=plot_add!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label=latexstring("\\text{State } $n: |\\varphi_{$n}|^2 + E_{$n}"))=#
+        #=plot_add!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label=L"\text{State } %$n: |\varphi_{%$n}|^2 + E_{%$n}")=#
     end
+
+    save_plot(p, "schrodinger-equation-5", "6-5")
     display(p)
     readline()
 
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
+    plot_init()
     main()
 end

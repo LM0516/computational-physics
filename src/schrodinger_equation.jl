@@ -85,6 +85,7 @@ function compute_RT(t_target::Float64, t_min::Float64, dt::Float64, snap::Vector
         vplot = [V_barrier(x) for x in x_grid]
         plot!(p, x_grid, vplot .* 0.1, label="Scaled V(x)", color=:red, alpha=0.5)
 
+        save_plot(p, "barrier-plot", "6-5")
         display(p)
         readline()
     end
@@ -118,6 +119,5 @@ function plot_snapshots(target_times::Vector{Float64}, snap::Vector{Vector{Compl
         end
     end
 
-    display(p)
-    readline()
+    return p
 end
