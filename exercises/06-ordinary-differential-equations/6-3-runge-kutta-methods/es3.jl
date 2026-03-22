@@ -1,5 +1,4 @@
-include("../../modules/ode.jl")
-using .ODE
+using ComputationalPhysics
 using Plots
 
 function main()
@@ -20,13 +19,15 @@ function main()
     t, u = rk4(f, a, b, n, ics)
     z = [ui[1] for ui in u]
     y = [ui[2] for ui in u]
-    plot!(p, y, z, label="IC: $ics")
+    plot_add!(p, y, z, label="IC: $ics")
  
+    save_plot(p, "predator-prey-model", "6-3")
     display(p)
     readline()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    plot_init()
     main()
 end
 

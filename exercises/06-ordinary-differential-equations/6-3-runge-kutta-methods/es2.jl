@@ -1,5 +1,4 @@
-include("../../modules/ode.jl")
-using .ODE
+using ComputationalPhysics
 using Plots
 
 function main()
@@ -31,7 +30,7 @@ function main()
         t, u = rk4(f_a, a, b, n, u0)
         x = [ui[1] for ui in u]
         y = [ui[2] for ui in u]
-        plot!(p_a, x, y, label="IC: $u0")
+        plot_add!(p_a, x, y, label="IC: $u0")
     end
 
     # Solve (b)
@@ -41,14 +40,16 @@ function main()
         t, u = rk4(f_b, a, b, n, u0)
         x = [ui[1] for ui in u]
         y = [ui[2] for ui in u]
-        plot!(p_b, x, y, label="IC: $u0")
+        plot_add!(p_b, x, y, label="IC: $u0")
     end
 
-    display(plot(p_a, p_b, layout=(1, 2), size=(800, 400)))
-    println("Press Enter to exit...")
+    p = multi_plot(p_a, p_b, layout=(1, 2), size=(800, 400))
+    save_plot(p, "rk4-integrator", "6-3")
+    display(p)
     readline()
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
+    plot_init()
     main()
 end

@@ -1,5 +1,4 @@
-include("../../modules/schrodinger_equation.jl")
-using .SchrodingerEquation
+using ComputationalPhysics
 
 function gaussian_packet(x, x_0, k_0, σ)
     norm = (2 * π * σ^2)^(-0.25)
