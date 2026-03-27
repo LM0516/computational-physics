@@ -140,7 +140,108 @@
     \end{enumerate}
 \end{exercise}
 
-% FIX: Theere is an error in the text of this exercise
+% FIX: Sistemare la disposizione delle figure, sono troppe e troppo vicine.
+\begin{solution}
+  This exercise investigates the spectral convergence properties and numerical stability of polynomial interpolation. We utilize barycentric interpolation implemented in \texttt{Julia} to approximate four analytical functions over the interval $[-1, 1]$. To evaluate the impact of node distribution on error propagation, we contrast equidistant (Lagrange) nodes with Chebyshev nodes. 
+
+  The approximation quality is measured using the $L^\infty$-norm, computationally approximated by evaluating the absolute error over a dense uniform grid of $4000$ evaluation points. Note that calculating the absolute error rather than the relative error ensures our convergence metrics are not skewed by the roots of the target function, which is mathematically robust when evaluating the global uniform norm. The theoretical spectral error bound behaves as:
+  \[
+      \|f - p_n\|_\infty \sim \mathcal{O}(K^{-n})
+  \]
+  Taking the natural logarithm yields $\ln \|f - p_n\|_\infty \approx -n \ln K$. Thus, the constant $K$ can be estimated as $K = \exp(-m)$, where $m$ is the slope extracted from a linear fit of the bounding error data on a log-linear scale. 
+
+  \paragraph{Results}
+  The estimated spectral constants $K$ alongside their corresponding logarithmic decay slopes $m$ are tabulated in Table~\ref{tab:interp_errorss}. Following this, Figures~\ref{fig:runge_cheb} through \ref{fig:sincosh_lag} visually map the interpolating curves and the $L^\infty$-norm progression as a function of the polynomial degree $n$.
+
+  \begin{center}
+      \centering
+      \captionof{table}{Estimated spectral convergence constant $K$ and logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
+      \label{tab:interp_errorss}
+      \begin{tabular}{lcccc}
+          \toprule
+          \textbf{Function} & \multicolumn{2}{c}{\textbf{Chebyshev Nodes}} & \multicolumn{2}{c}{\textbf{Equidistant Nodes}} \\
+          \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+          & $K$ & Slope ($m$) & $K$ & Slope ($m$) \\
+          \midrule
+          $1/(25x^2 + 1)$ & 1.2035 & $-0.1852$ & 0.7280 &  0.3175 \\
+          $\tanh(5x + 2)$ & 1.2020 & $-0.1840$ & 0.8951 &  0.1108 \\
+          $\cosh(\sin x)$ & 1.1513 & $-0.1409$ & 0.9728 &  0.0276 \\
+          $\sin(\cosh x)$ & 1.1722 & $-0.1589$ & 0.9845 &  0.0156 \\
+          \bottomrule
+      \end{tabular}
+  \end{center}
+
+  \begin{center}
+      \centering
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fa-chebyshev.pdf}
+          \captionof{figure}{Chebyshev interpolation: $1/(25x^2+1)$.}
+          \label{fig:runge_cheb}
+      \end{minipage}\hfill
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fa-lagrange.pdf}
+          \captionof{figure}{Equidistant interpolation: $1/(25x^2+1)$.}
+          \label{fig:runge_lag}
+      \end{minipage}
+  \end{center}
+
+  \begin{center}
+      \centering
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fb-chebyshev.pdf}
+          \captionof{figure}{Chebyshev interpolation: $\tanh(5x+2)$.}
+      \end{minipage}\hfill
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fb-lagrange.pdf}
+          \captionof{figure}{Equidistant interpolation: $\tanh(5x+2)$.}
+      \end{minipage}
+  \end{center}
+
+  \begin{center}
+      \centering
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fc-chebyshev.pdf}
+          \captionof{figure}{Chebyshev interpolation: $\cosh(\sin x)$.}
+      \end{minipage}\hfill
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fc-lagrange.pdf}
+          \captionof{figure}{Equidistant interpolation: $\cosh(\sin x)$.}
+      \end{minipage}
+  \end{center}
+
+  \begin{center}
+      \centering
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fd-chebyshev.pdf}
+          \captionof{figure}{Chebyshev interpolation: $\sin(\cosh x)$.}
+      \end{minipage}\hfill
+      \begin{minipage}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{figures/3-4/fd-lagrange.pdf}
+          \captionof{figure}{Equidistant interpolation: $\sin(\cosh x)$.}
+          \label{fig:sincosh_lag}
+      \end{minipage}
+  \end{center}
+
+  \paragraph{Discussion}
+  \begin{itemize}
+      \item \textbf{Equidistant Nodes \& Runge's Phenomenon:} The uniformly spaced nodes lead to highly erratic polynomial oscillations near the boundaries $x=\pm 1$. This catastrophic cancellation phenomenon is strictly captured by the data: $K < 1$ and $m > 0$ for all models, highlighting that the $L^\infty$-norm diverges exponentially as the polynomial degree $n$ increases. Attempting to force convergence by utilizing higher-degree polynomials only exacerbates this numerical instability.
+      
+      \item \textbf{Chebyshev Nodes \& Spectral Convergence:} Deploying Chebyshev points effectively mitigates the aforementioned boundary oscillations. The values of $K > 1$ reflect the expected theoretical bounds for exponential error decay. The Runge function $1/(25x^2+1)$ holds complex poles near the real axis, meaning its convergence rate is inherently limited by its Bernstein ellipse geometry. By contrast, entire mathematical functions devoid of poles, such as $\cosh(\sin x)$, theoretically guarantee super-exponential convergence. 
+  \end{itemize}
+
+  \paragraph{Conclusion}
+  The analysis effectively bridges numerical experiments with complex analysis theory, demonstrating the immense significance of interpolation grid conditioning. Uniform spacing predictably incurs Runge's phenomenon and exponential divergence for large degrees. In stark contrast, optimally clustering interpolation nodes around interval boundaries using a Chebyshev distribution ensures mathematical stability and recovers powerful spectral accuracy.
+\end{solution}
+
+% FIX: There is an error in the text of this exercise
 \begin{exercise}
     The Chebyshev points can be used when the interval of interpolation is $[a,b]$ rather than $[-1,1]$ by means of the change of variable {eq}`eq-change-variable-chebyshev-1`. Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes. 
 \end{exercise}
@@ -209,9 +310,8 @@
   The high accuracy achieved with only 30 nodes is a consequence of the analyticity of $f(z)$ in a neighborhood of the real axis. The transformation $\phi(x)$ effectively concentrates nodes near the "feature" of the function (the peak near $z=1$), while naturally sparsifying nodes in the tails where the function decays towards zero. This prevents the numerical instabilities typically encountered when using large numbers of equidistant points on wide domains.
 \end{solution}
 
-% FIX: Theere is an error in the text of this exercise
 \begin{exercise}
-    {prf:ref}`theorem-spectral` assumes that the function being approximated has infinitely many derivatives over $[-1,1]$. But now consider the family of functions $f_m(x)=|x|^m$. 
+    Spectral theorem assumes that the function being approximated has infinitely many derivatives over $[-1,1]$. But now consider the family of functions $f_m(x)=|x|^m$. 
     \begin{enumerate}
         \item How many continuous derivatives over $[-1,1]$ does $f_m$ possess?
         \item Compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=10,20,30,\ldots,100$. At each value of $n$, compute the max-norm error (that is, $\max |p(x)-f_m(x)|$ evaluated for at least 4000 values of $x$). Using a single log-log graph, plot the error as a function of $n$ for all six values $m=1,3,5,7,9,11$.
@@ -219,5 +319,57 @@
     \end{enumerate}
 
 \end{exercise}
+
+\begin{solution}
+  To evaluate the regularity of the function family $f_m(x) = |x|^m$ over the interval $[-1, 1]$ for odd integers $m$, we consider its derivatives. For any given odd $m$, the function is continuously differentiable up to order $m-1$. The $(m-1)$-th derivative is proportional to $|x|$, which is strictly continuous across the domain. However, the $m$-th derivative is proportional to the signum function, $\operatorname{sgn}(x)$, which exhibits a jump discontinuity at the origin $x=0$. Therefore, mathematically, $f_m \in C^{m-1}([-1,1])$; it possesses exactly $m-1$ continuous derivatives. 
+
+  \paragraph{Numerical Methodology}
+  The loss of infinite differentiability implies that we can no longer expect spectral (exponential) convergence. To quantify the convergence numerically, we approximate $f_m(x)$ using barycentric polynomial interpolation over $n$ second-kind Chebyshev nodes, defined algebraically as:
+  \[
+      x_j = -\cos\left(\frac{j-1}{n-1}\pi\right), \quad j=1,\dots,n
+  \]
+  The $L^\infty$-norm (maximum absolute error) is approximated by evaluating the interpolant over a dense, uniform grid of $4000$ points. The relationship between the error and the degree $n$ is evaluated on a log-log scale. For algebraic convergence of the form $\|f_m - p_n\|_\infty \approx C n^{-\nu}$, taking the natural logarithm yields:
+  \[
+      \ln \|f_m - p_n\|_\infty \approx -\nu \ln n + \ln C
+  \]
+  The convergence rate $\nu$ corresponds to the negative slope of the plot.
+
+  \paragraph{Results}
+  The computed slopes from the numerical experiments are compared against theoretical predictions in Table~\ref{tab:convergence_rates}. Figure~\ref{fig:convergence_rates} visualizes the algebraic convergence corresponding to the log-log linear decay.
+
+  \begin{center}
+      \centering
+      \captionof{table}{Observed versus predicted convergence rates (log-log slopes) for $f_m(x)=|x|^m$.}
+      \label{tab:convergence_rates}
+      \begin{tabular}{rccc}
+          \toprule
+          $m$ & \textbf{Continuous Derivatives ($m-1$)} & \textbf{Observed Slope} & \textbf{Predicted Slope} \\
+          \midrule
+          1   & 0  & $-1.051$  & $-1$ \\
+          3   & 2  & $-3.147$  & $-3$ \\
+          5   & 4  & $-5.324$  & $-5$ \\
+          7   & 6  & $-7.660$  & $-7$ \\
+          9   & 8  & $-10.418$ & $-9$ \\
+          11  & 10 & $-12.724$ & $-11$ \\
+          \bottomrule
+      \end{tabular}
+  \end{center}
+
+  \begin{center}
+      \centering
+      \includegraphics[width=0.85\linewidth]{figures/3-4/convergence-rates.pdf}
+      \captionof{figure}{Log-log plot demonstrating algebraic convergence of Chebyshev polynomial interpolation for functions with limited regularity. The steepness of the slope corresponds strictly to the parameter $m$.}
+      \label{fig:convergence_rates}
+  \end{center}
+
+  \paragraph{Discussion \& Asymptotic Hypothesis}
+  Spectral accuracy relies fundamentally on a function being analytic or, minimally, infinitely differentiable. In contrast, $f_m(x) = |x|^m$ inherently contains a geometric "kink" at the origin $x=0$, fundamentally restricting its smoothness. 
+
+  As predicted by classical approximation theory (e.g., Jackson's theorems), the rate at which polynomial interpolation converges is intimately linked to the function's regularity. Based on our numerical findings—where the observed log-log slope strongly correlates with $-m$—we formulate the following asymptotic hypothesis:
+  \[
+      \lim_{n \to \infty} \|f_m - p_n\|_\infty \sim \mathcal{O}(n^{-m})
+  \]
+  This algebraic convergence dictates that interpolating functions with local singularities (or discontinuous higher-order derivatives) inherently bottlenecks numerical accuracy to a polynomial rate, explicitly circumventing the exponential decay seen in pure spectral methods.
+\end{solution}
 
 % TODO: Add the comutational costs of all the algorighms used in this section.

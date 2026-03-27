@@ -148,3 +148,25 @@
     
     The asteroid Eros has $\tau=1.7610$ years and $\epsilon=0.2230$. Using Newton's method for {eq}`eq-kepler2`, make a plot of $\theta(t)$ for 100 values of $t$ between $0$ and $\tau$, which is one full orbit. (Note: Use `mod(Î¸,2Ï€)` to put the angle between 0 and $2\pi$ if you want the result to be a continuous function.)
 \end{exercise}
+
+\subsection{Interpolations methods}
+
+\begin{exercise}\label{ex:4.3.2}
+  For each of the functions below, do the following steps.
+
+  \begin{itemize}
+    \item Rewrite the equation into the standard form for rootfinding, $f(x) = 0$. 
+    \item Make a plot of $f$ over the given interval and determine how many roots lie in the interval. 
+    \item For each root determine an interval that encloses the given root. Then use the secant method, starting with the endpoints of the  enclosing interval, to find each root.
+    \item For each root, use the errors in the secant sequence to determine numerically whether the convergence is apparently between linear and quadratic.
+  \end{itemize}
+  \begin{align*}
+    x^2 &= e^{-x}, \quad \text{over } [-2,2] \\
+    2x &= \tan x, \quad \text{over } [-0.2,1.4] \\
+    e^{x+1} &= 2+x, \quad \text{over } [-2,2]
+  \end{align*}
+\end{exercise}
+
+\begin{exercise}
+  Write a function that performs inverse quadratic interpolation for finding a root of $f$, given three initial estimates $x_1,x_2,x_3$. Use this function to solve Exercise~\ref{ex:4.3.2} and determine the rate of convergence for the different roots.
+\end{exercise}

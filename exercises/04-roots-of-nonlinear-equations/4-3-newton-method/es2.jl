@@ -10,7 +10,7 @@ function solutions(f::Function, df::Function, a, b, f_eqation, save_dir, plot_na
 
     println("Findig global convergence...")
 
-    # p_global_convergence = plot_global_convergence(x, r, save_dir=save_dir, plot_name=plot_name)
+    plot_convergence_analysis(x, r, skip_initial=1)
 
     println("Solution found! Plotting the data...")
 
