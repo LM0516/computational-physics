@@ -53,13 +53,13 @@ Interpretation of reduced chi-square:
 - >> 1 → poor fit (model doesn't describe data well)
 """
 function chi_square(o::AbstractVector, e::AbstractVector)
-    # eachindex(o, e) ensures both vectors have the exact same length, 
-    # throwing an error automatically if they don't.
-    return ∑(eachindex(o, e); init=0.0) do i
-        ei = e[i]
-        # Only compute if the expected value is not near zero
-        abs(ei) > 1e-10 ? (o[i] - ei)^2 / ei : 0.0
-    end
+  # eachindex(o, e) ensures both vectors have the exact same length, 
+  # throwing an error automatically if they don't.
+  return ∑(eachindex(o, e); init=0.0) do i
+    ei = e[i]
+    # Only compute if the expected value is not near zero
+    abs(ei) > 1e-10 ? (o[i] - ei)^2 / ei : 0.0
+  end
 end
 
 """
@@ -71,24 +71,24 @@ Interpretation:
 - p < 0.01 → fit is very poor
 """
 function p_value(chi2::Float64, dof::Int)
-    dist = Chisq(dof)
-    p = 1 - cdf(dist, chi2)
-    return p
+  dist = Chisq(dof)
+  p = 1 - cdf(dist, chi2)
+  return p
 end
 
 """
 Combined version of `chi_square` and `p_value` functions.
 """
 function fit_goodness(y::Vector{Float64}, y_true::Vector{Float64}, coeffs::Vector{Float64})
-    dof = length(y) - length(coeffs)
-    chi2 = chi_square(y, y_true)
-    chi2r = chi2 / dof 
-    p = p_value(chi2, dof)
+  dof = length(y) - length(coeffs)
+  chi2 = chi_square(y, y_true)
+  chi2r = chi2 / dof
+  p = p_value(chi2, dof)
 
-    println("Chi-square: ", chi2)
-    println("Degrees of freedom: ", dof)
-    println("Reduced chi-square: ", chi2r)
-    println("P-value: ", p)
-    println()
-    return chi2, dof, chi2r, p
+  println("Chi-square: ", chi2)
+  println("Degrees of freedom: ", dof)
+  println("Reduced chi-square: ", chi2r)
+  println("P-value: ", p)
+  println()
+  return chi2, dof, chi2r, p
 end
