@@ -27,9 +27,6 @@ function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, f
     title_str = interp_type == "chebyshev" ? "Barycentric Chebyshev Interpolation" : "Barycentric Lagrange Interpolation"
     
     # Plot for f
-    # BUG: There is a problem while plotting the log fuctins, if there is a non-positive value 
-    # the plot is not dispalyed correctly. Try to came up with a different approach in plotting
-    # the log-scale graphs. This is a recurring problem.
     p1 = plot_generic(x_eval_range, make_log_safe(f.(x_eval_range)),
         label="y = $function_name",
         xlabel="x", ylabel=L"\log(y)", title=title_str,

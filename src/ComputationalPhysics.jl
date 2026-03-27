@@ -11,7 +11,7 @@ using ForwardDiff
 # Module for consistent plotting
 include("visualizations.jl")
 export plot_init, plot_generic, scatter_generic, plot_add!, scatter_add!, multi_plot
-export plot_comparison, plot_convergence, save_plot, save_gif
+export save_plot, save_gif
 
 # Main modules 
 include("error_analysis.jl")
@@ -24,7 +24,7 @@ export forward_substitution, forward_substitution_multiple, backward_substitutio
 export lu_decomposition, lu_decomposition_pivoting
 export plu_factorization, determinant_plu
 export matrix_condition_number, solve_least_squares
-export qr_mgs, test_qr, qr_mgs_augmented, pure_qr_algorithm, matrix_infinity_norm
+export qr_mgs, qr_mgs_augmented, pure_qr_algorithm, matrix_infinity_norm
 
 include("interpolations.jl")
 export barycentric_lagrange, chi_square, p_value, fit_goodness

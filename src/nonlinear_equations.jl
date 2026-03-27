@@ -99,7 +99,7 @@ Generates a plot to visually analyze the convergence of an iterative method.
 It plots `log10(|ε_{n+1}|)` against `log10(|ε_n|)` and fits a line to determine
 the order of convergence and the asymptotic error constant.
 """
-function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="test")
+function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="output/figures")
     plot_init()
     # Use only the tail of the data
     x_tail = x[skip_initial+1:end]
