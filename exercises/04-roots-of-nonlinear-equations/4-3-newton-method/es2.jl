@@ -5,12 +5,12 @@ using LaTeXStrings
 function solutions(f::Function, df::Function, a, b, f_eqation, save_dir, plot_name)
     println("Findig solutions...")
     r, x = newton_method(f, df, a, b)
-    q, C = convergence(x, r, skip=1)
+    # println("Convergence rate of algorithm 1")
+    # convergence(x, r)
+    # println("Convergence rate of algorithm 2")
+    q_values, C_values = conv_rate_and_asymp_const(x, r)
     @show r
-
-    println("Findig global convergence...")
-
-    plot_convergence_analysis(x, r, skip_initial=1)
+    @show q_values, C_values
 
     println("Solution found! Plotting the data...")
 

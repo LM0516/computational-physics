@@ -8,7 +8,8 @@ function solutions(f::Function, a, b, label)
     @show sol
 
     println("Studying the convergence...")
-    q, C = convergence(x, sol, skip=1)
+    q_values, C_values = conv_rate_and_asymp_const(x, sol)
+    @show q_values[end], C_values[end]
 
     println("Plotting the data...")
     x_vals = range(a, b, length=200)
@@ -37,7 +38,7 @@ function main()
     p3 = solutions(f3, a3, b3, L"e^{x + 1} - 2 - x")
 
     p = multi_plot(p1, p2, p3, layout=(1, 3), size=(1200, 600))
-    save_plot(p, "secant-meghod-plot", "4-4")
+    save_plot(p, "secant-method-plot", "4-4")
     display(p)
     readline()
 end

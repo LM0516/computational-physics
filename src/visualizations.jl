@@ -3,7 +3,7 @@ Initializes the global default style for Plots.jl to ensure consistency
 across all graphs in the project.
 """
 function plot_init()
-    dejault(
+    default(
         fontfamily="Computer Modern", # Great for LaTeX report consistency
         linewidth=2,
         framestyle=:box,

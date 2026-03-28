@@ -66,6 +66,7 @@ end
 """
 Analyzes the order of convergence and asymptotic error constant for a sequence of approximations.
 """
+# BUG: In this function there are several cancellation errors happening, fix them.
 function convergence(x, r; skip::Int=10)
     # Number of initial iterations to skip for the analysis
     # Use only the tail of the data
@@ -92,6 +93,60 @@ function convergence(x, r; skip::Int=10)
     println("Constant C = $C")
 
     return q, C
+end
+
+"""
+The convergence rate is a measure of how much an error shrinks with each step.
+
+Convergence rate formula:
+q = ln(d_{k+1} / d_k) / (ln(d_k / d_{k-1}))
+Asymptotic error constant formula:
+C = (|ϵ_{k+1}|) / (|ϵ_k|^q = (|x_{k+1} - r|) / (|x_k - r|^q)
+"""
+function conv_rate_and_asymp_const(x_history::Array{Float64}, root::Float64)
+    # === Convergence rates (Algorithm 2: using successive differences) ===
+    d = abs.(diff(x_history))
+
+    # Keep only differences above the numerical noise threshold
+    d_valid = filter(val -> val > 1e-14, d)
+    n = length(d_valid)
+
+    if n < 3
+        @warn "Not enough iterations to estimate convergence rate."
+        return [NaN], [NaN]
+    end
+
+    # Pre-allocate memory for q_values
+    num_q = n - 2
+    q_values = Vector{Float64}(undef, num_q)
+
+    for k in 1:num_q
+        idx = k + 1
+        q_values[k] = log(d_valid[idx+1] / d_valid[idx]) / log(d_valid[idx] / d_valid[idx-1])
+    end
+
+    # === Asymptotic constant ===
+    errors = abs.(x_history .- root)
+
+    # Keep only errors above the numerical noise threshold
+    valid_errors = filter(e -> e > 1e-14, errors)
+    m = length(valid_errors)
+
+    if m < 2
+        return q_values, [NaN]
+    end
+
+    # Pre-allocate memory for C_values
+    num_c = m - 1
+    C_values = Vector{Float64}(undef, num_c)
+
+    last_q = q_values[end]
+
+    for k in 1:num_c
+        C_values[k] = valid_errors[k+1] / (valid_errors[k]^last_q)
+    end
+
+    return q_values, C_values
 end
 
 """
@@ -160,7 +215,7 @@ function newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real
     x2 = x1 - f(x1) / df(x1)
 
     iter = 0
-    x = Vector{Int}(undef, max_iter)
+    x = Vector{Float64}(undef, max_iter)
     x[1], x[2] = x1, x2
 
     while ((abs(x1 - x2) >= xtol) || (abs(f(x1)) >= ftol)) && iter < max_iter

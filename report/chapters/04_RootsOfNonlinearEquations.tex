@@ -1,5 +1,92 @@
 \section{Roots of Nonlinear Equations}
 
+\subsection*{Some observations about the convergence rate}
+\paragraph{Convergence rate:}
+By definition, an iterative method has an order of convergence $q$ and an 
+asymptotic error constant $C$ if the sequence of errors $\epsilon_k = x_k - r$ 
+satisfies:
+\begin{equation*}
+    |\epsilon_{k+1}| \approx C |\epsilon_k|^q
+\end{equation*}
+If we don't know the exact root $r$, we can define the step difference $d_k$ as 
+the distance between two consecutive approximations:
+\begin{equation*}
+    d_k = |x_{k+1} - x_k|
+\end{equation*}
+We can rewrite this by subtracting and adding the true root $r$:
+\begin{equation*}
+    d_k = |(x_{k+1} - r) - (x_k - r)| = |\epsilon_{k+1} - \epsilon_k|
+\end{equation*}
+Because the algorithm is converging, the error at the next step is much smaller
+than the error at the current step (i.e., $|\epsilon_{k+1}| \ll |\epsilon_k|$). 
+Therefore, $\epsilon_{k+1}$ becomes negligible compared to $\epsilon_k$. 
+We can safely approximate:
+\begin{equation*}
+    d_k \approx |\epsilon_k|
+\end{equation*}
+Since $d_k \approx |\epsilon_k|$ and $d_{k+1} \approx |\epsilon_{k+1}|$, we can
+substitute these into our original theoretical definition:
+\begin{equation*}
+    d_{k+1} \approx C (d_k)^q
+\end{equation*}
+Now, take the natural logarithm of both sides to bring the exponent
+$q$ down:
+\begin{equation*}
+\ln(d_{k+1}) \approx \ln(C) + q \ln(d_k)
+\end{equation*}
+This equation has two unknowns: $C$ and $q$. To eliminate the constant $C$, we
+write the exact same equation for the previous step $k-1$:
+\begin{equation*}
+    \ln(d_k) \approx \ln(C) + q \ln(d_{k-1})
+\end{equation*}
+Subtract the second equation from the first equation. This completely
+eliminates $\ln(C)$:
+\begin{equation*}
+    \ln(d_{k+1}) - \ln(d_k) \approx q \ln(d_k) - q \ln(d_{k-1})
+\end{equation*}
+Factor out $q$ on the right side:
+\begin{equation*}
+    \ln(d_{k+1}) - \ln(d_k) \approx q[ \ln(d_k) - \ln(d_{k-1}) ]
+\end{equation*}
+Using the logarithm quotient rule ($\ln(a) - \ln(b) = \ln(a/b)$), we rewrite
+this as:
+\begin{equation*}
+    \ln\left(\frac{d_{k+1}}{d_k}\right) \approx q \ln\left(\frac{d_k}{d_{k-1}}\right)
+\end{equation*}
+Finally, divide to isolate $q$:
+\begin{equation*}
+q \approx \frac{\ln(d_{k+1} / d_k)}{\ln(d_k / d_{k-1})}
+\end{equation*}
+This equation allow us to calculate the convergence rate without knowing the
+exact root of an equation.
+
+\paragraph{Asymptotic error constant:}
+The strict mathematical definition of the asymptotic error constant $C$ is defined by the limit:
+\begin{equation*}
+    \lim_{k \to \infty} \frac{|\epsilon_{k+1}|}{|\epsilon_k|^q} = C
+\end{equation*}
+Where the error is $\epsilon_k = x_k - r$.
+For a sufficiently large $k$ (meaning we have run the algorithm for a few steps
+and are close to the root), we can drop the limit and write this as an
+approximation:
+\begin{equation*}
+C \approx \frac{|\epsilon_{k+1}|}{|\epsilon_k|^q} = \frac{|x_{k+1} - r|}{|x_k - r|^q}
+\end{equation*}
+To compute this practically, we run into the same problem: we don't know $r$.
+However, iterative algorithms are typically run until the difference between
+steps drops below machine precision (e.g., $10^{-15}$). 
+
+Therefore, the final approximation the algorithm produces, $x_{final}$, is
+virtually indistinguishable from the exact root $r$ for our precision levels.
+We make the substitution $r \approx x_{final}$:
+\begin{equation*}
+    C \approx \frac{|x_{k+1} - x_{final}|}{|x_k - x_{final}|^q}
+\end{equation*}
+
+\paragraph{Conclusions:}
+This calculated formulas are implemented in the algorithms use to determine the
+convergence rate and asymptotic constant in the exercises.
+
 \subsection{Bisection Method}
 
 \begin{exercise}

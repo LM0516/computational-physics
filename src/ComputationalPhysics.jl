@@ -31,6 +31,7 @@ export barycentric_lagrange, chi_square, p_value, fit_goodness
 
 include("nonlinear_equations.jl")
 export bisection, bisection_plot, convergence, plot_convergence_analysis, newton_method, secant_method, inverse_quadratic_interpolation, plot_global_convergence
+export conv_rate_and_asymp_const
 
 include("numerical_integration.jl")
 export composite_trapezoidal, composite_simpson, gauss_legendre_quadrature, fajer_rule, clenshaw_curtis_rule, double_exponential_quadrature
