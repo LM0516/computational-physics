@@ -267,35 +267,35 @@ It calculates the global asymptotic error constant C from the slope.
 """
 function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::String="test", plot_name::String="global-convergence-an")
     plot_init()
-    
+
     # Calculate absolute errors
     epsilon = @. abs(x - r)
-    
+
     # Filter out exact zeros (usually the very last iteration) to avoid log10(0)
     valid_indices = epsilon .> 0
     epsilon = epsilon[valid_indices]
-    
+
     # Calculate a_n = -log10(epsilon) as requested by the prompt
     a_n = @. -log10(epsilon)
-    
+
     # Create iteration array n (x-axis)
     n_iter = collect(1:length(a_n))
-    
+
     # Fit a line to find the slope
     # Since epsilon_n ≈ C^n * epsilon_0, then a_n ≈ -n*log10(C) - log10(epsilon_0)
     # So the slope of a_n vs n is -log10(C)
     M = [ones(length(n_iter)) n_iter]
     intercept, slope = solve_least_squares(M, a_n)
-    
+
     # Calculate C from the slope
     C_global = 10^(-slope)
-    
+
     println("Global Analysis based on n vs a_n:")
     println("Slope ≈ $slope")
     println("Global Asymptotic error constant C ≈ $C_global")
-    
+
     global_plot = scatter_generic(
-        n_iter, 
+        n_iter,
         a_n,
         label=L"Data $(n, a_n)$",
         xlabel=L"Iteration $n$",
@@ -305,20 +305,20 @@ function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::Strin
         markershape=:circle,
         markerstrokewidth=0
     )
-    
+
     # Calculate the y-values for the fitted line
     y_fit = @. intercept + slope * n_iter
-    
+
     plot_add!(
         global_plot,
         n_iter,
         y_fit,
-        label = LaTeXString("Linear Fit (Slope \$\\approx $(round(slope, digits=3))\$)")
+        label=LaTeXString("Linear Fit (Slope \$\\approx $(round(slope, digits=3))\$)")
     )
-    
+
     save_plot(global_plot, plot_name, save_dir)
     display(global_plot)
     readline()
-    
+
     return global_plot
 end
