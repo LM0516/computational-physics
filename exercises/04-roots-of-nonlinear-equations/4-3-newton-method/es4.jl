@@ -2,7 +2,6 @@ using ComputationalPhysics
 using Plots
 using LaTeXStrings
 
-# TODO: Check if this exercise is correct, the plot is strange
 function main()
     τ = 1.7610
     ϵ = 0.2230
