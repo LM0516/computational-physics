@@ -1,6 +1,7 @@
 \section{Roots of Nonlinear Equations}
 
-\subsection*{Some observations about the convergence rate}
+\subsection*{Some observations about the convergence
+rate}\label{section:convergence-rate}
 \paragraph{Convergence rate:}
 By definition, an iterative method has an order of convergence $q$ and an 
 asymptotic error constant $C$ if the sequence of errors $\epsilon_k = x_k - r$ 
@@ -104,13 +105,23 @@ the convergence rate and the asymptotic error constant in the exercises.
 \end{exercise}
 
 \begin{solution}
-  The root-finding problem for the non-linear function $f(x) = x^3 - 7x^2 + 14x - 6$ was computationally investigated over the interval $[0, 1]$ utilizing the bisection method. The iterative process was designed to terminate when the interval width, representing the maximum absolute error, dropped below a strictly defined tolerance of $\texttt{tol} = 10^{-14}$.
+    The root-finding problem for the non-linear function $f(x) = x^3 - 7x^2 + 14x - 6$
+    was computationally investigated over the interval $[0, 1]$ utilizing the 
+    bisection method. The iterative process was designed to terminate when the 
+    interval width, representing the maximum absolute error, dropped below a 
+    strictly defined tolerance of $\texttt{tol} = 10^{-14}$.
 
-  To empirically determine the order of convergence $q$ and the asymptotic error constant $C$, we define the absolute error at the $n$-th iteration as $\epsilon_n = |x_n - r|$, where $r$ is our terminal approximation. Assuming the error propagates according to the asymptotic relation $\epsilon_{n+1} \approx C \epsilon_n^q$, we can linearize the expression via a base-10 logarithm:
-  \[
-      \log_{10}|\epsilon_{n+1}| \approx q \log_{10}|\epsilon_n| + \log_{10}C
-  \]
-  A linear least-squares regression was applied to the sequence of coordinate pairs $(\log_{10}|\epsilon_n|, \log_{10}|\epsilon_{n+1}|)$. Because initial iterations often fall outside the asymptotic regime, we performed a sensitivity analysis by systematically truncating the first $k$ iterations (where $k \in \{1, 3, 5, \dots, 19\}$) to isolate the asymptotic behavior of the sequence's tail.
+    To empirically determine the order of convergence $q$ and the asymptotic 
+    error constant $C$, we define the absolute error at the $n$-th iteration as
+    $\epsilon_n = |x_n - r|$, where $r$ is our terminal approximation. Assuming
+    the error propagates according to the asymptotic relation $\epsilon_{n+1} \approx
+    C \epsilon_n^q$, we can linearize the expression via a base-10 logarithm:
+    \[
+        \log_{10}|\epsilon_{n+1}| \approx q \log_{10}|\epsilon_n| + \log_{10}C
+    \]
+    A linear least-squares regression was applied to the sequence of coordinate
+    pairs $(\log_{10}|\epsilon_n|, \log_{10}|\epsilon_{n+1}|)$. Because initial
+    iterations often fall outside the asymptotic regime, we performed a sensitivity analysis by systematically truncating the first $k$ iterations (where $k \in \{1, 3, 5, \dots, 19\}$) to isolate the asymptotic behavior of the sequence's tail.
 
   \paragraph{Results}
   The bisection algorithm successfully converged to the root $r \approx 0.5857864376269042$ after 47 iterations. The geometric progression of the root extraction is illustrated in Figure \ref{fig:bisection_exact}.
@@ -188,10 +199,6 @@ the convergence rate and the asymptotic error constant in the exercises.
 
 \subsection{Newton Method}
 
-% \begin{exercise}
-%     Write a program that implements Newton's method. (\textbf{Optional}) Include bracketing.
-% \end{exercise}
-
 \begin{exercise}
     For each of the functions below, do the following steps.
     
@@ -214,28 +221,200 @@ the convergence rate and the asymptotic error constant in the exercises.
     \end{itemize}
 \end{exercise}
 
-\begin{exercise}
-    Plot the function $f(x)=x^{-2} - \sin x$ on the interval $x \in [0.5,10]$.  For each initial value $x_1=1,\, x_1=2,\,\ldots,\, x_1=7$, apply Newton's method to $f$, and make a table showing $x_1$ and the resulting root found by the method. In which case does the iteration converge to a root other than the one closest to it? Use the plot to explain why that happened. (**Optional**) Repeat the exercise including bracketing.
-\end{exercise}
+\begin{solution}
+    To apply Newton's method, we first rewrite the given equations into the standard root-finding form $f(x) = 0$ and compute their respective derivatives, $f'(x)$.
+    
+    \begin{enumerate}
+        \item For $x^2 = e^{-x}$:
+        \[
+        \begin{aligned}
+            f_1(x) &= x^2 - e^{-x}, \\
+            f_1'(x) &= 2x + e^{-x}.
+        \end{aligned}
+        \]
+        \item For $2x = \tan x$:
+        \[
+        \begin{aligned}
+            f_2(x) &= 2x - \tan x, \\
+            f_2'(x) &= 2 - \sec^2 x.
+        \end{aligned}
+        \]
+        \item For $e^{x+1} = 2+x$:
+        \[
+        \begin{aligned}
+            f_3(x) &= e^{x+1} - x - 2, \\
+            f_3'(x) &= e^{x+1} - 1.
+        \end{aligned}
+        \]
+    \end{enumerate}
+
+    \paragraph{Numerical Methodology}
+    The core algorithm computes the Newton sequence via the recurrence relation $x_{n+1} = x_n - f(x_n)/f'(x_n)$. 
+    
+    To evaluate the convergence rate $q$ and the asymptotic error constant $C$, I
+    used the algorithm explained in the Section~\ref{section:convergence-rate}.
+
+    \paragraph{Results}
+    Graphical analysis over the designated intervals (Figure \ref{fig:newton_roots}) confirms the existence of a single root within the domain for each function. The quantitative results of the Newton iterations are summarized in Table \ref{tab:newton_results}.
+
+    \begin{center}
+        \centering
+        % Ensure the path matches your LaTeX document structure
+        \includegraphics[width=\textwidth]{figures/4-3/plot-solution-newton-method.pdf}
+        \captionof{figure}{Behavior of the objective functions $f_1(x)$, $f_2(x)$, and $f_3(x)$ over their respective intervals. The dashed line represents $y=0$, and the calculated roots are denoted by scatter points.}
+        \label{fig:newton_roots}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \captionof{table}{Numerical roots $r$, observed convergence rates $q$, and asymptotic error constants $C$ obtained via Newton's method in \texttt{Float64} precision.}
+        \label{tab:newton_results}
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{l c c c}
+            \hline\hline
+            \textbf{Function} & \textbf{Root Estimate ($r$)} & \textbf{Convergence Rate ($q$)} & \textbf{Error Constant ($C$)} \\
+            \hline
+            $f_1(x) = x^2 - e^{-x}$   & $0.703467422498$ & $2.0007$ & $0.3978$ \\
+            $f_2(x) = 2x - \tan x$    & $1.165561185207$ & $2.0003$ & $3.3956$ \\
+            $f_3(x) = e^{x+1} - x - 2$& $-1.00000000372$ & $1.0113$ & $0.7841$ \\
+            \hline\hline
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Discussion}
+    The numerical results strongly align with theoretical expectations for Newton's method:
+    \begin{itemize}
+        \item \textbf{Functions 1 and 2:} Both exhibit a convergence rate of $q \approx 2$. This numerically confirms quadratic convergence, which is expected since the roots are simple (i.e., $f'(r) \neq 0$). The process successfully converges to machine epsilon limits without numerical instability.
+        \item \textbf{Function 3:} The convergence rate degenerates to $q \approx 1$ (linear convergence). This is analytically justified by evaluating the exact root at $x = -1$. Observe that $f_3(-1) = 0$ and $f'_3(-1) = 0$. Because the first derivative vanishes at the root, the root has a multiplicity of $m=2$. Newton's method theoretically reverts to linear convergence for multiple roots.
+    \end{itemize}
+    Furthermore, for $f_3(x)$, the evaluation of $x_{n+1}$ near the root requires dividing a very small number by another very small number ($f(x_n)/f'(x_n) \to 0/0$). This induces catastrophic cancellation in standard \texttt{Float64} arithmetic. Consequently, our estimate of the root carries an absolute error on the order of $10^{-9}$ instead of reaching the standard $10^{-16}$ machine epsilon bound, and the asymptotic constant $C \approx 0.78$ deviates from the theoretical value of $C = 1 - 1/m = 0.5$.
+
+    \paragraph{Conclusion}
+    Newton's method provides robust and highly efficient (quadratic) root-finding capabilities for simple roots. However, the presence of multiple roots severely impacts both the asymptotic convergence rate and the ultimate numerical stability of the algorithm.
+\end{solution}
 
 \begin{exercise}
-    The most easily observed properties of the orbit of a celestial body around the Sun are the period $\tau$ and the elliptical eccentricity $\epsilon$. (A circle has $\epsilon=0$.) From these, it is possible to find at any time $t$ the *true anomaly* $\theta(t)$. This is the angle between the direction of periapsis (the point in the orbit closest to the Sun) and the current position of the body, as seen from the main focus of the ellipse (the location of the Sun). This is done through
-    
+    Plot the function $f(x)=x^{-2} - \sin x$ on the interval $x \in [0.5,10]$.
+    For each initial value $x_1=1,\, x_1=2,\,\ldots,\, x_1=7$, apply Newton's
+    method to $f$, and make a table showing $x_1$ and the resulting root found
+    by the method. In which case does the iteration converge to a root other
+    than the one closest to it? Use the plot to explain why that happened.
+    (\textbf{Optional}) Repeat the exercise including bracketing.
+\end{exercise}
+
+\begin{solution}
+    To apply Newton's method, we require the first derivative of the objective function $f(x) = x^{-2} - \sin(x)$. Applying standard differentiation yields:
     \[
+        f'(x) = -2x^{-3} - \cos(x).
+    \]
+
+    \paragraph{Results}
+    The target function $f(x)$ exhibits oscillatory behavior bounded by a $1/x^2$ decay, leading to multiple roots within the interval $[0.5, 10]$. Figure \ref{fig:multiple_roots} displays the objective function and the roots successfully identified by the solver. Table \ref{tab:newton_multiple_roots} details the root converged upon for each initial guess $x_1$, alongside convergence metrics.
+
+    \begin{center}
+        \centering
+        \includegraphics[width=\textwidth]{figures/4-3/multiple-newton-method-roots.pdf}
+        \captionof{figure}{Plot of $f(x) = x^{-2} - \sin(x)$ over the interval $x \in [0.5, 10]$. The dashed line denotes $y=0$, and the scatter points represent the numerical roots found via Newton's method.}
+        \label{fig:multiple_roots}
+    \end{center}
+
+    \begin{center}
+        \centering
+        \captionof{table}{Newton's method results for varying initial guesses. "Overshoot" denotes instances where the algorithm converged to a root other than the one geometrically closest to the initial guess.}
+        \label{tab:newton_multiple_roots}
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{c c c c c}
+            \hline\hline
+            \textbf{Initial Guess ($x_1$)} & \textbf{Converged Root ($r$)} & \textbf{Closest Root} & \textbf{Conv. Rate ($q$)} \\
+            \hline
+            $1.0$ & $1.06822$ & $1.06822$ & $2.0024$ \\
+            $2.0$ & $6.30832$ & $3.03265$ & $2.0283$ \\
+            $3.0$ & $3.03265$ & $3.03265$ & $2.0221$ \\
+            $4.0$ & $3.03265$ & $3.03265$ & $1.9756$ \\
+            $5.0$ & $9.41349$ & $6.30832$ & $1.7087$ \\
+            $6.0$ & $6.30832$ & $6.30832$ & $2.0188$ \\
+            $7.0$ & $6.30832$ & $6.30832$ & $2.1579$ \\
+            \hline\hline
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Discussion}
+    As observed in Table \ref{tab:newton_multiple_roots}, the iterations initialized at $x_1 = 2.0$ and $x_1 = 5.0$ converge to roots far away from their starting positions, completely missing their geometrically closest roots. 
+    
+    This phenomenon is fundamentally tied to the geometry of the function at the initial guess, as seen in Figure \ref{fig:multiple_roots}. The Newton step size is inversely proportional to the derivative $f'(x_n)$. 
+    \begin{itemize}
+        \item \textbf{Case $x_1 = 2.0$:} The function has a local minimum slightly before $x=2$. At $x=2$, the derivative $f'(2)$ is relatively small, making the tangent line shallow. Because $f(2)$ is negative and the slope is gently positive, the tangent line projects far across the $x$-axis to the right, stepping over the nearby root at $r \approx 3.03$ and landing directly into the basin of attraction for the root at $r \approx 6.31$.
+        \item \textbf{Case $x_1 = 5.0$:} Similarly, $x=5$ sits near a local maximum (which occurs near $3\pi/2 \approx 4.71$). The shallow negative slope at $x=5$ projects the next guess far to the right, skipping over the closest root $r \approx 6.31$ and instead converging to $r \approx 9.41$.
+    \end{itemize}
+
+    \paragraph{Conclusion}
+    These results highlight the primary vulnerability of Newton's method: its lack of global convergence. For highly oscillatory functions like $x^{-2} - \sin(x)$, local extrema create "blind spots" where vanishing derivatives ($f'(x) \to 0$) hurl the numerical sequence into entirely different basins of attraction.
+\end{solution}
+
+\begin{exercise}
+    The most easily observed properties of the orbit of a celestial body around
+    the Sun are the period $\tau$ and the elliptical eccentricity $\epsilon$.
+    (A circle has $\epsilon=0$.) From these, it is possible to find at any time
+    $t$ the true anomaly $\theta(t)$. This is the angle between the direction
+    of periapsis (the point in the orbit closest to the Sun) and the current
+    position of the body, as seen from the main focus of the ellipse (the
+    location of the Sun). This is done through
+    
+    \begin{equation}
         \tan \frac{\theta}{2} = \sqrt{\frac{1+\epsilon}{1-\epsilon}}\,
         \tan \frac{\psi}{2}\,,
-    \]
+        \label{eq:eq-kepler1}
+    \end{equation}
     
-    where the *eccentric anomaly* $\psi(t)$ satisfies Kepler's equation:
+    where the eccentric anomaly $\psi(t)$ satisfies Kepler's equation:
   
-    \[
+    \begin{equation}
         \psi - \epsilon \sin \psi - \frac{2\pi t}{\tau} = 0\,.
+        \label{eq:eq-kepler2}
+    \end{equation}
+
+    \ref{eq:eq-kepler2} must be solved numerically to find $\psi(t)$, and
+    then \ref{eq:eq-kepler1} can be solved analytically to find $\theta(t)$. 
+    
+    The asteroid Eros has $\tau=1.7610$ years and $\epsilon=0.2230$. Using
+    Newton's method for \ref{eq:eq-kepler2}, make a plot of $\theta(t)$ for 100
+    values of $t$ between $0$ and $\tau$, which is one full orbit.
+\end{exercise}
+
+\begin{solution}
+    To compute the true anomaly $\theta(t)$ over time, we must first isolate the eccentric anomaly $\psi(t)$ by finding the roots of Kepler's equation at discrete time steps $t$. We define our objective function and its first derivative with respect to $\psi$ as follows:
+    \[
+    \begin{aligned}
+        f(\psi) &= \psi - \epsilon \sin \psi - \frac{2\pi t}{\tau}, \\
+        f'(\psi) &= 1 - \epsilon \cos \psi.
+    \end{aligned}
+    \]
+    Because the physical eccentricity of an ellipse satisfies $0 \le \epsilon < 1$, we observe that $f'(\psi) \ge 1 - \epsilon > 0$ for all $\psi$. This implies that $f(\psi)$ is strictly monotonically increasing and contains exactly one unique real root for any given time $t$.
+
+    \paragraph{Numerical Methodology}
+    The orbital parameters for the asteroid Eros were defined as $\tau = 1.7610$ years and $\epsilon = 0.2230$. The time domain $t \in [0, \tau]$ was discretized into 100 evenly spaced intervals. 
+    
+    For each time step $t_i$, Newton's method was utilized to converge upon $\psi(t_i)$. Following convergence, the true anomaly $\theta(t_i)$ was computed via a rearrangement of Equation \ref{eq:eq-kepler1}:
+    \[
+        \theta(t) = 2 \arctan\left( \sqrt{\frac{1+\epsilon}{1-\epsilon}} \tan\left(\frac{\psi(t)}{2}\right) \right).
     \]
 
-    Equation {eq}`eq-kepler2` must be solved numerically to find $\psi(t)$, and then {eq}`eq-kepler1` can be solved analytically to find $\theta(t)$. 
-    
-    The asteroid Eros has $\tau=1.7610$ years and $\epsilon=0.2230$. Using Newton's method for {eq}`eq-kepler2`, make a plot of $\theta(t)$ for 100 values of $t$ between $0$ and $\tau$, which is one full orbit. (Note: Use `mod(Î¸,2Ï€)` to put the angle between 0 and $2\pi$ if you want the result to be a continuous function.)
-\end{exercise}
+    \paragraph{Results}
+    The Newton iterations converged successfully for all 100 time steps. Figure \ref{fig:true_anomaly} illustrates the resulting true anomaly $\theta(t)$ over the course of exactly one orbital period $\tau$.
+
+    \begin{center}
+        \centering
+        \includegraphics[width=0.85\textwidth]{figures/4-3/full-orbit.pdf}
+        \captionof{figure}{Evolution of the true anomaly $\theta(t)$ over one full orbital period ($\tau=1.7610$ years) for the asteroid Eros ($\epsilon = 0.2230$).}
+        \label{fig:true_anomaly}
+    \end{center}
+
+    \paragraph{Discussion}
+    The plot of $\theta(t)$ demonstrates a monotonic increase from $0$ to $2\pi$ radians, satisfying the boundary conditions of a closed orbit. Notably, the curve is not perfectly linear. This non-linearity is a direct macroscopic manifestation of Kepler's Second Law of Planetary Motion (equal areas in equal times). Because $\epsilon = 0.2230 > 0$, the asteroid travels significantly faster at periapsis ($\theta=0, 2\pi$) and slower at apoapsis ($\theta=\pi$).
+
+    \paragraph{Conclusion}
+    Newton's method proves to be a robust algorithm for solving Kepler's equation.
+\end{solution}
 
 \subsection{Interpolations methods}
 

@@ -14,14 +14,14 @@ function main()
         sol, x = newton_method(f, df, a, b; x_init=i)
 
         println("Solution for x_init = $i: $sol")
-        q, C = convergence(x, sol, skip=1)
+        q_values, C_values = conv_rate_and_asymp_const(x, sol)
+        @show q_values[end], C_values[end]
 
         push!(solutions, sol)
     end
 
-    # TODO: Add axis labels
     x_vals = range(a, b, length=200)
-    p = plot_generic(x_vals, f.(x_vals), label=L"f(x) = x^{-2} - \sin(x)")
+    p = plot_generic(x_vals, f.(x_vals), xlabel=L"x", ylabel=L"y", label=L"f(x) = x^{-2} - \sin(x)")
     scatter_add!(p, solutions, [0.0 for _ in solutions], label="Solutions")
     hline!([0.0], label="y=0", linestyle=:dash)
     save_plot(p, "multiple-newton-method-roots", "4-3")

@@ -107,8 +107,19 @@ function conv_rate_and_asymp_const(x_history::Array{Float64}, root::Float64)
     # === Convergence rates (Algorithm 2: using successive differences) ===
     d = abs.(diff(x_history))
 
-    # Keep only differences above the numerical noise threshold
-    d_valid = filter(val -> val > 1e-14, d)
+    # Truncate array instead of filtering to maintain sequence integrity.
+    # This can avoid cancellation errors when calculating `q_values`
+    valid_idx = length(d)
+    for i in 1:(length(d)-1)
+        if d[i] < 1e-7 || d[i+1] >= d[i]
+            valid_idx = i
+            break
+        end
+    end
+
+    # Keep only the valid, monotonically decreasing part of the sequence
+    d_valid = d[1:valid_idx]
+    # @show d_valid
     n = length(d_valid)
 
     if n < 3
@@ -207,40 +218,64 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="
 end
 
 """
-Finds a root of the function `f` using Newton's method.
+    newton_method(f, df, a, b; kwargs...) -> (root, trajectory)
+
+Finds a root of the function `f` within the interval `[a, b]` using the Newton-Raphson 
+algorithm, with an optional fallback to the bisection method.
+
+The Newton iteration follows the formula:
+\$\$x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}\$\$
+
+# Arguments
+- `f::Function`: The objective function to find the root for.
+- `df::Function`: The first derivative of the function `f`.
+- `a::Real`, `b::Real`: The lower and upper bounds of the search interval.
+
+# Keywords
+- `x_init::Real=b`: The starting point for the Newton iteration.
+- `xtol::Float64=1e-13`: The tolerance for the change in x (|x_curr - x_prev|).
+- `ftol::Float64=1e-13`: The tolerance for the function value (|f(x)|).
+- `max_iter::Int=100`: The maximum number of Newton iterations allowed.
+- `bracketing::Bool=true`: If true, triggers a `bisection` fallback if Newton's 
+  method iterates outside the bounds `[a, b]`.
+
+# Returns
+- `root::Float64`: The estimated root of the function.
+- `trajectory::Vector{Float64}`: The sequence of x-values generated during the iteration.
+
+# Note
+If Newton's method fails to converge within `max_iter`, a warning is issued. If 
+`bracketing` is enabled and the method diverges outside the interval `[a, b]`, 
+the function automatically calls `bisection(f, a, b)` to guarantee a solution.
 """
 function newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real=b, xtol::Float64=1e-13, ftol::Float64=1e-13, max_iter::Int=100, bracketing::Bool=true)
-    # Initial 2 x values
-    x1 = float(x_init == b ? b : x_init)
-    x2 = x1 - f(x1) / df(x1)
 
-    iter = 0
-    x = Vector{Float64}(undef, max_iter)
-    x[1], x[2] = x1, x2
+    x_prev = float(x_init)
+    x_curr = x_prev - f(x_prev) / df(x_prev)
 
-    while ((abs(x1 - x2) >= xtol) || (abs(f(x1)) >= ftol)) && iter < max_iter
-        x_new = x2 - f(x2) / df(x2)
+    trajectory = Vector{Float64}(undef, max_iter + 1)
+    trajectory[1] = x_prev
+    trajectory[2] = x_curr
+    iter = 1
 
-        # Save the x values for the convergence analysis
-        x[iter+1] = x_new
-
-        x1 = x2
-        x2 = x_new
+    while iter < max_iter && (abs(x_curr - x_prev) >= xtol || abs(f(x_curr)) >= ftol)
+        x_prev = x_curr
+        x_curr = x_prev - f(x_prev) / df(x_prev)
         iter += 1
+        trajectory[iter+1] = x_curr
     end
 
     if iter == max_iter
-        @warn "Maximum number of iterations reached for the root $x2"
-        @warn "The function in this root is $(f(x2))"
+        @warn "Maximum number of iterations reached at x=$x_curr"
+        @warn "Residual f(x) = $(f(x_curr))"
     end
 
-    # Bracketing 
-    if x2 > b && f(a) * f(b) < 0 && bracketing == true
-        println("Using bracketing...")
-        x2 = bisection(f, a, b)
+    if bracketing && (x_curr < a || x_curr > b)
+        println("Newton diverged outside [$a, $b], using bisection fallback...")
+        x_curr = bisection(f, a, b)
     end
 
-    return x2, x
+    return x_curr, trajectory[1:iter+1]
 end
 
 """

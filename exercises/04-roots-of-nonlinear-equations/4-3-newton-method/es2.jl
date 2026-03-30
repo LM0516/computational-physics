@@ -10,7 +10,7 @@ function solutions(f::Function, df::Function, a, b, f_eqation, save_dir, plot_na
     # println("Convergence rate of algorithm 2")
     q_values, C_values = conv_rate_and_asymp_const(x, r)
     @show r
-    @show q_values, C_values
+    @show q_values[end], C_values[end]
 
     println("Solution found! Plotting the data...")
 
@@ -19,7 +19,9 @@ function solutions(f::Function, df::Function, a, b, f_eqation, save_dir, plot_na
     scatter_add!(p, [r], [0.0], label=round(r; digits=4))
     hline!([0.0], label=L"y=0", linestyle=:dash)
 
-    return p
+    p2 = plot_convergence_analysis(x, r, save_dir="output/figures")
+
+    return p, p2
 end
 
 function main()
@@ -51,6 +53,8 @@ function main()
 
     save_plot(p, "plot-solution-newton-method", dir_name)
     display(p)
+    readline()
+    display(p2)
     readline()
 end
 

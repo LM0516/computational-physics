@@ -8,7 +8,7 @@ function main()
     ϵ = 0.2230
     a = 0
     b = 2π
-    θ = zeros(100)
+    θ = Vector{Float64}(undef, 100)
 
     for (i, t) in enumerate(range(0, τ, length=100))
         f = ψ -> ψ - ϵ * sin(ψ) - 2π * t / τ
