@@ -7,15 +7,20 @@ function solutions(f, x0, x1, x2, a, b, label)
     sol, history = inverse_quadratic_interpolation(f, x0, x1, x2)
     println("Solution: $sol")
 
+    println("\nCalculatin q and C with Algorithm 1:")
     try
-        q, C = convergence(history, sol; skip=2)
-        println("Order of convergence q ≈ $q")
+        convergence(history, sol; skip=2)
     catch e
         println("Could not calculate convergence: $e")
     end
 
+    println("\nCalculatin q and C with Algorithm 2:")
+    q_values, C_values = conv_rate_and_asymp_const(history, sol)
+    @show q_values[end], C_values[end]
+
+
     # Saving the plot
-    println("Plotting the data...")
+    println("\nPlotting the data...")
     x_vals = range(a, b, length=200)
     p = plot_generic(x_vals, f.(x_vals), label=label)
     scatter_add!(p, [sol], [0.0], label="Solution")

@@ -8,6 +8,10 @@ function solutions(f::Function, a, b, label)
     @show sol
 
     println("Studying the convergence...")
+    println("\nAlgorithm 1:")
+    convergence(x, sol)
+
+    println("\nAlgorithm 2:")
     q_values, C_values = conv_rate_and_asymp_const(x, sol)
     @show q_values[end], C_values[end]
 

@@ -66,7 +66,6 @@ end
 """
 Analyzes the order of convergence and asymptotic error constant for a sequence of approximations.
 """
-# BUG: In this function there are several cancellation errors happening, fix them.
 function convergence(x, r; skip::Int=10)
     # Number of initial iterations to skip for the analysis
     # Use only the tail of the data
@@ -278,41 +277,59 @@ function newton_method(f::Function, df::Function, a::Real, b::Real; x_init::Real
     return x_curr, trajectory[1:iter+1]
 end
 
+
 """
 Finds a root of the function `f` using the secant method.
 """
 function secant_method(f::Function, x_0::Real, x_1::Real; xtol::Float64=1e-14, ftol::Float64=1e-14, max_iter::Int=100, bracketing::Bool=true)
-    x_prev = float(x_0)
-    x_curr = float(x_1)
-    iter = 0
-    x = [x_prev, x_curr]
+    x_hist = Vector{Float64}(undef, max_iter + 2)
+    x_hist[1] = float(x_0)
+    x_hist[2] = float(x_1)
 
-    while ((abs(x_curr - x_prev) >= xtol) || (abs(f(x_curr)) >= ftol)) && iter < max_iter
-        f_x_curr = f(x_curr)
-        f_x_prev = f(x_prev)
+    f_prev = f(x_hist[1])
+    f_curr = f(x_hist[2])
 
-        if f_x_curr == f_x_prev
-            # Avoid division by zero, return current approximation
+    # Check if we are already at a root before looping
+    if abs(f_curr) < ftol
+        return x_hist[2], x_hist[1:2]
+    end
+
+    curr_idx = 2
+    for iter in 1:max_iter
+        diff_f = f_curr - f_prev
+        # Avoid division by zero
+        if abs(diff_f) < 1e-18
             break
         end
 
-        x_next = x_curr - (f_x_curr * (x_curr - x_prev)) / (f_x_curr - f_x_prev)
+        x_next = x_hist[curr_idx] - f_curr * (x_hist[curr_idx] - x_hist[curr_idx-1]) / diff_f
+        curr_idx += 1
+        x_hist[curr_idx] = x_next
 
-        # Save the x values for the convergence analysis
-        push!(x, x_next)
+        # Check convergence criteria
+        if abs(x_next - x_hist[curr_idx-1]) < xtol || abs(f(x_next)) < ftol
+            break
+        end
 
-        x_prev = x_curr
-        x_curr = x_next
-        iter += 1
+        # Update values for next iteration
+        f_prev = f_curr
+        f_curr = f(x_next)
     end
 
-    # Bracketing (assuming x_0 and x_1 are the original interval bounds)
-    if (x_curr > x_1 || x_curr < x_0) && f(x_0) * f(x_1) < 0 && bracketing == true
-        println("Using bracketing...")
-        x_curr = bisection(f, x_0, x_1)
+    # Trim the history to the actual number of iterations performed
+    final_history = x_hist[1:curr_idx]
+    x_final = final_history[end]
+
+    # Bracketing check (Bisection fallback)
+    if bracketing && (f(x_0) * f(x_1) < 0)
+        low, high = min(x_0, x_1), max(x_0, x_1)
+        if x_final < low || x_final > high
+            # bisection(f, a, b) must be defined elsewhere
+            x_final = bisection(f, x_0, x_1)
+        end
     end
 
-    return x_curr, x
+    return x_final, final_history
 end
 
 """
