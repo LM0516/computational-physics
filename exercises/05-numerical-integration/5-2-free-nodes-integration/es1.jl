@@ -1,9 +1,8 @@
 using ComputationalPhysics
 using GaussQuadrature
 
-# FIX: Something's wrong with this, I think it's missing the plot
 function check_results(r::Vector{Float64}, w::Vector{Float64}, n::Int)
-    println("Checking results for n = $n...")
+    println("\nChecking results for n = $n with GaussQuadrature package...")
     real_nodes, real_weights = legendre(n)
     sort!(r)
     sort!(real_nodes)
@@ -22,9 +21,11 @@ function check_results(r::Vector{Float64}, w::Vector{Float64}, n::Int)
 end
 
 function main()
-    n = 100
-    r, w = gauss_legendre_quadrature(n)
-    check_results(r, w, n)
+    n = [2, 3, 4, 5]
+    for i in n
+        r, w = gauss_legendre_quadrature(i)
+        check_results(r, w, i)
+    end
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
