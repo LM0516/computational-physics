@@ -144,22 +144,16 @@ function double_exponential_quadrature(g::Function, N::Int; tol::Float64=1e-15)
     result = 0.0
 
     val_zero = g(0.0)
-    if isfinite(val_zero)
-        result += val_zero
-    end
+    isfinite(val_zero) ? result += val_zero : nothing
 
     for k in 1:N
         t = k * h
 
         val_pos = g(t)
-        if isfinite(val_pos)
-            result += val_pos
-        end
+        isfinite(val_pos) ? result += val_pos : nothing
 
         val_neg = g(-t)
-        if isfinite(val_neg)
-            result += val_neg
-        end
+        isfinite(val_neg) ? result += val_neg : nothing
     end
 
     return result * h

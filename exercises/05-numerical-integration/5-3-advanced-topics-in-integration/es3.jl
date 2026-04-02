@@ -6,27 +6,21 @@ using LaTeXStrings
 function solutions(f::Function, exact::Real, function_name; fig_name::String="test")
     errors = Float64[]
     num_nodes_values = Vector{Float64}(undef, 29)
-    errors = zeros(Float64, 29)
-    i = 1
+    errors = Vector{Float64}(undef, 29)
 
-    for n in 4:2:60
+    for (i, n) in enumerate(4:2:60)
         N = Int(n / 2)
         println("Calculating the integral for N = $N")
         int = double_exponential_quadrature(f, N)
         current_err = abs(int - exact)
 
         # Handle zero errors for logarithmic scale: replace with machine epsilon
-        if current_err == 0.0
-            errors[i] = eps(Float64)
-        else
-            errors[i] = current_err
-        end
+        current_err == 0.0 ? errors[i] = eps(Float64) : errors[i] = current_err
         num_nodes_values[i] = N
 
         println("Calculated value: $int")
         println("Exact value: $exact")
         println("="^40)
-        i += 1
     end
 
     p = scatter_generic(num_nodes_values, errors, label=function_name, yaxis=:log, marker=:circle, legend=:bottomleft)

@@ -4,14 +4,15 @@ using LaTeXStrings
 
 function solutions(a::Real, b::Real, f::Function, nodes, label, exact; rule::String="trapezoidal")
     s = Vector{Float64}(undef, length(nodes))
+    n_nodes = length(nodes)
 
     # Compute solutions 
     if rule == "trapezoidal"
-        for j in 1:length(nodes)
+        for j in 1:n_nodes
             s[j] = composite_trapezoidal(a, b, f, Int(nodes[j]))
         end
     elseif rule == "simpson"
-        for j in 1:length(nodes)
+        for j in 1:n_nodes
             s[j] = composite_simpson(a, b, f, Int(nodes[j]))
         end
     else
@@ -30,16 +31,16 @@ end
 function errors(s::Vector{Float64}, exact::Float64)
     println("-"^40)
 
-    relative_errors = @. log10(abs(s - exact) / abs(exact))
-    absolute_errors = @. log10(abs(s - exact))
+    relative_errors = @. abs(s - exact) / abs(exact)
+    absolute_errors = @. abs(s - exact)
 
     # Plot relative errors
-    relative_plots = plot(relative_errors, label="Relative errors")
+    relative_plots = plot(make_log_safe(relative_errors), label="Relative errors", yscale=:log10)
     xlabel!("Nodes")
     ylabel!("Relative error")
 
     # Plot absolute errors
-    absolute_plots = plot(absolute_errors, label="Absolute errors")
+    absolute_plots = plot(make_log_safe(absolute_errors), label="Absolute errors", yscale=:log10)
     xlabel!("Nodes")
     ylabel!("Absolute error")
 
