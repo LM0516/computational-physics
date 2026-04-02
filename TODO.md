@@ -2,6 +2,18 @@
 
 ## Correctness & Algorithm Quality
 - Audit all algorithm implementations against reference textbooks for correctness
+- Make all the function in `ComputationalPhysics` more generic as possible,
+avoid hard-coding the types of a function unless is strictly necessary. Here is
+an example of generic function declaration:
+
+```julia
+function barycentric_lagrange(
+    x_eval::T,
+    x_nodes::AbstractVector{T},
+    f,
+    method::BarycentricType = Lagrange()
+) where {T<:Real}
+```
 
 ## Testing
 - Populate `test/runtests.jl` with unit tests using Julia's `Test` stdlib
