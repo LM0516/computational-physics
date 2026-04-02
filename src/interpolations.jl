@@ -1,34 +1,52 @@
 const ∏ = prod
 const ∑ = sum
 
+abstract type BarycentrycType end
+
+struct Lagrange <: BarycentrycType end
+struct Chebyshev <: BarycentrycType end
+
+function barycentric_weights(x_nodes::Vector{Float64}, ::Lagrange)
+  n = length(x_nodes)
+  λ = Vector{Float64}(undef, n)
+
+  for j in 1:n
+    # Product of (x[j] - x[i]) for all i ≠ j
+    λ[j] = 1 / ∏(x_nodes[j] - x_nodes[i] for i in 1:n if i != j)
+  end
+
+  return λ
+end
+
+function barycentric_weights(x_nodes::Vector{Float64}, ::Chebyshev)
+  n = length(x_nodes)
+  λ = Vector{Float64}(undef, n)
+
+  for j in 1:n
+    if j == 1 || j == n
+      λ[j] = (-1)^j * 1 / 2
+    else
+      λ[j] = (-1)^j
+    end
+  end
+
+  return λ
+end
+
 # NOTE: For better performance look 'dispatch', there is an if that is called to
 # many times.
 """
 Evaluate the Lagrange interpolating polynomial at a given point `x_eval` using the
 barycentric interpolation formula.
 """
-function barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Function; type="lagrange")
+function barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Function; method::BarycentrycType=Lagrange())
   n = length(x_nodes)
 
   # Compute function values at nodes
   f_values = [f(x) for x in x_nodes]
 
   # Compute barycentric weights λ
-  λ = Vector{Float64}(undef, n)
-  if type == "lagrange"
-    for j in 1:n
-      # Product of (x[j] - x[i]) for all i ≠ j
-      λ[j] = 1 / ∏(x_nodes[j] - x_nodes[i] for i in 1:n if i != j)
-    end
-  elseif type == "chebyshev"
-    for j in 1:n
-      if j == 1 || j == n
-        λ[j] = (-1)^j * 1 / 2
-      else
-        λ[j] = (-1)^j
-      end
-    end
-  end
+  λ = barycentric_weights(x_nodes, method)
 
   # Check if x_eval is one of the nodes
   for j in 1:n
@@ -41,8 +59,7 @@ function barycentric_lagrange(x_eval::Float64, x_nodes::Vector{Float64}, f::Func
   numerator = ∑(λ[j] * f_values[j] / (x_eval - x_nodes[j]) for j in 1:n)
   denominator = ∑(λ[j] / (x_eval - x_nodes[j]) for j in 1:n)
 
-  p = numerator / denominator
-  return p
+  return numerator / denominator
 end
 
 """

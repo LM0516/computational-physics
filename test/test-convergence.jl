@@ -1,5 +1,3 @@
-using ComputationalPhysics
-
 f = x -> (exp(x + 1) - 2 - x)
 df = x -> (exp(x + 1) - 1)
 a = -2

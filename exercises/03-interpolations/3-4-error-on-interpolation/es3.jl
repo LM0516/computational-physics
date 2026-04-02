@@ -3,13 +3,16 @@ using LinearAlgebra
 using Plots
 using LaTeXStrings
 
-function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, foo; interp_type="chebyshev")
+global cheb = ComputationalPhysics.Chebyshev()
+global lag = ComputationalPhysics.Lagrange()
+
+function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, foo; interp_type=cheb)
     # Create evaluation points
     x_eval_range = range(a, b, length=1000)
 
     # Set plot title based on interpolation type
-    title_str = interp_type == "chebyshev" ? "Barycentric Chebyshev Interpolation" : "Barycentric Lagrange Interpolation"
-    
+    title_str = interp_type == cheb ? "Barycentric Chebyshev Interpolation" : "Barycentric Lagrange Interpolation"
+
     # Plot for f in log-scale
     p1 = plot_generic(x_eval_range, make_log_safe(f.(x_eval_range)),
         label="y = $foo", linewidth=1,
@@ -17,9 +20,9 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
         yaxis=:log, legend=true)
 
     # Create nodes based on interpolation type
-    if interp_type == "chebyshev"
+    if interp_type == cheb
         # Chebyshev nodes in [-1, 1]
-        x_nodes = [cos((2*i - 1) * π / (2*n_values)) for i in 1:n_values]
+        x_nodes = [cos((2 * i - 1) * π / (2 * n_values)) for i in 1:n_values]
         # Transform from [-1,1] to [a,b]
         x_nodes = @. (b - a) / 2 * x_nodes + (a + b) / 2
     else  # lagrange (equally spaced)
@@ -27,7 +30,7 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
     end
 
     # Evaluate interpolation at many points
-    p_interp = [barycentric_lagrange(x, x_nodes, f, type=interp_type) for x in x_eval_range]
+    p_interp = [barycentric_lagrange(x, x_nodes, f, method=interp_type) for x in x_eval_range]
 
     # Plot interpolation
     plot_add!(p1, x_eval_range, make_log_safe(p_interp),
@@ -46,11 +49,11 @@ end
 
 function main()
     a = 0.0
-    b = 2*π
+    b = 2 * π
     n = 40
 
     f(x) = cosh(sin(x))
-    p, max_error = plot_interpolation(n, a, b, f, L"\cosh(\sin(x))", interp_type="chebyshev")
+    p, max_error = plot_interpolation(n, a, b, f, L"\cosh(\sin(x))", interp_type=cheb)
 
     println("Maximum error: $max_error")
 

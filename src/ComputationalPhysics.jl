@@ -15,8 +15,7 @@ export save_plot, save_gif
 
 # Main modules 
 include("error_analysis.jl")
-export var_double_pass32, var_double_pass64
-export var_single_pass32, var_single_pass64
+export var_double_pass, var_single_pass
 export mclaurin_series, kappa_f
 
 include("linear_systems.jl")
