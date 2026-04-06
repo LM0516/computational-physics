@@ -24,21 +24,22 @@ function composite_trapezoidal(a::Real, b::Real, f::Function, m::Int)
 end
 
 function composite_simpson(a::Real, b::Real, f::Function, m::Int)
+    # BUG: With `NaN` the algorithm brokes.
     h = (b - a) / (2m)
 
     # Check for infinite values
-    fa = isinf(f(a)) ? 0 : f(a)
-    fb = isinf(f(b)) ? 0 : f(b)
+    fa = isinf(f(a)) ? 0.0 : f(a)
+    fb = isinf(f(b)) ? 0.0 : f(b)
 
     int_sum_1 = 0.0
     int_sum_2 = 0.0
 
-    for j in 1:(m-1)
-        int_sum_1 += isinf(f(a + (2j - 1) * h)) ? 0 : f(a + (2j - 1) * h)
+    for j in 1:m
+        int_sum_1 += isinf(f(a + (2j - 1) * h)) ? 0.0 : f(a + (2j - 1) * h)
     end
 
-    for j in 1:m
-        int_sum_2 += isinf(f(a + 2j * h)) ? 0 : f(a + 2j * h)
+    for j in 1:(m-1)
+        int_sum_2 += isinf(f(a + 2j * h)) ? 0.0 : f(a + 2j * h)
     end
 
     S = (h / 3) * (fa + fb + 4int_sum_1 + 2int_sum_2)
