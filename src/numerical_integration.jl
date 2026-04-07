@@ -23,28 +23,23 @@ function composite_trapezoidal(a::Real, b::Real, f::Function, m::Int)
     return T
 end
 
+safe(x) = isinf(x) || isnan(x) ? 0.0 : x
+
 function composite_simpson(a::Real, b::Real, f::Function, m::Int)
-    # BUG: With `NaN` the algorithm brokes.
     h = (b - a) / (2m)
 
     # Check for infinite values
-    fa = isinf(f(a)) ? 0.0 : f(a)
-    fb = isinf(f(b)) ? 0.0 : f(b)
-
-    int_sum_1 = 0.0
-    int_sum_2 = 0.0
+    S = safe(f(a)) + safe(f(b))
 
     for j in 1:m
-        int_sum_1 += isinf(f(a + (2j - 1) * h)) ? 0.0 : f(a + (2j - 1) * h)
+        S += 4 * safe(f(a + (2j - 1) * h))
     end
 
-    for j in 1:(m-1)
-        int_sum_2 += isinf(f(a + 2j * h)) ? 0.0 : f(a + 2j * h)
+    for j in 1:m-1
+        S += 2 * safe(f(a + 2j * h))
     end
 
-    S = (h / 3) * (fa + fb + 4int_sum_1 + 2int_sum_2)
-
-    return S
+    return (h / 3.0) * S
 end
 
 function gauss_legendre_quadrature(n::Int; a::Real=-1.0, b::Real=1.0)

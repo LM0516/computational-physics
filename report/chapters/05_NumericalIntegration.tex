@@ -100,34 +100,121 @@
 \end{solution}
 
 \begin{exercise}
-	For each integral in Exercise~\ref{ex:integrals} above, apply the Simpson formula and compare the errors to fourth-order convergence.
+	For each integral in Exercise~\ref{ex:integrals} above, apply the Simpson
+	formula and compare the errors to fourth-order convergence.
 \end{exercise}
+
+\begin{solution}
+	To evaluate the convergence improvements over the trapezoidal rule, we apply
+	the composite Simpson's rule to the same set of integrals. For an interval
+	$[a, b]$ discretized into $m$ equally spaced sub-intervals (where $m$ is even)
+	with step size $h = \frac{b-a}{m}$, the approximation is given by:
+	\[
+		\int_a^b f(x) \, dx \approx \frac{h}{3} \left[ f(x_0) + 4
+			\sum_{i=1,3,5\ldots}^{m-1} f(x_i) + 2 \sum_{i=2,4,6\ldots}^{m-2} f(x_i) +
+			f(x_m) \right]
+	\]
+	Theoretical error analysis states that the absolute error for Simpson's rule
+	is bounded by:
+	\[
+		E \leq \frac{(b-a)}{180} h^4 \max_{x \in [a,b]} |f^{(4)}(x)| =
+		\mathcal{O}(h^4)
+	\]
+	This implies a theoretical fourth-order convergence ($\mathcal{O}(m^{-4})$),
+	provided that the integrand is at least four times continuously
+	differentiable, $f \in C^4[a,b]$. The integrals were evaluated using
+	double-precision arithmetic (\texttt{Float64}) up to $m = 10,240$ nodes.
+
+	\paragraph{Results}
+	Table~\ref{tab:simpson_results} details the absolute errors obtained at the
+	maximum node count ($m = 10,240$) for both the trapezoidal and Simpson's
+	rules.
+
+	\begin{center}
+		\centering
+		\captionof{table}{Comparison of absolute errors between the Trapezoidal and Simpson's
+			rules evaluated at $m = 10,240$ nodes.}
+		\label{tab:simpson_results}
+		\begin{tabular}{clll}
+			\toprule
+			\textbf{Integral} & \textbf{Simpson Approximation} & \textbf{Trapezoidal Error} & \textbf{Simpson Error} \\
+			\midrule
+			1                 & $0.2500000000000007$           & $9.48 \times 10^{-10}$     & $7.00 \times 10^{-16}$ \\
+			2                 & $0.2106572512258067$           & $1.87 \times 10^{-9}$      & $2.00 \times 10^{-16}$ \\
+			3                 & $1.9052386904826724$           & $1.14 \times 10^{-8}$      & $2.60 \times 10^{-15}$ \\
+			4                 & $0.5140418958900695$           & $1.86 \times 10^{-9}$      & $1.20 \times 10^{-15}$ \\
+			5                 & $-0.4444440750259714$          & $2.20 \times 10^{-6}$      & $3.69 \times 10^{-7}$  \\
+			6                 & $0.7853981242237340$           & $2.84 \times 10^{-7}$      & $3.91 \times 10^{-8}$  \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+
+	\begin{center}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figures/5-1/newton-cotes-comparison-absolute-error.pdf}
+		\captionof{figure}{Log-log progression of the absolute error relative to the
+			number of nodes $m$ using Simpson's rule. The smooth integrands rapidly
+			descend to the machine precision threshold, whereas the singular integrands
+			stall at sub-optimal fractional convergence.}
+		\label{fig:simpson_error}
+	\end{center}
+
+	\paragraph{Discussion \& Convergence Analysis}
+	The integration results perfectly delineate the strict mathematical
+	requirements of Simpson's rule:
+
+	\begin{itemize}
+		\item \textbf{Smooth Integrands (Integrals 1--4):} These functions satisfy
+		      $f \in C^4[a,b]$. Because Simpson's rule scales at $\mathcal{O}(h^4)$, the
+		      truncation error diminishes so rapidly that it essentially hits the
+		      \texttt{Float64} machine epsilon limit ($\approx 2.22 \times 10^{-16}$) at a
+		      fraction of the maximum nodes. Further increases in node count merely
+		      accumulate numerical round-off noise.
+		\item \textbf{Singular Integrands (Integrals 5--6):} The fourth derivative
+		      $f^{(4)}(x)$ approaches infinity at the boundaries for both
+		      $\sqrt{x}\log(x)$ and $\sqrt{1-x^2}$. Consequently, the $\mathcal{O}(h^4)$
+		      theoretical bound is entirely invalidated. Simpson's rule offers negligible
+		      practical improvement over the trapezoidal rule for these functions,
+		      remaining trapped at fractional convergence rates due to the dominant root
+		      singularities.
+	\end{itemize}
+
+\end{solution}
 
 \subsection{Free-nodes Integration}
 
 \begin{exercise}
-	Write a program that computes the nodes and weights for the Gauss-Legendre quadrature in the interval $[-1,1]$. Below are some tips for the implementation.
+	Write a program that computes the nodes and weights for the Gauss-Legendre
+	quadrature in the interval $[-1,1]$. Below are some tips for the
+	implementation.
 
 	\begin{itemize}
-		\item To find the roots $x_k$, with $k=1,\ldots,n$ of the Legendre polynomial $P_n(x)$ of order $n$ use Newton's method. Take as the initial condition for the $k$th root,
+		\item To find the roots $x_k$, with $k=1,\ldots,n$ of the Legendre
+		      polynomial $P_n(x)$ of order $n$ use Newton's method. Take as the initial
+		      condition for the $k$th root,
 		      \[
 			      x^{(0)}_k=\cos(\phi_k)\,,
 			      \qquad
 			      \phi_k={4k-1\over 4n+2}\pi\,.
 		      \]
-		\item In order to use Newton's method you need to evaluate $P_n(x_k^{(i)})$ and the derivative $P'_n(x_k^{(i)})$, where $x_k^{(i)}$ is the $i$th iteration in the search for the $k$th root $x_k$. You can obtain these by first solving the recursion relation,
+		\item In order to use Newton's method you need to evaluate $P_n(x_k^{(i)})$
+		      and the derivative $P'_n(x_k^{(i)})$, where $x_k^{(i)}$ is the $i$th
+		      iteration in the search for the $k$th root $x_k$. You can obtain these by
+		      first solving the recursion relation,
 
 		      \[
 			      (m+1)P_{m+1}(x) = (2m+1)xP_{m}(x) - mP_{m-1}(x)\,,
 		      \]
 
-		      for $m=1,\ldots,n-1$, where $P_0(x) = 1$ and $P_1(x) = x$, with $x=x^{(i)}_k$. The derivative is then computed using the relation,
+		      for $m=1,\ldots,n-1$, where $P_0(x) = 1$ and $P_1(x) = x$, with
+		      $x=x^{(i)}_k$. The derivative is then computed using the relation,
 
 		      \[
 			      (x^{2}-1)P'_{n}(x)=n[xP_{n}(x)-P_{n-1}(x)]\,.
 		      \]
 
-		\item Once you reach the root $x_k$ within some tolerance, the value of the derivative $P'_n(x_k)$ allows you to obtain the corresponding weight using
+		\item Once you reach the root $x_k$ within some tolerance, the value of the
+		      derivative $P'_n(x_k)$ allows you to obtain the corresponding weight using
 
 		      \[
 			      w_k= {2\over (1-x_k^2)[P'_n(x_k)]^2}\,.
@@ -135,6 +222,54 @@
 	\end{itemize}
 
 \end{exercise}
+
+\begin{solution}
+	The Gauss-Legendre quadrature optimally approximates the integral of a
+	function over $[-1, 1]$ using a specific set of points (nodes) and
+	corresponding weights. The nodes $x_k$ correspond to the roots of the $n$-th
+	degree Legendre polynomial, $P_n(x) = 0$.
+
+	The initial guesses $x_k^{(0)}$ are distributed according to the roots of the
+	Chebyshev polynomials, which cluster near the boundaries $[-1, 1]$ and provide
+	an excellent starting approximation for Legendre roots. The iteration
+	terminates when successive approximations converge within machine precision
+	($\approx 10^{-15}$).
+
+	\paragraph{Results \& Validation}
+	The algorithm was executed for quadrature orders $n \in \{2, 3, 4, 5\}$. To
+	ensure numerical stability and precision, the computed sets of $(x_k, w_k)$
+	were benchmarked against the standard \texttt{GaussQuadrature.jl} library. The
+	custom implementation successfully matched the verified library routines to an
+	absolute tolerance of $\mathcal{O}(10^{-14})$.
+
+	Table~\ref{tab:gauss_legendre} details the evaluated roots and weights.
+
+	\begin{center}
+		\centering
+		\captionof{table}{Computed Gauss-Legendre quadrature nodes and weights for
+			$n=2,3,4,5$. Results match the \texttt{GaussQuadrature} library within
+			$10^{-14}$ accuracy.}
+		\label{tab:gauss_legendre}
+		\begin{tabular}{crr}
+			\toprule
+			\textbf{Order ($n$)} & \textbf{Node ($x_k$)}    & \textbf{Weight ($w_k$)} \\
+			\midrule
+			2                    & $\pm 0.5773502691896257$ & $1.0000000000000000$    \\
+			\midrule
+			3                    & $0.0000000000000000$     & $0.8888888888888888$    \\
+			                     & $\pm 0.7745966692414834$ & $0.5555555555555556$    \\
+			\midrule
+			4                    & $\pm 0.3399810435848563$ & $0.6521451548625462$    \\
+			                     & $\pm 0.8611363115940526$ & $0.3478548451374538$    \\
+			\midrule
+			5                    & $0.0000000000000000$     & $0.5688888888888889$    \\
+			                     & $\pm 0.5384693101056831$ & $0.4786286704993665$    \\
+			                     & $\pm 0.9061798459386640$ & $0.2369268850561890$    \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+
+\end{solution}
 
 \subsection{Advantage topics in integration}
 
