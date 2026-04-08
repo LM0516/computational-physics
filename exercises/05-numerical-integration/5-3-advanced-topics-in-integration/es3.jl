@@ -4,7 +4,6 @@ using SpecialFunctions
 using LaTeXStrings
 
 function solutions(f::Function, exact::Real, function_name; fig_name::String="test")
-    errors = Float64[]
     num_nodes_values = Vector{Float64}(undef, 29)
     errors = Vector{Float64}(undef, 29)
 

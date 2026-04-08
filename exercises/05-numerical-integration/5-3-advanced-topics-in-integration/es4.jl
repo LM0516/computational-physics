@@ -95,21 +95,18 @@ function main()
     # La versione con gli estermi giusti da warning perchè decade troppo lentamente e quindi gli viene assegnato
     # un valore di t_m prestabilito, tm = 10, scelto in modo arbitrario.
 
-    count = 1
-    for f in functions
+    for (count, f) in enumerate(functions)
         println("Function: $(f.label)")
         i = 1
         glq_sol = zeros(Float64, 29)
         deq_sol = zeros(Float64, 29)
-        for n in 4:2:60
+        for (i, n) in enumerate(4:2:60)
             N = n / 2
             glq_sol[i] = glq_solutions(f.f, f.a, f.b, Int(n))
             deq_sol[i] = deq_solutions(f.f, f.a, f.b, Int(N))
-            i += 1
         end
         plot_errors(glq_sol, deq_sol, f.exact, f.label; fig_name=count)
         println("="^60)
-        count += 1
     end
 end
 

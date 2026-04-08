@@ -8,8 +8,8 @@ function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fi
 
     println("Calculating the solutions...")
     for (i, n) in enumerate(4:2:40)
-        sol[i] = fajer_rule(f, n, a, b)
-        alt[i] = clenshaw_curtis_rule(f, n)
+        sol[i] = fajer_rule(f, n, a, b) # Fayer-rule integral solutions
+        alt[i] = clenshaw_curtis_rule(f, n) # Clenshaw-Curtis integral solutions
     end
 
     println("Calculating the errors...")
@@ -17,10 +17,11 @@ function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fi
     alt_err = @. abs(alt - exact)
 
     println("Plotting the errors...")
-    p = scatter_generic(1:length(err), make_log_safe(err), label=function_name, yscale=:log10)
+    p = scatter_generic(1:length(err), make_log_safe(err), label="Fayer rule", yscale=:log10)
     scatter_add!(p, 1:length(alt_err), make_log_safe(alt_err), label="Clenshaw-Curtis")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Error")
+    title!(function_name)
     save_plot(p, "clenshaw-curtis-plot-$fig_name", "5-3")
     display(p)
     readline()
@@ -46,7 +47,7 @@ function main()
     a3 = -1
     b3 = 1
     exact_sol3 = 2 * atan(sinh(1))
-    solutions(f3, a3, b3, exact_sol3, L"sech(x)", fig_name="3")
+    solutions(f3, a3, b3, exact_sol3, "sech(x)", fig_name="3")
 
     # 1 / (1 + 9x^2)
     f4 = x -> 1 / (1 + 9x^2)
