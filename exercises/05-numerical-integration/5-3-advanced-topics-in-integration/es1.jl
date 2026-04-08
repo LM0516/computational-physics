@@ -3,24 +3,22 @@ using Plots
 using SpecialFunctions
 
 function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fig_name::String="test")
-    sol = zeros(19)
-    alt = zeros(19)
-    i = 1
+    sol = Vector{Float64}(undef, 19)
+    alt = Vector{Float64}(undef, 19)
 
     println("Calculating the solutions...")
-    for n in 4:2:40
+    for (i, n) in enumerate(4:2:40)
         sol[i] = fajer_rule(f, n, a, b)
         alt[i] = clenshaw_curtis_rule(f, n)
-        i += 1
     end
 
     println("Calculating the errors...")
-    err = @. log(abs(sol - exact))
-    alt_err = @. log(abs(alt - exact))
+    err = @. abs(sol - exact)
+    alt_err = @. abs(alt - exact)
 
     println("Plotting the errors...")
-    p = scatter_generic(1:length(err), err, label=function_name)
-    scatter_add!(p, 1:length(alt_err), alt_err, label="Clenshaw-Curtis")
+    p = scatter_generic(1:length(err), make_log_safe(err), label=function_name, yscale=:log10)
+    scatter_add!(p, 1:length(alt_err), make_log_safe(alt_err), label="Clenshaw-Curtis")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Error")
     save_plot(p, "clenshaw-curtis-plot-$fig_name", "5-3")
@@ -66,7 +64,7 @@ function main()
     # y = (π - π/2)/2 * x + (π + π/2)/2 = (π/4) * x + (3π/4)
     # The integral ∫_a^b f(y) dy = ∫_-1^1 f(y(x)) * (b_orig - a_orig)/2 dx
     # So, the new function to be integrated over [-1, 1] is f(y(x)) * (b_orig - a_orig)/2
-    f5 = x -> f5_original((b5_original - a5_original)/2 * x + (b5_original + a5_original)/2) * (b5_original - a5_original)/2
+    f5 = x -> f5_original((b5_original - a5_original) / 2 * x + (b5_original + a5_original) / 2) * (b5_original - a5_original) / 2
     a5 = -1
     b5 = 1
     exact_sol5 = -(3 * π^2) / 32

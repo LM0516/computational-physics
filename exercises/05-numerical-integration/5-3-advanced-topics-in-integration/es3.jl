@@ -23,7 +23,7 @@ function solutions(f::Function, exact::Real, function_name; fig_name::String="te
         println("="^40)
     end
 
-    p = scatter_generic(num_nodes_values, errors, label=function_name, yaxis=:log, marker=:circle, legend=:bottomleft)
+    p = scatter_generic(num_nodes_values, errors, label=function_name, yaxis=:log10, marker=:circle, legend=:bottomleft)
     xlabel!(p, "Number of nodes (N)")
     ylabel!(p, "Absolute Error")
     title!(p, "Error vs. Number of Nodes")

@@ -39,12 +39,12 @@ end
 
 function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float64}, exact::Float64, function_eq; fig_name="test")
     println("Calculating the errors...")
-    glq_err = @. log(abs(glq_integrals - exact))
-    deq_err = @. log(abs(deq_integrals - exact))
+    glq_err = @. abs(glq_integrals - exact)
+    deq_err = @. abs(deq_integrals - exact)
 
     println("Plotting the errors...")
-    p = scatter_generic(1:length(glq_err), glq_err, label="Gauss-Legendre integration", title=function_eq)
-    scatter_add!(p, 1:length(deq_err), deq_err, label="Double exponential quadrature integration")
+    p = scatter_generic(1:length(glq_err), make_log_safe(glq_err), label="Gauss-Legendre integration", title=function_eq, yscale=:log10)
+    scatter_add!(p, 1:length(deq_err), make_log_safe(deq_err), label="Double exponential quadrature integration")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Errors")
     save_plot(p, "comparison-gl-deq-$fig_name", "5-3")
@@ -109,7 +109,7 @@ function main()
         end
         plot_errors(glq_sol, deq_sol, f.exact, f.label; fig_name=count)
         println("="^60)
-        count+=1
+        count += 1
     end
 end
 
