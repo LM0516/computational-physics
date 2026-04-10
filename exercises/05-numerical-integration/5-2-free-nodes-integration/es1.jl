@@ -29,7 +29,7 @@ end
 function main()
     n = [2, 3, 4, 5]
     for i in n
-        r, w = gauss_legendre_quadrature(i)
+        r, w = glq(i)
         check_results(r, w, i)
 
         println("Nodes: ", r)

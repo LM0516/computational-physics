@@ -44,7 +44,7 @@ end
 
 # NOTE: This works only with [-1, 1] integrals. 
 # Implement the coordinate change for every interval. 
-function gauss_legendre_quadrature(n::Int; a::Real=-1.0, b::Real=1.0)
+function glq(n::Int; a::Real=-1.0, b::Real=1.0)
     nodes = Vector{Float64}(undef, n)
     weights = Vector{Float64}(undef, n)
 
@@ -89,9 +89,29 @@ function gauss_legendre_quadrature(n::Int; a::Real=-1.0, b::Real=1.0)
 
 end
 
+"""
+    glq_integral(f, a, b, n) -> (integral_solution)
+
+Gauss-Legendre integral solution based on Gauss-Legendre quadrature.
+"""
+function glq_integral(f::Function, a::Real, b::Real, n::Int)
+    # Get nodes and weights for [-1, 1]
+    nodes, weights = glq(n)
+
+    # Map nodes from [-1, 1] to [a, b]
+    # x = (b-a)/2 * ξ + (b+a)/2
+    mapped_nodes = @. (b - a) / 2 * nodes + (b + a) / 2
+
+    # Scale weights
+    # dx = (b-a)/2 * dξ
+    mapped_weights = weights .* (b - a) / 2
+
+    return sum(mapped_weights .* f.(mapped_nodes))
+end
+
 # FIX: This is't  fajer's rule. Rewrite it as a Gauss-Legendre quadrature integraiton
 function fajer_rule(f::Function, n::Int, a::Real, b::Real)
-    nodes, weights = gauss_legendre_quadrature(n, a=a, b=b)
+    nodes, weights = glq(n, a=a, b=b)
     integral = sum(@. weights * f(nodes))
     return integral
 end

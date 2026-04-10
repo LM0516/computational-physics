@@ -24,7 +24,7 @@ end
 
 function glq_solutions(f::Function, a::Real, b::Real, n::Int)
     # Get nodes and weights for [-1, 1]
-    nodes, weights = gauss_legendre_quadrature(n)
+    nodes, weights = glq(n)
 
     # Map nodes from [-1, 1] to [a, b]
     # x = (b-a)/2 * ξ + (b+a)/2

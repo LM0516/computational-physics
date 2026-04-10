@@ -33,7 +33,8 @@ export bisection, bisection_plot, convergence, plot_convergence_analysis, newton
 export conv_rate_and_asymp_const
 
 include("numerical_integration.jl")
-export composite_trapezoidal, composite_simpson, gauss_legendre_quadrature, fajer_rule, clenshaw_curtis_rule, double_exponential_quadrature
+export composite_trapezoidal, composite_simpson, glq, fajer_rule
+export glq_integral, clenshaw_curtis_rule, double_exponential_quadrature
 
 include("ode.jl")
 export euler_method, ie2, rk4
