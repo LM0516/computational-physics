@@ -42,6 +42,8 @@ function composite_simpson(a::Real, b::Real, f::Function, m::Int)
     return (h / 3.0) * S
 end
 
+# NOTE: This works only with [-1, 1] integrals. 
+# Implement the coordinate change for every interval. 
 function gauss_legendre_quadrature(n::Int; a::Real=-1.0, b::Real=1.0)
     nodes = Vector{Float64}(undef, n)
     weights = Vector{Float64}(undef, n)
@@ -87,6 +89,7 @@ function gauss_legendre_quadrature(n::Int; a::Real=-1.0, b::Real=1.0)
 
 end
 
+# FIX: This is't  fajer's rule. Rewrite it as a Gauss-Legendre quadrature integraiton
 function fajer_rule(f::Function, n::Int, a::Real, b::Real)
     nodes, weights = gauss_legendre_quadrature(n, a=a, b=b)
     integral = sum(@. weights * f(nodes))
