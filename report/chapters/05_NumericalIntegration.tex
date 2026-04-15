@@ -286,6 +286,75 @@
 	\end{enumerate}
 \end{exercise}
 
+\begin{solution}
+
+	To analyze the convergence characteristics of numerical integration, we
+	extended the exercise to compare three distinct quadrature frameworks:
+	Gauss-Legendre Quadrature (GLQ) and the Fejér rule.
+
+	For a given analytical integral $I$, the numerical approximation with $n$
+	nodes is denoted as $I_n$. The absolute error is defined as $E_n = |I_n - I|$.
+	Computations were evaluated over an evenly spaced grid of nodes $n \in \{4, 6,
+		8, \dots, 40\}$.
+
+	\paragraph{Results}
+	Table \ref{tab:results-glq} summarizes the final numerical approximations
+	achieved at maximum node density ($n=40$).
+
+	\begin{center}
+		\centering
+		\captionof{table}{Exact solutions versus numerical approximations at $n=40$}
+		\label{tab:results-glq}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{c r r r}
+				\toprule
+				\textbf{Integral} & \textbf{Exact Solution} & \textbf{Fejér}        & \textbf{Gauss-Legendre} \\
+				\midrule
+				1                 & $13.644958598563875$    & $13.644958598563875$  & $13.644958598563878$    \\
+				2                 & $0.5908048988396807$    & $0.5908048988396811$  & $0.5908048988396809$    \\
+				3                 & $1.7315389664793173$    & $1.7315389664793175$  & $1.7315389664793173$    \\
+				4                 & $0.8326971815988362$    & $0.8326971821009688$  & $0.8326971815925093$    \\
+				5                 & $-0.9252754126021273$   & $-0.9252754126021280$ & $-0.9252754126021260$   \\
+				\bottomrule
+			\end{tabular}
+		}
+	\end{center}
+
+	\paragraph{Discussion and Conclusion}
+	The convergence profiles behave strictly according to theoretical expectations
+	for spectral methods. For strictly entire analytical functions, Gauss-Legendre
+	rule exhibit exponential convergence, rapidly descending to the noise floor
+	imposed by $\varepsilon_{\text{mach}}$. At this threshold, \textit{catastrophic
+		cancellation} and inherent rounding errors dominate, causing the error to
+	oscillate pseudo-randomly around $10^{-15}$.
+
+	Integral 4, $f(x) = (1+9x^2)^{-1}$, represents a classically ill-conditioned
+	scenario due to the presence of poles located at $x = \pm i/3$ in the complex
+	plane. Consequently, the asymptotic convergence rate is constrained by the
+	proximity of these poles to the integration domain, yielding a much shallower
+	descent in absolute error compared to the preceding entire functions.
+
+	\paragraph{Figures}
+	The evolution of the absolute errors on a semi-logarithmic scale are illustrated below.
+
+	\begin{center}
+		\begin{tabular}{cc}
+			\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-1.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-2.pdf}   \\
+			{\small Integral 1: $\int_{-1}^1 e^{-4x} dx$}                                  &
+			{\small Integral 2: $\int_{-1}^1 e^{-9x^2} dx$}                                  \\[1em]
+			\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-3.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-4.pdf}   \\
+			{\small Integral 3: $\int_{-1}^1 \operatorname{sech}(x) dx$}                   &
+			{\small Integral 4: $\int_{-1}^1 \frac{1}{1+9x^2} dx$}                           \\
+		\end{tabular}
+
+		\vspace{0.5em}
+		\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-5.pdf} \\
+		{\small Integral 5: $\int_{\pi/2}^{\pi} x^2 \sin(8x) dx$}
+	\end{center}
+\end{solution}
+
 \begin{exercise}
 	For each improper integral, compute approximations using the proper
 	double-exponential quadrature rule with $N=n/2$ and $n=4,6,8,\ldots,60$. Plot
@@ -294,11 +363,110 @@
 		\item $\int_{-\infty}^\infty \dfrac{1}{1+x^2+x^4}\, dx = \dfrac{\pi}{\sqrt{3}}$
 		\item $\int_{-\infty}^\infty e^{-x^2}\cos(x)\, dx = e^{-1/4}\sqrt{\pi}$
 		\item $\int_{-\infty}^\infty (1+x^2)^{-2/3}\, dx =
-		\dfrac{\sqrt{\pi}\,\Gamma(1/6)}{\Gamma(2/3)}$
+			      \dfrac{\sqrt{\pi}\,\Gamma(1/6)}{\Gamma(2/3)}$
 		\item $\int_{0}^{\infty} {1\over 1+x^2}\,dx = \frac{\pi}{2}$
 		\item $\int_0^\infty \frac{e^{-x}}{\sqrt{x}}\,dx = \sqrt{\pi}$
 	\end{enumerate}
 \end{exercise}
+
+\begin{solution}
+
+	Double-exponential (DE) quadrature is highly effective for evaluating improper
+	integrals and integrals with endpoint singularities. The methodology relies on
+	an analytic transformation $x = \phi(t)$ that maps the integration domain into
+	$(-\infty, \infty)$, such that the integrand decays double-exponentially at the
+	boundaries:
+	\[
+		f(\phi(t)) \phi'(t) \sim \exp(-C \exp(|t|)) \quad \text{as } t \to \pm \infty
+	\]
+	This exceptionally rapid decay allows the integral to be truncated to a finite
+	interval and evaluated using the trapezoidal rule, yielding spectral-like
+	convergence.
+
+	For infinite domains $(-\infty, \infty)$ (Integrals 1--3), we apply the
+	standard mapping:
+	\[
+		x(t) = \sinh\left(\frac{\pi}{2} \sinh(t)\right)
+	\]
+	For semi-infinite domains $(0, \infty)$ (Integral 4), we apply:
+	\[
+		x(t) = \exp\left(\frac{\pi}{2} \sinh(t)\right)
+	\]
+	Integral 5 features an algebraic singularity at the origin $\left(x^{-1/2} \to
+		\infty \text{ as } x \to 0\right)$. To optimize numerical stability at this
+	boundary, an alternative mapping is employed:
+	\[
+		x(t) = \exp(t - \exp(-t))
+	\]
+
+	\paragraph{Results}
+	Table \ref{tab:de-results} compares the theoretical, exact integral values to
+	the computed double-exponential quadrature values at $n = 60$.
+
+	\begin{center}
+		\centering
+		\captionof{table}{Exact solutions vs. Double-Exponential Quadrature
+			approximations at $n=60$ ($N=30$).}
+		\label{tab:de-results}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{c r r}
+				\toprule
+				\textbf{Integral} & \textbf{Exact Solution} & \textbf{Computed Approximation ($n=60$)} \\
+				\midrule
+				1                 & $1.8137993642342178$    & $1.8137993642334227$                     \\
+				2                 & $1.3803884470431430$    & $1.3803884470431436$                     \\
+				3                 & $7.2859519436627430$    & $7.2859519436627450$                     \\
+				4                 & $1.5707963267948966$    & $1.5707963267948963$                     \\
+				5                 & $1.7724538509055159$    & $1.7724538509055163$                     \\
+				\bottomrule
+			\end{tabular}
+		}
+	\end{center}
+
+	\paragraph{Discussion and Conclusion}
+	The results validate the exceptional power of double-exponential (DE)
+	quadrature. By applying an appropriate nonlinear conformal map to shift the
+	domain to $\mathbb{R}$, we achieve an extreme concentration of the transformed
+	integrand near the origin, with doubly-exponential tail decay.
+
+	As theoretically expected, the convergence rates displayed in the accompanying
+	figures are steep. For all five integrands—including Integral 5, which possesses
+	an inverse-square-root boundary singularity—the quadrature algorithm approaches
+	the double-precision noise floor $\varepsilon_{\text{mach}}$ by $n \approx 30
+		\sim 40$ (corresponding to $N \approx 15 \sim 20$). Beyond this optimal
+	saturation point, attempting to add more quadrature nodes ($n > 40$) yields no
+	further analytical benefit; rather, it introduces \textit{catastrophic
+		cancellation} due to the accumulation of floating-point rounding errors.
+
+	Furthermore, employing the alternative substitution $x(t) = \exp(t -
+		\exp(-t))$ for Integral 5 successfully mitigated numerical instability near the
+	singular origin $x=0$, enabling a convergence profile nearly identical to the
+	strictly smooth analytic integrals.
+
+	\paragraph{Figures}
+	The absolute errors $|I_n - I_{\text{exact}}|$ are evaluated and plotted as
+	functions of $n$ below.
+
+	\vspace{1em}
+
+	\begin{center}
+		\begin{tabular}{cc}
+			\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-1.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-2.pdf}   \\
+			{\small Integral 1: $\int_{-\infty}^\infty \frac{1}{1+x^2+x^4} dx$}                     &
+			{\small Integral 2: $\int_{-\infty}^\infty e^{-x^2}\cos(x) dx$}                           \\[1.5em]
+			\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-3.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-4.pdf}   \\
+			{\small Integral 3: $\int_{-\infty}^\infty (1+x^2)^{-2/3} dx$}                          &
+			{\small Integral 4: $\int_{0}^{\infty} \frac{1}{1+x^2} dx$}                               \\
+		\end{tabular}
+
+		\vspace{1.5em}
+		\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-5.pdf} \\
+		{\small Integral 5: $\int_0^\infty \frac{e^{-x}}{\sqrt{x}} dx$}
+	\end{center}
+
+\end{solution}
 
 \begin{exercise}
 	For each integral, compute approximations using the Gauss-Legendre quadrature

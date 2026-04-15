@@ -1,6 +1,7 @@
 using ComputationalPhysics
 using Plots
 using SpecialFunctions
+using LaTeXStrings
 
 function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fig_name::String="test")
     fajer_solutions = Vector{Float64}(undef, 19)
@@ -9,18 +10,23 @@ function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fi
 
     println("Calculating the solutions...")
     for (i, n) in enumerate(4:2:40)
-        fajer_solutions[i] = fajer_rule(f, n, a, b) # Fayer-rule integral solutions
+        fajer_solutions[i] = fejer_rule(f, n, a, b) # Fayer-rule integral solutions
         clenshaw_curtis_solutions[i] = clenshaw_curtis_rule(f, n) # Clenshaw-Curtis integral solutions
+        glq_solutions[i] = glq_integral(f, a, b, n) # Gauss-Legendre quadrature integral
     end
     @show fajer_solutions[end]
+    @show clenshaw_curtis_solutions[end]
+    @show glq_solutions[end]
 
     println("Calculating the errors...")
     fajer_err = @. abs(fajer_solutions - exact)
     cc_err = @. abs(clenshaw_curtis_solutions - exact)
+    glq_err = @. abs(glq_solutions - exact)
 
     println("Plotting the errors...")
     p = scatter_generic(1:length(fajer_err), make_log_safe(fajer_err), label="Fayer rule", yscale=:log10)
-    scatter_add!(p, 1:length(cc_err), make_log_safe(cc_err), label="Clenshaw-Curtis")
+    # scatter_add!(p, 1:length(cc_err), make_log_safe(cc_err), label="Clenshaw-Curtis")
+    scatter_add!(p, 1:length(glq_err), make_log_safe(glq_err), label="Gauss-Legendre")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Error")
     title!(function_name)
@@ -63,17 +69,9 @@ function main()
     solutions(f4, a4, b4, exact_sol4, L"\frac{1}{1 + 9x^2}", fig_name="4")
 
     # x^2 sin(8x)
-    f5_original = x -> x^2 * sin(8x)
-    a5_original = π / 2
-    b5_original = π
-    # Coordinate transformation: y = (b_orig - a_orig)/2 * x + (b_orig + a_orig)/2
-    # Here, x is the variable in [-1, 1]
-    # y = (π - π/2)/2 * x + (π + π/2)/2 = (π/4) * x + (3π/4)
-    # The integral ∫_a^b f(y) dy = ∫_-1^1 f(y(x)) * (b_orig - a_orig)/2 dx
-    # So, the new function to be integrated over [-1, 1] is f(y(x)) * (b_orig - a_orig)/2
-    f5 = x -> f5_original((b5_original - a5_original) / 2 * x + (b5_original + a5_original) / 2) * (b5_original - a5_original) / 2
-    a5 = -1
-    b5 = 1
+    f5 = x -> x^2 * sin(8x)
+    a5 = π / 2
+    b5 = π
     exact_sol5 = -(3 * π^2) / 32
     @show exact_sol5
     solutions(f5, a5, b5, exact_sol5, L"x^2 \sin(8x)", fig_name="5")

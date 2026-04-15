@@ -15,7 +15,7 @@ function solutions(f::Function, exact::Real, function_name; fig_name::String="te
 
         # Handle zero errors for logarithmic scale: replace with machine epsilon
         current_err == 0.0 ? errors[i] = eps(Float64) : errors[i] = current_err
-        num_nodes_values[i] = N
+        num_nodes_values[i] = n
 
         println("Calculated value: $int")
         println("Exact value: $exact")
@@ -23,7 +23,7 @@ function solutions(f::Function, exact::Real, function_name; fig_name::String="te
     end
 
     p = scatter_generic(num_nodes_values, errors, label=function_name, yaxis=:log10, marker=:circle, legend=:bottomleft)
-    xlabel!(p, "Number of nodes (N)")
+    xlabel!(p, "Number of nodes (n)")
     ylabel!(p, "Absolute Error")
     title!(p, "Error vs. Number of Nodes")
     save_plot(p, "double-exponential-quadrature-$fig_name", "5-3")
