@@ -22,21 +22,6 @@ function deq_solutions(f::Function, a::Real, b::Real, N::Int)
     return I
 end
 
-function glq_solutions(f::Function, a::Real, b::Real, n::Int)
-    # Get nodes and weights for [-1, 1]
-    nodes, weights = glq(n)
-
-    # Map nodes from [-1, 1] to [a, b]
-    # x = (b-a)/2 * ξ + (b+a)/2
-    mapped_nodes = @. (b - a) / 2 * nodes + (b + a) / 2
-
-    # Scale weights
-    # dx = (b-a)/2 * dξ
-    mapped_weights = weights .* (b - a) / 2
-
-    return sum(mapped_weights .* f.(mapped_nodes))
-end
-
 function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float64}, exact::Float64, function_eq; fig_name="test")
     println("Calculating the errors...")
     glq_err = @. abs(glq_integrals - exact)
@@ -90,26 +75,27 @@ function main()
             b=π / 2
         )
     ]
-    # NOTE: Ho assegnato come limite inveriore eps() perchè altrimenti la funzione decadrebbe troppo lentamente,
-    # sarebbe interessante valutare se la versione con eps() è meglio di quella con la safeguard oppure no.
-    # La versione con gli estermi giusti da warning perchè decade troppo lentamente e quindi gli viene assegnato
-    # un valore di t_m prestabilito, tm = 10, scelto in modo arbitrario.
 
-    for (count, f) in enumerate(functions)
-        println("Function: $(f.label)")
+    for (count, fun) in enumerate(functions)
+        println("Function: $(fun.label)")
         i = 1
-        glq_sol = zeros(Float64, 29)
-        deq_sol = zeros(Float64, 29)
+        glq_sol = Vector{Float64}(undef, 29)
+        deq_sol = Vector{Float64}(undef, 29)
         for (i, n) in enumerate(4:2:60)
             N = n / 2
-            glq_sol[i] = glq_solutions(f.f, f.a, f.b, Int(n))
-            deq_sol[i] = deq_solutions(f.f, f.a, f.b, Int(N))
+            glq_sol[i] = glq_integral(fun.f, fun.a, fun.b, Int(n)) # compute the solution using the library
+            deq_sol[i] = deq_solutions(fun.f, fun.a, fun.b, Int(N)) # compute the solution with the correct transformation
         end
-        plot_errors(glq_sol, deq_sol, f.exact, f.label; fig_name=count)
+        # Comparing the integrals solutions
+        @show glq_sol[end]
+        @show deq_sol[end]
+        @show fun.exact
+        plot_errors(glq_sol, deq_sol, fun.exact, fun.label; fig_name=count)
         println("="^60)
     end
 end
 
 if abspath(@__FILE__) == abspath(PROGRAM_FILE)
+    plot_init()
     main()
 end
