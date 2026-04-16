@@ -481,3 +481,94 @@
 		\item $\int_{0}^{\pi/2} \sqrt{\tan(x)}\, dx = \dfrac{\pi}{\sqrt{2}}$
 	\end{enumerate}
 \end{exercise}
+
+
+\begin{solution}
+
+	Standard Gaussian quadrature routines are derived under the assumption that
+	the integrand is infinitely continuously differentiable ($C^\infty$) over the
+	integration domain. When functions exhibit algebraic or logarithmic
+	singularities at the boundary (e.g., $1/\sqrt{1-x^2}$ as $x \to 1$, or $(\log
+		x)^2$ as $x \to 0$), the global smoothness assumption breaks down, severely
+	degrading the GLQ convergence rate from exponential to merely algebraic.
+
+	Conversely, Double-Exponential Quadrature restores spectral-like convergence
+	by employing a nonlinear conformal mapping that flattens these boundary
+	singularities. For a finite integration interval $(a, b)$, the standard
+	tanh-sinh mapping is applied:
+	\[
+		x(t) = \frac{b-a}{2} \tanh\left(\frac{\pi}{2} \sinh(t)\right) + \frac{b+a}{2}
+	\]
+	This translates the physical domain $x \in (a, b)$ into an infinite
+	computational domain $t \in (-\infty, \infty)$. The Jacobian of this
+	transformation decays double-exponentially as $|t| \to \infty$, successfully
+	overwhelming boundary singularities and permitting highly efficient truncation
+	of the computational domain. To strictly ensure fairness between the two
+	methodologies, the DE rule utilizes $N = n/2$ nodes, guaranteeing the total
+	number of function evaluations remains theoretically balanced for direct
+	comparison with GLQ.
+
+	\paragraph{Results \& Discussion}
+	Table \ref{tab:comparison-results} illustrates the final computed values at
+	the maximum node density $n=60$.
+
+	\begin{center}
+		\centering
+		\captionof{table}{Final evaluated approximations at $n=60$ ($N=30$ for DE).}
+		\label{tab:comparison-results}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{c r r r}
+				\toprule
+				\textbf{Integral}        & \textbf{Exact Solution} & \textbf{GLQ ($n=60$)} & \textbf{DEQ ($N=30$)} \\
+				\midrule
+				$\frac{1}{\sqrt{1-x^2}}$ & $1.5707963267948966$    & $1.5606199819857367$  & $1.5707963237302416$  \\
+				$\sqrt{x} \log x$        & $-0.4444444444444444$   & $-0.4444486588707492$ & $-0.4444444444444445$ \\
+				$\sqrt{1-x^2}$           & $0.7853981633974483$    & $0.7853988210355238$  & $0.7853981633974482$  \\
+				$(\log x)^2$             & $2.0000000000000000$    & $1.9965066840331340$  & $2.0000000042167450$  \\
+				$\log(\cos x)$           & $-1.0887930451518010$   & $-1.0885220739672092$ & $-1.0887930451517975$ \\
+				$\sqrt{\tan x}$          & $2.2214414690791830$    & $2.2034051373383350$  & $2.2214414784702050$  \\
+				\bottomrule
+			\end{tabular}
+		}
+	\end{center}
+
+	The numerical data confirms the theoretical limitations of Gauss-Legendre
+	quadrature in the presence of singular endpoints. For functions possessing
+	non-analytic bounds, GLQ converges slowly, struggling to achieve more than $2$
+	to $5$ digits of accuracy even at $n=60$. By contrast, Double-Exponential
+	quadrature consistently achieves near-machine precision ($\approx 10^{-15}$ to
+	$10^{-9}$) with high efficiency, demonstrating
+	unparalleled robustness for improper integrals.
+
+	\textit{Note on computational evaluation:} During the evaluation of Integrals
+	1 and 4, the DE algorithm yielded repeated bounds-decay warnings. This is an
+	expected artifact of the extreme asymptotic behavior of these integrands.
+	Because the pole $1/\sqrt{1-x^2} \to \infty$ as $x \to 1$ and the pole $(\log
+		x)^2 \to \infty$ as $x \to 0$ grow exceptionally fast, they aggressively combat
+	the boundary suppression provided by the tanh-sinh derivative.
+
+	\paragraph{Figures}
+	The error convergence profiles comparing GLQ and DEQ for all six integrals are
+	presented below. Note the distinct qualitative difference: DEQ typically
+	manifests a rapid, exponential descent, whereas GLQ exhibits a shallow, linear
+	decay on the semi-logarithmic axes.
+
+	\vspace{1em}
+	\begin{center}
+		\begin{tabular}{cc}
+			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-1.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-2.pdf}   \\
+			{\small Integral 1: $\int_0^1 \frac{1}{\sqrt{1-x^2}} dx$}                   &
+			{\small Integral 2: $\int_0^1 \sqrt{x} \log(x) dx$}                           \\[1.5em]
+			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-3.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-4.pdf}   \\
+			{\small Integral 3: $\int_0^1 \sqrt{1-x^2} dx$}                             &
+			{\small Integral 4: $\int_0^1 (\log x)^2 dx$}                                 \\[1.5em]
+			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-5.pdf} &
+			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-6.pdf}   \\
+			{\small Integral 5: $\int_0^{\pi/2} \log(\cos(x)) dx$}                      &
+			{\small Integral 6: $\int_0^{\pi/2} \sqrt{\tan(x)} dx$}                       \\
+		\end{tabular}
+	\end{center}
+
+\end{solution}

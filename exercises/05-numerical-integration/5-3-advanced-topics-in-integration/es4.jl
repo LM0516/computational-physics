@@ -22,7 +22,7 @@ function deq_solutions(f::Function, a::Real, b::Real, N::Int)
     return I
 end
 
-function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float64}, exact::Float64, function_eq; fig_name="test")
+function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float64}, exact, function_eq; fig_name="test")
     println("Calculating the errors...")
     glq_err = @. abs(glq_integrals - exact)
     deq_err = @. abs(deq_integrals - exact)
@@ -40,6 +40,13 @@ end
 function main()
     functions = [
         (
+            f=x -> 1 / (sqrt(1 - x^2)),
+            exact=pi / 2,
+            label=L"\frac{1}{\sqrt{1 - x^2}}",
+            a=0,
+            b=1
+        ),
+        (
             f=x -> sqrt(x) * log(x),
             exact=-4 / 9,
             label=L"\sqrt{x} \log(x)",
@@ -55,7 +62,7 @@ function main()
         ),
         (
             f=x -> (log(x))^2,
-            exact=eps(),
+            exact=2,
             label=L"(\log(x))^2",
             a=0,
             b=1
