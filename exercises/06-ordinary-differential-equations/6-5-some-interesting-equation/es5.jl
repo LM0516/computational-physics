@@ -29,6 +29,9 @@ function main()
     E_bound = eigenvalues[bound_indices]
     φ_bound = eigenvectors[:, bound_indices]
 
+    @show E_bound
+    @show φ_bound
+
     # Sort by energy level
     p = sortperm(E_bound)
     E_sorted = E_bound[p]
@@ -40,7 +43,7 @@ function main()
         # Normalize: wave_function / sqrt(dx)
         φ_n = φ_sorted[:, n] ./ sqrt(dx)
 
-        plot!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label = L"\mathrm{State}\ %$n: |\varphi_{%$n}|^2 + E_{%$n}")
+        plot!(p, x_grid, abs2.(φ_n) .+ E_sorted[n], label=L"\mathrm{State}\ %$n: |\varphi_{%$n}|^2 + E_{%$n}")
     end
 
     save_plot(p, "schrodinger-equation-5", "6-5")
