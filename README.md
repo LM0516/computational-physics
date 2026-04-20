@@ -1,6 +1,6 @@
 # Computational Physics
 
-A collection of numerical methods and exercises written in **Julia**, developed as part of a Computational Physics course. Algorithms are implemented from scratch, paired with worked exercises and a companion LaTeX report.
+A collection of numerical methods and exercises written in **Julia**, developed as part of the Computational Physics course at **Università di Milano Bicocca (UniMiB)**. Algorithms are implemented from scratch, paired with worked exercises and a companion LaTeX report.
 
 ## Topics
 
