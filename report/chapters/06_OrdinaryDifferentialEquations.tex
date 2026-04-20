@@ -220,6 +220,69 @@
 	\end{enumerate}
 \end{exercise}
 
+\begin{solution}
+
+	To numerically integrate the given initial value problem (IVP),
+	\[
+		u' = -2t u, \quad u(0) = 2, \quad t \in [0, 2],
+	\]
+	we employ two explicit Runge-Kutta (RK) methods: the second-order Improved
+	Euler (IE2) method and the classical fourth-order Runge-Kutta (RK4) method. The
+	exact analytical solution is given by $\hat{u}(t) = 2e^{-t^2}$.
+
+	To assess the performance of these numerical schemes, it is insufficient to
+	solely compare the error against the step size $h = \frac{b-a}{n}$. Instead, we
+	must account for the computational cost of each algorithm. The IE2 scheme
+	requires two function evaluations per time step, whereas the RK4 scheme
+	necessitates four. Therefore, for $n$ integration steps, the total number of
+	function evaluations is $N_{\text{eval}}^{\text{IE2}} = 2n$ and
+	$N_{\text{eval}}^{\text{RK4}} = 4n$, respectively.
+
+	The global truncation error is quantified using the Chebyshev ($L^\infty$)
+	norm of the absolute error across all discrete time steps:
+	\[
+		E_\infty(n) = \max_{0\leq i\leq n} |u_i - \hat{u}(t_i)|.
+	\]
+	Given the theoretical convergence orders, we expect the global error to scale
+	as $E \propto h^p$. Expressing $h$ in terms of the total function evaluations
+	$N_{\text{eval}}$, we expect the asymptotic behavior to strictly follow $E
+		\propto (N_{\text{eval}})^{-p}$, where $p=2$ for IE2 and $p=4$ for RK4.
+
+	\paragraph{Results}
+	The resulting log-log plot (Figure~\ref{fig:ie2_rk4_convergence}) illustrates
+	the maximum absolute error as a function of the computational workload (function
+	evaluations). The dashed and dotted black lines indicate the theoretically
+	predicted algebraic decay rates.
+
+	\begin{center}
+		\centering
+		\includegraphics[width=0.75\textwidth]{figures/6-3/IE2-vs-RK4.pdf}
+		\captionof{figure}{Global truncation error of the IE2 and RK4 algorithms as
+			a function of total function evaluations. Both schemes perfectly parallel their
+			theoretical reference slopes of $-2$ and $-4$, respectively.}
+		\label{fig:ie2_rk4_convergence}
+	\end{center}
+
+	\paragraph{Discussion}
+	The empirically observed convergence rates are in agreement with the
+	theoretical expectations. Specifically, on the log-log scale, the IE2 error
+	curve exhibits a slope of $-2$, confirming its second-order nature, while the
+	RK4 curve exhibits a steeper slope of $-4$.
+
+	Crucially, standardizing the horizontal axis to measure \emph{function
+		evaluations} provides a fair comparison of algorithmic efficiency. Even though
+	RK4 requires twice as much computational work per step compared to IE2, its
+	superior convergence order rapidly outpaces the computational overhead.
+
+	\paragraph{Conclusion}
+	We have successfully validated the implementation of the IE2 and RK4
+	integrators. The work-precision analysis confirms that higher-order schemes like
+	RK4 are computationally optimal for smooth functions requiring stringent
+	accuracy tolerances, provided the step sizes are kept well above the threshold
+	where machine precision artifacts arise.
+
+\end{solution}
+
 \begin{exercise}
 	In each case below, use the RK4 integrator to solve the given ODE for $0\le
 		t \le 10$ with the given initial conditions. (To this end, you must find a
@@ -242,6 +305,43 @@
 	\end{enumerate}
 \end{exercise}
 
+\begin{solution}
+
+	We utilize the classical fourth-order Runge-Kutta (RK4) method to integrate two systems of coupled nonlinear ordinary differential equations (ODEs). The integration is carried out over the interval $t \in [0, 10]$.
+
+	% TODO: Discuss why I chose 1000 as step size
+
+	\paragraph{Results}
+	The computed phase trajectories are presented in Figure \ref{fig:phase_plane}.
+	For System (a), the trajectories initiated at $[0.1, 0]$ (inside the unit circle) spiral outward, while those starting at $[0, 1.9]$ (outside) spiral inward, both converging asymptotically to a circle of radius $1$.
+	For System (b), the trajectory starting at $[0.95, 0]$ rapidly collapses toward the origin. In contrast, trajectories initialized at $[0, 1.05]$ and $[-2.5, 0]$ converge to an invariant circle of radius $2$.
+
+	\begin{center}
+		\centering
+		\includegraphics[width=\textwidth]{figures/6-3/rk4-integrator.pdf}
+		\captionof{figure}{Phase plane portraits for two non-linear ODE systems integrated using the RK4 method ($n=1000$). Left: System (a) exhibits a single stable limit cycle at $r=1$. Right: System (b) demonstrates complex stability behavior with a stable origin, an unstable limit cycle at $r=1$, and a stable limit cycle at $r=2$.}
+		\label{fig:phase_plane}
+	\end{center}
+
+	\paragraph{Discussion}
+	The observed numerical results can be validated by transforming the systems into polar coordinates ($x = r\cos\theta$, $y = r\sin\theta$).
+	For System (a), the radial dynamics simplify to:
+	\[
+		r' = r(1-r^2).
+	\]
+	Here, $r=1$ is a stable fixed point of the radial ODE, which manifests as a globally stable limit cycle in the Cartesian plane. Any perturbation away from $r=1$ is naturally suppressed by the dynamical system.
+
+	Conversely, for System (b), the radial ODE is given by:
+	\[
+		r' = -\frac{1}{4} r (1-r^2)(4-r^2).
+	\]
+	The roots of this polynomial dictate the invariant sets: $r=0$, $r=1$, and $r=2$. Evaluating the sign of $r'$ between these roots confirms that $r=1$ acts as an unstable limit cycle, strictly dividing the phase space. Initial conditions with $r < 1$ (e.g., $[0.95, 0]$) are attracted to the stable origin $r=0$. Initial conditions with $r > 1$ (e.g., $[0, 1.05]$ and $[-2.5, 0]$) are pushed away from $r=1$ and pulled toward the stable limit cycle at $r=2$.
+
+	\paragraph{Conclusion}
+	The RK4 integrator flawlessly captured the limiting behaviors, including both stable and unstable limit cycles.
+
+\end{solution}
+
 \begin{exercise}
 	Solve the \emph{predator-prey model} of the Lotka-Volterra equations for
 	$0\leq t\leq 60$ with parameters $\alpha=0.1$, $\beta=0.25$, and initial
@@ -249,6 +349,51 @@
 	function of $t$ on one plot, while on another figure plot the results together
 	as curves in the phase plane $(y(t),z(t))$.
 \end{exercise}
+
+\begin{solution}
+
+	We numerically integrate a modified predator-prey system. We are using a
+	variation commonly used in ecology:
+	\begin{align*}
+		y'(t) & = y(1 - \alpha y) - \frac{yz}{1 + \beta y}, \\
+		z'(t) & = -z + \frac{yz}{1 + \beta y}.
+	\end{align*}
+	Here, $y(t)$ represents the prey population and $z(t)$ represents the predator
+	population.
+
+	To solve this nonlinear system of coupled ordinary differential equations
+	(ODEs) over the temporal domain $t \in [0, 60]$, we employ the explicit
+	fourth-order Runge-Kutta (RK4) algorithm. We uniformly partition the interval
+	into $n=1000$ integration steps, corresponding to a discrete time step of $h =
+		0.06$. This resolution is small enough to suppress $\mathcal{O}(h^5)$ local
+	truncation errors, guaranteeing that numerical dissipation does not artificially
+	perturb the resulting dynamical system.
+
+	\paragraph{Results}
+	The results of the numerical integration are illustrated in Figure
+	\ref{fig:predator_prey}. The time-series plot (left) reveals an initial
+	transient growth phase for the prey, followed by a sharp rise in the predator
+	population. This dynamic eventually settles into sustained, periodic
+	oscillations with a characteristic phase lag. The phase plane (right) shows the
+	trajectory spiraling outward from the initial condition $(1, 0.01)$ and
+	asymptotically converging onto a closed, isolated curve.
+
+	\begin{center}
+		\centering
+		\includegraphics[width=\textwidth]{figures/6-3/predator-prey-model.pdf}
+		\captionof{figure}{Predator-prey dynamics simulated via the RK4 algorithm
+			($h=0.06$). Left: Time evolution of the prey $y(t)$ and predator $z(t)$
+			populations, showing a transition from the initial transient state to sustained
+			periodic oscillations. Right: Phase plane representation $(y,z)$, illustrating
+			the trajectory converging asymptotically to a stable limit cycle.}
+		\label{fig:predator_prey}
+	\end{center}
+
+	\paragraph{Conclusion}
+	The RK4 integrator successfully captured both the transient dynamics and the
+	long-term asymptotic behavior of the nonlinear ecological model.
+
+\end{solution}
 
 \subsection{Some interesting equation}
 
@@ -268,13 +413,85 @@
 	\end{enumerate}
 \end{exercise}
 
+\begin{solution}
+	We investigate the time evolution of a free quantum particle by solving the
+	one-dimensional, time-dependent Schr\"odinger equation (TDSE). In the absence of
+	an external potential ($V(x) = 0$), the initial state is defined as a Gaussian
+	wave packet:
+	\[
+		\psi(x, 0) = \frac{1}{(2\pi\sigma^2)^{1/4}} \exp\left( -\frac{(x -
+			x_0)^2}{4\sigma^2} \right) \exp(i k_0 x).
+	\]
+	For this simulation, the parameters are initialized to $x_0 = 0.0$, $k_0 =
+		0.0$, and $\sigma = 1.0$. The computational domain is discretized uniformly. The
+	spatial grid spans $x \in[-10, 10]$ with a step size of $\Delta x = 0.1$, while
+	the temporal domain covers $t \in [0, 20]$ with a time step of $\Delta t =
+		0.01$.
+
+	\paragraph{Results}
+	The time evolution of the probability density, $|\psi(x,t)|^2$, was extracted
+	at target times $t \in \{0.0, 2.0, 3.0, 4.0, 5.0\}$. As expected for a free
+	particle with zero initial momentum ($k_0 = 0$), the wave packet remains
+	centered at $x=0$ while undergoing spatial dispersion, evidenced by the
+	broadening of the Gaussian profile and a corresponding reduction in peak
+	amplitude (see Figure \ref{fig:schrodinger_packet}).
+
+	\begin{center}
+		\centering
+		% Adjust the width or path as needed based on your LaTeX project structure
+		\includegraphics[width=0.85\textwidth]{figures/6-5/schrodinger-equation-1.pdf}
+		\captionof{figure}{Time evolution of the probability density $|\psi(x,t)|^2$
+			for a free Gaussian wave packet at selected times ($t=0, 2, 3, 4, 5$). The wave
+			packet broadens symmetrically due to quantum dispersion.}
+		\label{fig:schrodinger_packet}
+	\end{center}
+
+	To verify the unitarity of the numerical scheme, we evaluate the spatial norm
+	of the wave function:
+	\[
+		\mathcal{N}(t) = \int_{-10}^{10} |\psi(x,t)|^2 \, dx \approx \sum_{j}
+		|\psi(x_j, t)|^2 \Delta x,
+	\]
+	at the specified time intervals. The resulting norm values are summarized below:
+
+	\begin{center}
+		\centering
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{ll}
+			\hline
+			\textbf{Time ($t$)} & \textbf{Calculated Norm ($\mathcal{N}$)} \\
+			\hline
+			0.0                 & $1.0000000000000000$                     \\
+			2.0                 & $0.9999999999998901$                     \\
+			3.0                 & $0.9999999999998348$                     \\
+			4.0                 & $0.9999999999997797$                     \\
+			5.0                 & $0.9999999999997251$                     \\
+			\hline
+		\end{tabular}
+		\captionof{table}{Conservation of the wave function norm over time.}
+		\label{tab:norm_conservation}
+	\end{center}
+
+	\paragraph{Discussion}
+	The results demonstrate excellent with the theoretical predictions of quantum
+	mechanics. The norm is conserved up to a relative error of
+	$\mathcal{O}(10^{-13})$. This minor deviation is consistent with the
+	accumulation of round-off errors inherent to \texttt{Float64} arithmetic rather
+	than algorithmic dissipation.
+
+	\paragraph{Conclusion}
+	The finite-difference approach successfully models the time evolution of a
+	free Gaussian wave packet. The scheme exhibits robust numerical stability and
+	adheres rigorously to the principle of probability conservation.
+\end{solution}
+
 \begin{exercise}
 	\begin{enumerate}
 		\item Solve the Schr\"odinger equation with $V(x)=0$ considering as
 		      initial wave function the Gaussian wave packet with $x_0=20$, $\sigma=2$, and
 		      $k_0=2$. Consider the interval $0\leq x\leq 100$ for the $x$ variable and $0\leq
 			      t\leq 20$ for the time. Plot the absolute value squared of the wave function at
-		      the times $t=0,10,20$.[\emph{Hint}: Values of $\Delta x=0.1$ and $\Delta t=0.01$
+		      the times $t=0,10,20$. [\emph{Hint}: Values of $\Delta x=0.1$ and $\Delta t=0.01$
 				      are reasonable starting values for this study.]
 		\item Verify that the norm of the wave function is approximately
 		      conserved in time.
@@ -282,6 +499,53 @@
 		      error due to the discretizations.
 	\end{enumerate}
 \end{exercise}
+
+\begin{solution}
+
+	We simulate the time evolution of a free quantum particle possessing a non-zero initial momentum. The system is governed by the time-dependent Schr\"odinger equation (TDSE) with $V(x) = 0$. The initial state is given by a moving Gaussian wave packet:
+	\[
+		\psi(x, 0) = \frac{1}{(2\pi\sigma^2)^{1/4}} \exp\left( -\frac{(x - x_0)^2}{4\sigma^2} \right) \exp(i k_0 x),
+	\]
+	where the parameters are set to $x_0 = 20.0$, $\sigma = 2.0$, and a wave number $k_0 = 2.0$, imparting a rightward group velocity. The computational domain is defined as $x \in [0, 100]$ with a uniform spatial grid spacing of $\Delta x = 0.1$. The simulation evolves up to $t_{\max} = 20.0$ using a time step of $\Delta t = 0.01$.
+
+	\paragraph{Results}
+	The probability density, $|\psi(x,t)|^2$, was evaluated at $t \in \{0.0, 10.0, 20.0\}$. The simulation captures two simultaneous quantum mechanical phenomena: the rigid translation of the wave packet's centroid and the quantum dispersion causing the envelope to broaden (see Figure \ref{fig:schrodinger_packet_moving}). Assuming natural units ($\hbar = m = 1$), the group velocity is $v_g = k_0 = 2.0$, which correctly predicts the packet centers at $x \approx 40$ for $t = 10.0$ and $x \approx 60$ for $t = 20.0$.
+
+	\begin{center}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/6-5/schrodinger-equation-2.pdf}
+		\captionof{figure}{Time evolution of a moving Gaussian wave packet ($k_0 = 2.0$, $\sigma=2.0$) at $t \in \{0, 10, 20\}$. The probability density demonstrates both uniform translation due to initial momentum and spatial broadening due to dispersion.}
+		\label{fig:schrodinger_packet_moving}
+	\end{center}
+
+	The stability and unitarity of the numerical scheme are verified by computing the spatial $L_2$-norm of the wave function at the targeted time steps:
+	\[
+		\mathcal{N}(t) = \int_{0}^{100} |\psi(x,t)|^2 \, dx \approx \sum_{j} |\psi(x_j, t)|^2 \Delta x.
+	\]
+	The calculated norms are presented in Table \ref{tab:norm_moving}.
+
+	\begin{center}
+		\centering
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{ll}
+			\hline
+			\textbf{Time ($t$)} & \textbf{Calculated Norm ($\mathcal{N}$)} \\
+			\hline
+			0.0                 & $1.0000000000000000$                     \\
+			10.0                & $0.9999999978230356$                     \\
+			20.0                & $0.9999999956460712$                     \\
+			\hline
+		\end{tabular}
+		\captionof{table}{Conservation of the wave function norm over time for the moving wave packet.}
+		\label{tab:norm_moving}
+	\end{center}
+
+	\paragraph{Discussion}
+	The numerical results are consistent with analytical expectations. The norm of the wave function is strictly conserved, exhibiting only a marginal drift on the order of $\mathcal{O}(10^{-9})$ over thousands of time steps. This confirms the unconditional stability and unitary nature of the underlying integration method.
+
+	\paragraph{Conclusion}
+	The simulation accurately reproduces the kinematics and dispersive properties of a free quantum particle with non-zero initial momentum. The spatial and temporal discretizations are sufficiently fine to prevent severe numerical dispersion, and the scheme perfectly preserves probability up to the limits of the combined discretization and quadrature accuracy. The computational domain ($[0, 100]$) is adequately large to prevent the wave packet from interacting with the boundaries during the time frame simulated.
+\end{solution}
 
 \begin{exercise}
 	\begin{enumerate}

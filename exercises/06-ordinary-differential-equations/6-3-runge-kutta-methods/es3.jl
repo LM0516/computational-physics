@@ -7,7 +7,7 @@ function main()
         beta = 0.25
         y, z = u
         dy = y * (1 - alpha * y) - (y * z) / (1 + beta * y)
-        dz = - z + (y * z) / (1 + beta * y)
+        dz = -z + (y * z) / (1 + beta * y)
         return [dy, dz]
     end
 
@@ -15,12 +15,19 @@ function main()
     b = 60.0
     n = 1000
     ics = [1, 0.01]
-    p = plot(title="Phase Plane ", xlabel="y", ylabel="z", aspect_ratio=:equal)
+
     t, u = rk4(f, a, b, n, ics)
-    z = [ui[1] for ui in u]
-    y = [ui[2] for ui in u]
-    plot_add!(p, y, z, label="IC: $ics")
- 
+    y = [ui[1] for ui in u]
+    z = [ui[2] for ui in u]
+
+    p_time = plot_generic(t, y, label="Prey (y)", xlabel="Time (t)", ylabel="Population", linewidth=1.5)
+    plot_add!(p_time, t, z, label="Predator (z)", linewidth=1.5)
+    title!(p_time, "Population Dynamics")
+
+    p_phase = plot(title="Phase Plane ", xlabel="y", ylabel="z", aspect_ratio=:equal)
+    plot_add!(p_phase, y, z, label="IC: $ics")
+
+    p = multi_plot(p_time, p_phase)
     save_plot(p, "predator-prey-model", "6-3")
     display(p)
     readline()
