@@ -3,373 +3,377 @@
 \subsection{Polynomial Interpolation}
 
 \begin{exercise}
-    Construct a Vandermonde matrix using the power basis and $n+1$ equidistant points in the interval $[-1,1]$, where $n=4,8,\ldots,40$. 
-    Specifically, the points are given by $x_i=-1+(i-1)h$, with $i=1,2,\ldots,n+1$ and $h=2/n$. Use the Vandermonde matrix to determine the interpolating polynomials on these nodes for the functions $f_k(x)=\cos(kx)$ with $k=10,20,\ldots,100$. Study the value of these polynomials in $x=0$ for the different $n$ and $k$ values. What do you observe?
+	Construct a Vandermonde matrix using the power basis and $n+1$ equidistant points in the interval $[-1,1]$, where $n=4,8,\ldots,40$.
+	Specifically, the points are given by $x_i=-1+(i-1)h$, with $i=1,2,\ldots,n+1$ and $h=2/n$. Use the Vandermonde matrix to determine the interpolating polynomials on these nodes for the functions $f_k(x)=\cos(kx)$ with $k=10,20,\ldots,100$. Study the value of these polynomials in $x=0$ for the different $n$ and $k$ values. What do you observe?
 \end{exercise}
 
 \begin{solution}
-    The problem requires finding the coefficients $\mathbf{c} = (c_0, c_1, \dots, c_n)^T$ of the interpolating polynomial $P_n(x) = \sum_{j=0}^n c_j x^j$ of degree $n$. This is achieved by solving the linear system $V \mathbf{c} = \mathbf{f}$, where $V$ is the $(n+1) \times (n+1)$ Vandermonde matrix with entries $V_{i,j} = x_i^j$, and $\mathbf{f}$ is the vector of function values $f_k(x_i) = \cos(kx_i)$ evaluated at the equidistant nodes. 
+	The problem requires finding the coefficients $\mathbf{c} = (c_0, c_1, \dots, c_n)^T$ of the interpolating polynomial $P_n(x) = \sum_{j=0}^n c_j x^j$ of degree $n$. This is achieved by solving the linear system $V \mathbf{c} = \mathbf{f}$, where $V$ is the $(n+1) \times (n+1)$ Vandermonde matrix with entries $V_{i,j} = x_i^j$, and $\mathbf{f}$ is the vector of function values $f_k(x_i) = \cos(kx_i)$ evaluated at the equidistant nodes.
 
-    Because Vandermonde matrices are notoriously ill-conditioned, solving this system directly is prone to catastrophic cancellation, especially at higher degrees.
+	Because Vandermonde matrices are notoriously ill-conditioned, solving this system directly is prone to catastrophic cancellation, especially at higher degrees.
 
-    To study the value of the polynomials at $x = 0$, we can exploit the definition of the power basis. Evaluating $P_n(x)$ at $x = 0$ leaves only the constant term:
-    \[ P_n(0) = \sum_{j=0}^n c_j 0^j = c_0 \]
-    Thus, studying the polynomial's value at the origin is equivalent to tracking the zeroth-order coefficient $c_0$. The absolute error at $x=0$ is computed as $\epsilon = |c_0 - 1|$, since the true analytical value is $\cos(k \cdot 0) = 1$ for all $k$.
+	To study the value of the polynomials at $x = 0$, we can exploit the definition of the power basis. Evaluating $P_n(x)$ at $x = 0$ leaves only the constant term:
+	\[ P_n(0) = \sum_{j=0}^n c_j 0^j = c_0 \]
+	Thus, studying the polynomial's value at the origin is equivalent to tracking the zeroth-order coefficient $c_0$. The absolute error at $x=0$ is computed as $\epsilon = |c_0 - 1|$, since the true analytical value is $\cos(k \cdot 0) = 1$ for all $k$.
 
-    \paragraph{Results}
-    Three primary diagnostics were visualized to evaluate the interpolation scheme:
-    \begin{enumerate}
-        \item \textbf{Condition Number:} Figure \ref{fig:cond_number} demonstrates the condition number $\kappa(V)$ as a function of the polynomial degree $n$. It exhibits clear exponential growth, rapidly approaching the limit of 64-bit machine precision.
-        \item \textbf{Interpolation Error at $x=0$:} Figure \ref{fig:errors} displays the base-10 logarithm of the absolute error $\log_{10}(|c_0 - 1|)$. A striking feature in the data is a localized degradation of accuracy around $n=20$, where the evaluation error spikes noticeably before settling or becoming entirely consumed by numerical noise at higher degrees.
-        \item \textbf{Global Fit Quality:} Figure \ref{fig:chi2} presents a heatmap of the $\chi^2$ residuals. Consistent with the local error evaluation, the global $\chi^2$ values exhibit a surge at $n=20$ across multiple wave numbers $k$, indicating a severe structural breakdown of the global polynomial fit at this specific degree.
-    \end{enumerate}
+	\paragraph{Results}
+	Three primary diagnostics were visualized to evaluate the interpolation scheme:
+	\begin{enumerate}
+		\item \textbf{Condition Number:} Figure \ref{fig:cond_number} demonstrates the condition number $\kappa(V)$ as a function of the polynomial degree $n$. It exhibits clear exponential growth, rapidly approaching the limit of 64-bit machine precision.
+		\item \textbf{Interpolation Error at $x=0$:} Figure \ref{fig:errors} displays the base-10 logarithm of the absolute error $\log_{10}(|c_0 - 1|)$. A striking feature in the data is a localized degradation of accuracy around $n=20$, where the evaluation error spikes noticeably before settling or becoming entirely consumed by numerical noise at higher degrees.
+		\item \textbf{Global Fit Quality:} Figure \ref{fig:chi2} presents a heatmap of the $\chi^2$ residuals. Consistent with the local error evaluation, the global $\chi^2$ values exhibit a surge at $n=20$ across multiple wave numbers $k$, indicating a severe structural breakdown of the global polynomial fit at this specific degree.
+	\end{enumerate}
 
-    \begin{center}
-        \centering
-        \includegraphics[width=0.6\textwidth]{figures/3-1/condition-numbers.pdf}
-        \captionof{figure}{Condition number of the Vandermonde matrix $\kappa(V)$ as a function of polynomial degree $n$, plotted on a logarithmic scale.}
-        \label{fig:cond_number}
-    \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.6\textwidth]{figures/3-1/condition-numbers.pdf}
+		\captionof{figure}{Condition number of the Vandermonde matrix $\kappa(V)$ as a function of polynomial degree $n$, plotted on a logarithmic scale.}
+		\label{fig:cond_number}
+	\end{center}
 
-    \begin{center}
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/3-1/errors-plots.pdf}
-        \captionof{figure}{Left: Heatmap of the $\log_{10}$ absolute error at $x=0$ for varying $n$ and $k$. Right: The computed value of $P_n(0)$ versus $n$ for different wave numbers $k$.}
-        \label{fig:errors}
-    \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.9\textwidth]{figures/3-1/errors-plots.pdf}
+		\captionof{figure}{Left: Heatmap of the $\log_{10}$ absolute error at $x=0$ for varying $n$ and $k$. Right: The computed value of $P_n(0)$ versus $n$ for different wave numbers $k$.}
+		\label{fig:errors}
+	\end{center}
 
-    \begin{center}
-        \centering
-        \includegraphics[width=0.6\textwidth]{figures/3-1/chi-square.pdf}
-        \captionof{figure}{Heatmap of the $\chi^2$ residuals representing the overall divergence of the interpolating polynomial from the true function $f_k(x) = \cos(kx)$.}
-        \label{fig:chi2}
-    \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.6\textwidth]{figures/3-1/chi-square.pdf}
+		\captionof{figure}{Heatmap of the $\chi^2$ residuals representing the overall divergence of the interpolating polynomial from the true function $f_k(x) = \cos(kx)$.}
+		\label{fig:chi2}
+	\end{center}
 
-    \paragraph{Discussion}
-    The results highlight a complex interplay between sampling density, boundary effects, and numerical stability:
-    \begin{itemize}
-        \item \textbf{Under-sampling (Small $n$, Large $k$):} The highly oscillatory nature of $f_k(x) = \cos(kx)$ requires a sufficient number of nodal points to capture the waveform. When $n$ is too small relative to $k$, the equidistant nodes fail to resolve the oscillations (violating the analog of the Nyquist-Shannon sampling limit), leading to flat or highly inaccurate approximations.
-        \item \textbf{The $n=20$ Transition Zone:} The severe spike in both local errors and global $\chi^2$ values at $n=20$ represents a critical numerical "worst of both worlds" transition. At this degree, the polynomial is flexible enough to trigger massive Runge oscillations at the boundaries (which overwhelmingly corrupts the global $\chi^2$), yet the nodal density is not high enough to lock onto the tight frequencies of the larger $k$ modes. Simultaneously, $\kappa(V)$ crosses a critical threshold where matrix inversion errors become large enough to noticeably perturb the central coefficients, heavily skewing the evaluation at $x=0$.
-        \item \textbf{Ill-conditioning and Noise (Large $n$):} As $n$ approaches 40, $\kappa(V)$ becomes so astronomically large that the least-squares solver is effectively fitting pure floating-point noise. While the theoretical error at the center of the domain should be minimal, the catastrophic cancellation inherent to the Vandermonde matrix entirely destroys the structural integrity of the polynomial.
-    \end{itemize}
+	\paragraph{Discussion}
+	The results highlight a complex interplay between sampling density, boundary effects, and numerical stability:
+	\begin{itemize}
+		\item \textbf{Under-sampling (Small $n$, Large $k$):} The highly oscillatory nature of $f_k(x) = \cos(kx)$ requires a sufficient number of nodal points to capture the waveform. When $n$ is too small relative to $k$, the equidistant nodes fail to resolve the oscillations (violating the analog of the Nyquist-Shannon sampling limit), leading to flat or highly inaccurate approximations.
+		\item \textbf{The $n=20$ Transition Zone:} The severe spike in both local errors and global $\chi^2$ values at $n=20$ represents a critical numerical "worst of both worlds" transition. At this degree, the polynomial is flexible enough to trigger massive Runge oscillations at the boundaries (which overwhelmingly corrupts the global $\chi^2$), yet the nodal density is not high enough to lock onto the tight frequencies of the larger $k$ modes. Simultaneously, $\kappa(V)$ crosses a critical threshold where matrix inversion errors become large enough to noticeably perturb the central coefficients, heavily skewing the evaluation at $x=0$.
+		\item \textbf{Ill-conditioning and Noise (Large $n$):} As $n$ approaches 40, $\kappa(V)$ becomes so astronomically large that the least-squares solver is effectively fitting pure floating-point noise. While the theoretical error at the center of the domain should be minimal, the catastrophic cancellation inherent to the Vandermonde matrix entirely destroys the structural integrity of the polynomial.
+	\end{itemize}
 
-    \paragraph{Conclusion}
-    The exercise demonstrates that global polynomial interpolation on equidistant nodes using the standard power basis and Vandermonde matrices is fundamentally unstable for oscillatory functions. Increasing the polynomial degree to resolve higher frequencies does not converge to the true function; instead, it forces a transition through a highly volatile state (peaking around $n=20$) before eventually collapsing entirely due to catastrophic ill-conditioning at larger $n$.
+	\paragraph{Conclusion}
+	The exercise demonstrates that global polynomial interpolation on equidistant nodes using the standard power basis and Vandermonde matrices is fundamentally unstable for oscillatory functions. Increasing the polynomial degree to resolve higher frequencies does not converge to the true function; instead, it forces a transition through a highly volatile state (peaking around $n=20$) before eventually collapsing entirely due to catastrophic ill-conditioning at larger $n$.
 \end{solution}
 
 \subsection{Lagrange-Waring Interpolation}
 
 \begin{exercise}
-    In each case, use interpolate the given function using \( n \) evenly spaced nodes in the given interval. Plot each interpolating function together with the exact function.
-    \begin{enumerate}
-        \item \( f(x) = \ln (x), \quad n = 2,3,4, \quad x\in [1,10] \)
-        \item \( f(x) = \tanh (x), \quad n = 2,3,4, \quad x \in [-3,2] \)
-        \item \( f(x) = \cosh (x), \quad n = 2,3,4, \quad x \in [-1,3] \)
-        \item \( f(x) = |x|, \quad n = 3,5,7, \quad x \in [-2,1] \)
-    \end{enumerate}
+	In each case, use interpolate the given function using \( n \) evenly spaced nodes in the given interval. Plot each interpolating function together with the exact function.
+	\begin{enumerate}
+		\item \( f(x) = \ln (x), \quad n = 2,3,4, \quad x\in [1,10] \)
+		\item \( f(x) = \tanh (x), \quad n = 2,3,4, \quad x \in [-3,2] \)
+		\item \( f(x) = \cosh (x), \quad n = 2,3,4, \quad x \in [-1,3] \)
+		\item \( f(x) = |x|, \quad n = 3,5,7, \quad x \in [-2,1] \)
+	\end{enumerate}
 \end{exercise}
 
 \begin{solution}
-    To approximate the given functions, we implement polynomial interpolation over evenly spaced nodes. The interpolating polynomials are evaluated using the barycentric form of Lagrange interpolation, which provides superior numerical stability in double-precision floating-point arithmetic (\texttt{Float64}). 
+	To approximate the given functions, we implement polynomial interpolation over evenly spaced nodes. The interpolating polynomials are evaluated using the barycentric form of Lagrange interpolation, which provides superior numerical stability in double-precision floating-point arithmetic (\texttt{Float64}).
 
-    For a given interval $[a, b]$ and $n$ nodes, the evenly spaced interpolation nodes are generated as $x_k = a + k \frac{b-a}{n-1}$ for $k = 0, \dots, n-1$. The interpolation algorithm is evaluated over a high-resolution grid of 200 points. To visualize the accuracy, the results are presented in a side-by-side format: the left panel overlays the exact function and the interpolant, while the right panel displays the absolute residual error, $E(x) = |P_{n-1}(x) - f(x)|$, on a logarithmic base-10 scale.
+	For a given interval $[a, b]$ and $n$ nodes, the evenly spaced interpolation nodes are generated as $x_k = a + k \frac{b-a}{n-1}$ for $k = 0, \dots, n-1$. The interpolation algorithm is evaluated over a high-resolution grid of 200 points. To visualize the accuracy, the results are presented in a side-by-side format: the left panel overlays the exact function and the interpolant, while the right panel displays the absolute residual error, $E(x) = |P_{n-1}(x) - f(x)|$, on a logarithmic base-10 scale.
 
-    \paragraph{Results}
-    The resulting pseudo-$\chi^2$ error metrics for each function and node configuration are summarized in Table \ref{tab:interp_errors}. The visual representations of the interpolations and their corresponding absolute residuals are shown in Figures \ref{fig:interp_smooth} and \ref{fig:interp_abs}.
+	\paragraph{Results}
+	The resulting pseudo-$\chi^2$ error metrics for each function and node configuration are summarized in Table \ref{tab:interp_errors}. The visual representations of the interpolations and their corresponding absolute residuals are shown in Figures \ref{fig:interp_smooth} and \ref{fig:interp_abs}.
 
-    \begin{center}
-        \centering
-        \captionof{table}{Pseudo-$\chi^2$ error metrics for polynomial interpolation using $n$ evenly spaced nodes.}
-        \label{tab:interp_errors}
-        \begin{tabular}{l c r r r}
-            \hline
-            Function & Interval & $n_1$ Error & $n_2$ Error & $n_3$ Error \\
-            \hline
-            $f(x) = \ln(x)$  & $[1, 10]$ & (n=2) 31.101 & (n=3) 3.285 & (n=4) 0.572 \\
-            $f(x) = \tanh(x)$& $[-3, 2]$ & (n=2) -29.363 & (n=3) 18.957 & (n=4) -3.529 \\
-            $f(x) = \cosh(x)$& $[-1, 3]$ & (n=2) 1171.471 & (n=3) 26.629 & (n=4) 2.105 \\
-            $f(x) = |x|$     & $[-2, 1]$ & (n=3) 112.930 & (n=5) 30.394 & (n=7) 5.374 \\
-            \hline
-        \end{tabular}
-    \end{center}
+	\begin{center}
+		\centering
+		\captionof{table}{Pseudo-$\chi^2$ error metrics for polynomial interpolation using $n$ evenly spaced nodes.}
+		\label{tab:interp_errors}
+		\begin{tabular}{l c r r r}
+			\hline
+			Function          & Interval  & $n_1$ Error    & $n_2$ Error  & $n_3$ Error  \\
+			\hline
+			$f(x) = \ln(x)$   & $[1, 10]$ & (n=2) 31.101   & (n=3) 3.285  & (n=4) 0.572  \\
+			$f(x) = \tanh(x)$ & $[-3, 2]$ & (n=2) -29.363  & (n=3) 18.957 & (n=4) -3.529 \\
+			$f(x) = \cosh(x)$ & $[-1, 3]$ & (n=2) 1171.471 & (n=3) 26.629 & (n=4) 2.105  \\
+			$f(x) = |x|$      & $[-2, 1]$ & (n=3) 112.930  & (n=5) 30.394 & (n=7) 5.374  \\
+			\hline
+		\end{tabular}
+	\end{center}
 
-    \begin{center}
-        \centering
-        \includegraphics[width=0.8\textwidth]{figures/3-2/log(x)-plot.pdf}
-        \vspace{0.5cm} \\
-        \includegraphics[width=0.8\textwidth]{figures/3-2/tanh(x)-plot.pdf}
-        \vspace{0.5cm} \\
-        \includegraphics[width=0.8\textwidth]{figures/3-2/cosh(x)-plot.pdf}
-        \captionof{figure}{Side-by-side evaluation of polynomial interpolations and absolute residual errors for the smooth functions $\ln(x)$, $\tanh(x)$, and $\cosh(x)$.}
-        \label{fig:interp_smooth}
-    \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.8\textwidth]{figures/3-2/log(x)-plot.pdf}
+		\vspace{0.5cm} \\
+		\includegraphics[width=0.8\textwidth]{figures/3-2/tanh(x)-plot.pdf}
+		\vspace{0.5cm} \\
+		\includegraphics[width=0.8\textwidth]{figures/3-2/cosh(x)-plot.pdf}
+		\captionof{figure}{Side-by-side evaluation of polynomial interpolations and absolute residual errors for the smooth functions $\ln(x)$, $\tanh(x)$, and $\cosh(x)$.}
+		\label{fig:interp_smooth}
+	\end{center}
 
-    \begin{center}
-        \centering
-        \includegraphics[width=0.8\textwidth]{figures/3-2/abs_x-plot.pdf}
-        \captionof{figure}{Interpolation and absolute residual error for the non-smooth function $f(x) = |x|$. Note the localized error peak near the non-differentiable cusp at $x=0$.}
-        \label{fig:interp_abs}
-    \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.8\textwidth]{figures/3-2/abs_x-plot.pdf}
+		\captionof{figure}{Interpolation and absolute residual error for the non-smooth function $f(x) = |x|$. Note the localized error peak near the non-differentiable cusp at $x=0$.}
+		\label{fig:interp_abs}
+	\end{center}
 
-    \paragraph{Discussion}
-    % FIX: Valutare se rimuovere questa parte, non presente nella teoria
-    The theoretical error bound for polynomial interpolation is:
-    \[
-        E(x) = f(x) - P_{n-1}(x) = \frac{f^{(n)}(\xi)}{n!} \prod_{i=0}^{n-1} (x - x_i)
-    \]
-    where $\xi \in (a, b)$. The residual plots in Figure \ref{fig:interp_smooth} clearly illustrate this behavior. At exactly the node locations $x_i$, the interpolation condition $P_{n-1}(x_i) = f(x_i)$ is met, and the logarithmic residual sharply plummets to the machine epsilon ($\approx 10^{-16}$). Between the nodes, the error bulges, typically reaching its maximum near the center of the sub-intervals or toward the boundaries of the domain. 
+	\paragraph{Discussion}
+	% FIX: Valutare se rimuovere questa parte, non presente nella teoria
+	The theoretical error bound for polynomial interpolation is:
+	\[
+		E(x) = f(x) - P_{n-1}(x) = \frac{f^{(n)}(\xi)}{n!} \prod_{i=0}^{n-1} (x - x_i)
+	\]
+	where $\xi \in (a, b)$. The residual plots in Figure \ref{fig:interp_smooth} clearly illustrate this behavior. At exactly the node locations $x_i$, the interpolation condition $P_{n-1}(x_i) = f(x_i)$ is met, and the logarithmic residual sharply plummets to the machine epsilon ($\approx 10^{-16}$). Between the nodes, the error bulges, typically reaching its maximum near the center of the sub-intervals or toward the boundaries of the domain.
 
-    For the smooth functions seen in Figure \ref{fig:interp_smooth}, increasing the number of nodes systematically suppresses the entire residual curve. However, as shown in Figure \ref{fig:interp_abs} for $f(x) = |x|$, the function is non-differentiable at $x = 0$. Consequently, the residual plot shows a localized peak in the error near this cusp that does not diminish as rapidly as the error in smooth regions, demonstrating the fundamental limitation of global polynomial interpolation on non-smooth functions.
+	For the smooth functions seen in Figure \ref{fig:interp_smooth}, increasing the number of nodes systematically suppresses the entire residual curve. However, as shown in Figure \ref{fig:interp_abs} for $f(x) = |x|$, the function is non-differentiable at $x = 0$. Consequently, the residual plot shows a localized peak in the error near this cusp that does not diminish as rapidly as the error in smooth regions, demonstrating the fundamental limitation of global polynomial interpolation on non-smooth functions.
 
-    \paragraph{Conclusion}
-    The side-by-side visualizations effectively confirm that barycentric Lagrange interpolation successfully captures the global behavior of the evaluated functions for low-degree polynomials. However, the residual analysis is far more reliable than the global pseudo-$\chi^2$ metric. As seen with $\tanh(x)$, the $\chi^2$ metric yields non-physical negative values because the exact function crosses zero. The logarithmic residual plots provide a much clearer, strictly positive evaluation of the spatial distribution of the interpolation error.
+	\paragraph{Conclusion}
+	The side-by-side visualizations effectively confirm that barycentric Lagrange interpolation successfully captures the global behavior of the evaluated functions for low-degree polynomials. However, the residual analysis is far more reliable than the global pseudo-$\chi^2$ metric. As seen with $\tanh(x)$, the $\chi^2$ metric yields non-physical negative values because the exact function crosses zero. The logarithmic residual plots provide a much clearer, strictly positive evaluation of the spatial distribution of the interpolation error.
 \end{solution}
 
 \subsection{Error on Interpolation}
 
 \begin{exercise}
-    \begin{enumerate}
-        \item For each case below, compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=4,8,12,\ldots,60$. At each value of $n$, compute the $\infty$-norm error (that is, $||f-p||_\infty=\max_{x\in[-1,1]} |p(x)-f(x)|$ evaluated for at least 4000 values of $x$). Using a log-linear scale, plot the error as a function of $n$, then determine a good approximation to the constant $K$ in {eq}`eq-spectral`. 
-        \begin{enumerate}
-            \item $f(x) = 1/(25x^2+1)$ 
-            \item $f(x) = \tanh(5 x+2)$
-            \item $f(x) = \cosh(\sin x)$
-            \item $f(x) = \sin(\cosh x)$ 
-        \end{enumerate}
-        \item Make an analogous plot using $n$ equidistant points for the interpolation.
-    \end{enumerate}
+	\begin{enumerate}
+		\item For each case below, compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=4,8,12,\ldots,60$. At each value of $n$, compute the $\infty$-norm error (that is, $||f-p||_\infty=\max_{x\in[-1,1]} |p(x)-f(x)|$ evaluated for at least 4000 values of $x$). Using a log-linear scale, plot the error as a function of $n$, then determine a good approximation to the constant $K$ in {eq}`eq-spectral`.
+		      \begin{enumerate}
+			      \item $f(x) = 1/(25x^2+1)$
+			      \item $f(x) = \tanh(5 x+2)$
+			      \item $f(x) = \cosh(\sin x)$
+			      \item $f(x) = \sin(\cosh x)$
+		      \end{enumerate}
+		\item Make an analogous plot using $n$ equidistant points for the interpolation.
+	\end{enumerate}
 \end{exercise}
 
 % FIX: Sistemare la disposizione delle figure, sono troppe e troppo vicine.
 \begin{solution}
-  This exercise investigates the spectral convergence properties and numerical stability of polynomial interpolation. We utilize barycentric interpolation implemented in \texttt{Julia} to approximate four analytical functions over the interval $[-1, 1]$. To evaluate the impact of node distribution on error propagation, we contrast equidistant (Lagrange) nodes with Chebyshev nodes. 
+	This exercise investigates the spectral convergence properties and numerical stability of polynomial interpolation. We utilize barycentric interpolation implemented in \texttt{Julia} to approximate four analytical functions over the interval $[-1, 1]$. To evaluate the impact of node distribution on error propagation, we contrast equidistant (Lagrange) nodes with Chebyshev nodes.
 
-  The approximation quality is measured using the $L^\infty$-norm, computationally approximated by evaluating the absolute error over a dense uniform grid of $4000$ evaluation points. Note that calculating the absolute error rather than the relative error ensures our convergence metrics are not skewed by the roots of the target function, which is mathematically robust when evaluating the global uniform norm. The theoretical spectral error bound behaves as:
-  \[
-      \|f - p_n\|_\infty \sim \mathcal{O}(K^{-n})
-  \]
-  Taking the natural logarithm yields $\ln \|f - p_n\|_\infty \approx -n \ln K$. Thus, the constant $K$ can be estimated as $K = \exp(-m)$, where $m$ is the slope extracted from a linear fit of the bounding error data on a log-linear scale. 
+	The approximation quality is measured using the $L^\infty$-norm, computationally approximated by evaluating the absolute error over a dense uniform grid of $4000$ evaluation points. Note that calculating the absolute error rather than the relative error ensures our convergence metrics are not skewed by the roots of the target function, which is mathematically robust when evaluating the global uniform norm. The theoretical spectral error bound behaves as:
+	\[
+		\|f - p_n\|_\infty \sim \mathcal{O}(K^{-n})
+	\]
+	Taking the natural logarithm yields $\ln \|f - p_n\|_\infty \approx -n \ln K$. Thus, the constant $K$ can be estimated as $K = \exp(-m)$, where $m$ is the slope extracted from a linear fit of the bounding error data on a log-linear scale.
 
-  \paragraph{Results}
-  The estimated spectral constants $K$ alongside their corresponding logarithmic decay slopes $m$ are tabulated in Table~\ref{tab:interp_errorss}. Following this, Figures~\ref{fig:runge_cheb} through \ref{fig:sincosh_lag} visually map the interpolating curves and the $L^\infty$-norm progression as a function of the polynomial degree $n$.
+	\paragraph{Results}
+	The estimated spectral constants $K$ alongside their corresponding logarithmic decay slopes $m$ are tabulated in Table~\ref{tab:interp_errorss}. Following this, Figures~\ref{fig:runge_cheb} through \ref{fig:sincosh_lag} visually map the interpolating curves and the $L^\infty$-norm progression as a function of the polynomial degree $n$.
 
-  \begin{center}
-      \centering
-      \captionof{table}{Estimated spectral convergence constant $K$ and logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
-      \label{tab:interp_errorss}
-      \begin{tabular}{lcccc}
-          \toprule
-          \textbf{Function} & \multicolumn{2}{c}{\textbf{Chebyshev Nodes}} & \multicolumn{2}{c}{\textbf{Equidistant Nodes}} \\
-          \cmidrule(lr){2-3} \cmidrule(lr){4-5}
-          & $K$ & Slope ($m$) & $K$ & Slope ($m$) \\
-          \midrule
-          $1/(25x^2 + 1)$ & 1.2035 & $-0.1852$ & 0.7280 &  0.3175 \\
-          $\tanh(5x + 2)$ & 1.2020 & $-0.1840$ & 0.8951 &  0.1108 \\
-          $\cosh(\sin x)$ & 1.1513 & $-0.1409$ & 0.9728 &  0.0276 \\
-          $\sin(\cosh x)$ & 1.1722 & $-0.1589$ & 0.9845 &  0.0156 \\
-          \bottomrule
-      \end{tabular}
-  \end{center}
+	\begin{center}
+		\centering
+		\captionof{table}{Estimated spectral convergence constant $K$ and logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
+		\label{tab:interp_errorss}
+		\begin{tabular}{lcccc}
+			\toprule
+			\textbf{Function} & \multicolumn{2}{c}{\textbf{Chebyshev Nodes}} & \multicolumn{2}{c}{\textbf{Equidistant Nodes}}                        \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			                  & $K$                                          & Slope ($m$)                                    & $K$    & Slope ($m$) \\
+			\midrule
+			$1/(25x^2 + 1)$   & 1.2035                                       & $-0.1852$                                      & 0.7280 & 0.3175      \\
+			$\tanh(5x + 2)$   & 1.2020                                       & $-0.1840$                                      & 0.8951 & 0.1108      \\
+			$\cosh(\sin x)$   & 1.1513                                       & $-0.1409$                                      & 0.9728 & 0.0276      \\
+			$\sin(\cosh x)$   & 1.1722                                       & $-0.1589$                                      & 0.9845 & 0.0156      \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
 
-  \begin{center}
-      \centering
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fa-chebyshev.pdf}
-          \captionof{figure}{Chebyshev interpolation: $1/(25x^2+1)$.}
-          \label{fig:runge_cheb}
-      \end{minipage}\hfill
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fa-lagrange.pdf}
-          \captionof{figure}{Equidistant interpolation: $1/(25x^2+1)$.}
-          \label{fig:runge_lag}
-      \end{minipage}
-  \end{center}
+	\begin{center}
+		\centering
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fa-chebyshev.pdf}
+			\captionof{figure}{Chebyshev interpolation: $1/(25x^2+1)$.}
+			\label{fig:runge_cheb}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fa-lagrange.pdf}
+			\captionof{figure}{Equidistant interpolation: $1/(25x^2+1)$.}
+			\label{fig:runge_lag}
+		\end{minipage}
+	\end{center}
 
-  \begin{center}
-      \centering
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fb-chebyshev.pdf}
-          \captionof{figure}{Chebyshev interpolation: $\tanh(5x+2)$.}
-      \end{minipage}\hfill
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fb-lagrange.pdf}
-          \captionof{figure}{Equidistant interpolation: $\tanh(5x+2)$.}
-      \end{minipage}
-  \end{center}
+	\begin{center}
+		\centering
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fb-chebyshev.pdf}
+			\captionof{figure}{Chebyshev interpolation: $\tanh(5x+2)$.}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fb-lagrange.pdf}
+			\captionof{figure}{Equidistant interpolation: $\tanh(5x+2)$.}
+		\end{minipage}
+	\end{center}
 
-  \begin{center}
-      \centering
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fc-chebyshev.pdf}
-          \captionof{figure}{Chebyshev interpolation: $\cosh(\sin x)$.}
-      \end{minipage}\hfill
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fc-lagrange.pdf}
-          \captionof{figure}{Equidistant interpolation: $\cosh(\sin x)$.}
-      \end{minipage}
-  \end{center}
+	\begin{center}
+		\centering
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fc-chebyshev.pdf}
+			\captionof{figure}{Chebyshev interpolation: $\cosh(\sin x)$.}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fc-lagrange.pdf}
+			\captionof{figure}{Equidistant interpolation: $\cosh(\sin x)$.}
+		\end{minipage}
+	\end{center}
 
-  \begin{center}
-      \centering
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fd-chebyshev.pdf}
-          \captionof{figure}{Chebyshev interpolation: $\sin(\cosh x)$.}
-      \end{minipage}\hfill
-      \begin{minipage}{0.48\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{figures/3-4/fd-lagrange.pdf}
-          \captionof{figure}{Equidistant interpolation: $\sin(\cosh x)$.}
-          \label{fig:sincosh_lag}
-      \end{minipage}
-  \end{center}
+	\begin{center}
+		\centering
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fd-chebyshev.pdf}
+			\captionof{figure}{Chebyshev interpolation: $\sin(\cosh x)$.}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figures/3-4/fd-lagrange.pdf}
+			\captionof{figure}{Equidistant interpolation: $\sin(\cosh x)$.}
+			\label{fig:sincosh_lag}
+		\end{minipage}
+	\end{center}
 
-  \paragraph{Discussion}
-  \begin{itemize}
-      \item \textbf{Equidistant Nodes \& Runge's Phenomenon:} The uniformly spaced nodes lead to highly erratic polynomial oscillations near the boundaries $x=\pm 1$. This catastrophic cancellation phenomenon is strictly captured by the data: $K < 1$ and $m > 0$ for all models, highlighting that the $L^\infty$-norm diverges exponentially as the polynomial degree $n$ increases. Attempting to force convergence by utilizing higher-degree polynomials only exacerbates this numerical instability.
-      
-      \item \textbf{Chebyshev Nodes \& Spectral Convergence:} Deploying Chebyshev points effectively mitigates the aforementioned boundary oscillations. The values of $K > 1$ reflect the expected theoretical bounds for exponential error decay. The Runge function $1/(25x^2+1)$ holds complex poles near the real axis, meaning its convergence rate is inherently limited by its Bernstein ellipse geometry. By contrast, entire mathematical functions devoid of poles, such as $\cosh(\sin x)$, theoretically guarantee super-exponential convergence. 
-  \end{itemize}
+	\paragraph{Discussion}
+	\begin{itemize}
+		\item \textbf{Equidistant Nodes \& Runge's Phenomenon:} The uniformly spaced nodes lead to highly erratic polynomial oscillations near the boundaries $x=\pm 1$. This catastrophic cancellation phenomenon is strictly captured by the data: $K < 1$ and $m > 0$ for all models, highlighting that the $L^\infty$-norm diverges exponentially as the polynomial degree $n$ increases. Attempting to force convergence by utilizing higher-degree polynomials only exacerbates this numerical instability.
 
-  \paragraph{Conclusion}
-  The analysis effectively bridges numerical experiments with complex analysis theory, demonstrating the immense significance of interpolation grid conditioning. Uniform spacing predictably incurs Runge's phenomenon and exponential divergence for large degrees. In stark contrast, optimally clustering interpolation nodes around interval boundaries using a Chebyshev distribution ensures mathematical stability and recovers powerful spectral accuracy.
-\end{solution}
+		\item \textbf{Chebyshev Nodes \& Spectral Convergence:} Deploying Chebyshev points effectively mitigates the aforementioned boundary oscillations. The values of $K > 1$ reflect the expected theoretical bounds for exponential error decay. The Runge function $1/(25x^2+1)$ holds complex poles near the real axis, meaning its convergence rate is inherently limited by its Bernstein ellipse geometry. By contrast, entire mathematical functions devoid of poles, such as $\cosh(\sin x)$, theoretically guarantee super-exponential convergence.
+	\end{itemize}
 
-% FIX: There is an error in the text of this exercise
-\begin{exercise}
-    The Chebyshev points can be used when the interval of interpolation is $[a,b]$ rather than $[-1,1]$ by means of the change of variable {eq}`eq-change-variable-chebyshev-1`. Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes. 
-\end{exercise}
-
-\begin{solution}
-    To interpolate the function $f(x) = \cosh(\sin x)$ over the arbitrary interval $[a, b] = [0, 2\pi]$, we first generate the standard Chebyshev nodes of the first kind on the canonical interval $[-1, 1]$:
-    \[
-      t_i = \cos\left(\frac{2i - 1}{2n}\pi\right), \quad i = 1, \dots, n
-    \]
-    These nodes are subsequently mapped to the target interval $[a, b]$ via the affine transformation:
-    \[
-      x_i = \frac{b - a}{2} t_i + \frac{a + b}{2}
-    \]
-    The polynomial interpolant is evaluated using the barycentric formulation of Lagrange interpolation. When implemented correctly with Chebyshev weights, this provides a numerically stable algorithm capable of evaluating the interpolant in $\mathcal{O}(n)$ operations.
-
-    % TODO: Verificare che effettivamente il risultato teorico sia compatibile
-    % con la discussione che sto facendo qui sotto.
-    \paragraph{Results}
-    The interpolation was performed using $n=40$ nodes over 1000 evaluation points. The maximum absolute error over the interval was found to be:
-    \[
-      \max_{x \in [0, 2\pi]} |f(x) - p_{40}(x)| \approx 5.468 \times 10^{-5}
-    \]
-    The resulting interpolant, alongside the target function evaluated on a logarithmic scale, is visualized in Figure \ref{fig:cheb_interp}.
-
-    \begin{center}
-        \centering
-        \includegraphics[width=0.8\textwidth]{figures/3-4/cosh(sinh(x)) graph.pdf}
-        \captionof{figure}{Barycentric Chebyshev interpolation of $f(x) = \cosh(\sin x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a logarithmic scale.}
-        \label{fig:cheb_interp}
-    \end{center}
-
-    \paragraph{Discussion and Conclusion}
-    The results confirm the absence of the Runge phenomenon, successfully demonstrating that clustering nodes near the domain boundaries mitigates the unbounded oscillations typical of equispaced Lagrange interpolation. However, the observed maximum error of roughly $5.5 \times 10^{-5}$ for $n=40$ is higher than theoretically expected for an entire function. While the visual fit is excellent, achieving near machine epsilon is generally anticipated for non-oscillatory, smooth functions evaluated at this polynomial degree. 
+	\paragraph{Conclusion}
+	The analysis effectively bridges numerical experiments with complex analysis theory, demonstrating the immense significance of interpolation grid conditioning. Uniform spacing predictably incurs Runge's phenomenon and exponential divergence for large degrees. In stark contrast, optimally clustering interpolation nodes around interval boundaries using a Chebyshev distribution ensures mathematical stability and recovers powerful spectral accuracy.
 \end{solution}
 
 \begin{exercise}
-    Let $x_1,\ldots,x_n$ be standard Chebyshev points. These map to the $z$ variable as $z_i=\phi(x_i)$ for all $i$, where $\phi$ is the transformation defined in 
-    \[
-        z = \phi(x) = \frac{2x}{1-x^2}.
-    \]
-    Suppose that $f(z)$ is a given function whose domain is the entire real line. Then the function values $y_i=f(z_i)$ can be associated with the Chebyshev nodes $x_i$, leading to a polynomial interpolant $p(x)$. This in turn implies an interpolating function on the real line, defined as
-    \[
-        q(z)=p\bigl(\phi^{-1}(z)\bigr) = p(x)\,.
-    \]
-    Implement this idea to plot an interpolant of $f(z)=(z^2-2z+2)^{-1}$ using $n=30$. Your plot should show $q(z)$ evaluated at 1000 evenly spaced points in $[-6,6]$, with markers at the nodal values (those lying within the $[-6,6]$ window). [Hint: If you prefer avoid dealing with potential infinities consider using the Chebyshev nodes of the first kind.]
+	The Chebyshev points can be used when the interval of interpolation is
+	$[a,b]$ rather than $[-1,1]$ by means of the change of variable
+    \begin{equation*}
+        z = \psi(x) = a + (b-a)\frac{(x+1)}{2}.
+    \end{equation*}
+    Plot a polynomial interpolant of $f(z) =\cosh(\sin z)$ over $[0,2\pi]$ using $n=40$ Chebyshev nodes.
 \end{exercise}
 
 \begin{solution}
-  To interpolate $f(z)$ on the infinite domain, we utilize a mapping $\phi: (-1, 1) \to \mathbb{R}$. We employ Chebyshev nodes of the first kind to avoid the singularities at $x = \pm 1$. The inverse mapping is defined as:
-  \[
-      x = \phi^{-1}(z) = \frac{-1 + \sqrt{1 + z^2}}{z}, \quad z \neq 0
-  \]
-  The interpolation $p(x)$ is computed using the barycentric form of the Lagrange interpolant, which provides superior numerical stability for high-order polynomials ($n=30$).
+	To interpolate the function $f(x) = \cosh(\sin x)$ over the arbitrary interval $[a, b] = [0, 2\pi]$, we first generate the standard Chebyshev nodes of the first kind on the canonical interval $[-1, 1]$:
+	\[
+		t_i = \cos\left(\frac{2i - 1}{2n}\pi\right), \quad i = 1, \dots, n
+	\]
+	These nodes are subsequently mapped to the target interval $[a, b]$ via the affine transformation:
+	\[
+		x_i = \frac{b - a}{2} t_i + \frac{a + b}{2}
+	\]
+	The polynomial interpolant is evaluated using the barycentric formulation of Lagrange interpolation. When implemented correctly with Chebyshev weights, this provides a numerically stable algorithm capable of evaluating the interpolant in $\mathcal{O}(n)$ operations.
 
-  \paragraph{Results and Visualization}
-  The maximum absolute error recorded over the interval $z \in [-6, 6]$ was $\|f(z) - q(z)\|_{\infty} \approx 4.399 \times 10^{-4}$. As illustrated in Figure \ref{fig:cheb_interp}, the interpolant $q(z)$ tracks the target function with high fidelity.
+	% TODO: Verificare che effettivamente il risultato teorico sia compatibile
+	% con la discussione che sto facendo qui sotto.
+	\paragraph{Results}
+	The interpolation was performed using $n=40$ nodes over 1000 evaluation points. The maximum absolute error over the interval was found to be:
+	\[
+		\max_{x \in [0, 2\pi]} |f(x) - p_{40}(x)| \approx 5.468 \times 10^{-5}
+	\]
+	The resulting interpolant, alongside the target function evaluated on a logarithmic scale, is visualized in Figure \ref{fig:cheb_interp}.
 
-  \begin{center}
-      \centering
-      \includegraphics[width=0.85\textwidth]{figures/3-4/cheb_interpolation_plot.pdf}
-      \captionof{figure}{Interpolation of $f(z) = (z^2-2z+2)^{-1}$ on the real line using $n=30$ transformed Chebyshev nodes. The markers indicate the nodal points $z_i$ that fall within the viewing window.}
-      \label{fig:cheb_interp}
-  \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.8\textwidth]{figures/3-4/cosh(sinh(x)) graph.pdf}
+		\captionof{figure}{Barycentric Chebyshev interpolation of $f(x) = \cosh(\sin x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a logarithmic scale.}
+		\label{fig:cheb_interp}
+	\end{center}
 
-  \paragraph{Discussion}
-  The high accuracy achieved with only 30 nodes is a consequence of the analyticity of $f(z)$ in a neighborhood of the real axis. The transformation $\phi(x)$ effectively concentrates nodes near the "feature" of the function (the peak near $z=1$), while naturally sparsifying nodes in the tails where the function decays towards zero. This prevents the numerical instabilities typically encountered when using large numbers of equidistant points on wide domains.
+	\paragraph{Discussion and Conclusion}
+	The results confirm the absence of the Runge phenomenon, successfully demonstrating that clustering nodes near the domain boundaries mitigates the unbounded oscillations typical of equispaced Lagrange interpolation. However, the observed maximum error of roughly $5.5 \times 10^{-5}$ for $n=40$ is higher than theoretically expected for an entire function. While the visual fit is excellent, achieving near machine epsilon is generally anticipated for non-oscillatory, smooth functions evaluated at this polynomial degree.
 \end{solution}
 
 \begin{exercise}
-    Spectral theorem assumes that the function being approximated has infinitely many derivatives over $[-1,1]$. But now consider the family of functions $f_m(x)=|x|^m$. 
-    \begin{enumerate}
-        \item How many continuous derivatives over $[-1,1]$ does $f_m$ possess?
-        \item Compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=10,20,30,\ldots,100$. At each value of $n$, compute the max-norm error (that is, $\max |p(x)-f_m(x)|$ evaluated for at least 4000 values of $x$). Using a single log-log graph, plot the error as a function of $n$ for all six values $m=1,3,5,7,9,11$.
-        \item Based on the results of parts (a) and (b), form a hypothesis about the asymptotic behavior of the error for fixed $m$ as $n\rightarrow \infty$. 
-    \end{enumerate}
+	Let $x_1,\ldots,x_n$ be standard Chebyshev points. These map to the $z$ variable as $z_i=\phi(x_i)$ for all $i$, where $\phi$ is the transformation defined in
+	\[
+		z = \phi(x) = \frac{2x}{1-x^2}.
+	\]
+	Suppose that $f(z)$ is a given function whose domain is the entire real line. Then the function values $y_i=f(z_i)$ can be associated with the Chebyshev nodes $x_i$, leading to a polynomial interpolant $p(x)$. This in turn implies an interpolating function on the real line, defined as
+	\[
+		q(z)=p\bigl(\phi^{-1}(z)\bigr) = p(x)\,.
+	\]
+	Implement this idea to plot an interpolant of $f(z)=(z^2-2z+2)^{-1}$ using $n=30$. Your plot should show $q(z)$ evaluated at 1000 evenly spaced points in $[-6,6]$, with markers at the nodal values (those lying within the $[-6,6]$ window). [Hint: If you prefer avoid dealing with potential infinities consider using the Chebyshev nodes of the first kind.]
+\end{exercise}
+
+\begin{solution}
+	To interpolate $f(z)$ on the infinite domain, we utilize a mapping $\phi: (-1, 1) \to \mathbb{R}$. We employ Chebyshev nodes of the first kind to avoid the singularities at $x = \pm 1$. The inverse mapping is defined as:
+	\[
+		x = \phi^{-1}(z) = \frac{-1 + \sqrt{1 + z^2}}{z}, \quad z \neq 0
+	\]
+	The interpolation $p(x)$ is computed using the barycentric form of the Lagrange interpolant, which provides superior numerical stability for high-order polynomials ($n=30$).
+
+	\paragraph{Results and Visualization}
+	The maximum absolute error recorded over the interval $z \in [-6, 6]$ was $\|f(z) - q(z)\|_{\infty} \approx 4.399 \times 10^{-4}$. As illustrated in Figure \ref{fig:cheb_interp}, the interpolant $q(z)$ tracks the target function with high fidelity.
+
+	\begin{center}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/3-4/cheb_interpolation_plot.pdf}
+		\captionof{figure}{Interpolation of $f(z) = (z^2-2z+2)^{-1}$ on the real line using $n=30$ transformed Chebyshev nodes. The markers indicate the nodal points $z_i$ that fall within the viewing window.}
+		\label{fig:cheb_interp}
+	\end{center}
+
+	\paragraph{Discussion}
+	The high accuracy achieved with only 30 nodes is a consequence of the analyticity of $f(z)$ in a neighborhood of the real axis. The transformation $\phi(x)$ effectively concentrates nodes near the "feature" of the function (the peak near $z=1$), while naturally sparsifying nodes in the tails where the function decays towards zero. This prevents the numerical instabilities typically encountered when using large numbers of equidistant points on wide domains.
+\end{solution}
+
+\begin{exercise}
+	Spectral theorem assumes that the function being approximated has infinitely many derivatives over $[-1,1]$. But now consider the family of functions $f_m(x)=|x|^m$.
+	\begin{enumerate}
+		\item How many continuous derivatives over $[-1,1]$ does $f_m$ possess?
+		\item Compute the polynomial interpolant using $n$ second-kind Chebyshev nodes in $[-1,1]$ for $n=10,20,30,\ldots,100$. At each value of $n$, compute the max-norm error (that is, $\max |p(x)-f_m(x)|$ evaluated for at least 4000 values of $x$). Using a single log-log graph, plot the error as a function of $n$ for all six values $m=1,3,5,7,9,11$.
+		\item Based on the results of parts (a) and (b), form a hypothesis about the asymptotic behavior of the error for fixed $m$ as $n\rightarrow \infty$.
+	\end{enumerate}
 
 \end{exercise}
 
 \begin{solution}
-  To evaluate the regularity of the function family $f_m(x) = |x|^m$ over the interval $[-1, 1]$ for odd integers $m$, we consider its derivatives. For any given odd $m$, the function is continuously differentiable up to order $m-1$. The $(m-1)$-th derivative is proportional to $|x|$, which is strictly continuous across the domain. However, the $m$-th derivative is proportional to the signum function, $\operatorname{sgn}(x)$, which exhibits a jump discontinuity at the origin $x=0$. Therefore, mathematically, $f_m \in C^{m-1}([-1,1])$; it possesses exactly $m-1$ continuous derivatives. 
+	To evaluate the regularity of the function family $f_m(x) = |x|^m$ over the interval $[-1, 1]$ for odd integers $m$, we consider its derivatives. For any given odd $m$, the function is continuously differentiable up to order $m-1$. The $(m-1)$-th derivative is proportional to $|x|$, which is strictly continuous across the domain. However, the $m$-th derivative is proportional to the signum function, $\operatorname{sgn}(x)$, which exhibits a jump discontinuity at the origin $x=0$. Therefore, mathematically, $f_m \in C^{m-1}([-1,1])$; it possesses exactly $m-1$ continuous derivatives.
 
-  \paragraph{Numerical Methodology}
-  The loss of infinite differentiability implies that we can no longer expect spectral (exponential) convergence. To quantify the convergence numerically, we approximate $f_m(x)$ using barycentric polynomial interpolation over $n$ second-kind Chebyshev nodes, defined algebraically as:
-  \[
-      x_j = -\cos\left(\frac{j-1}{n-1}\pi\right), \quad j=1,\dots,n
-  \]
-  The $L^\infty$-norm (maximum absolute error) is approximated by evaluating the interpolant over a dense, uniform grid of $4000$ points. The relationship between the error and the degree $n$ is evaluated on a log-log scale. For algebraic convergence of the form $\|f_m - p_n\|_\infty \approx C n^{-\nu}$, taking the natural logarithm yields:
-  \[
-      \ln \|f_m - p_n\|_\infty \approx -\nu \ln n + \ln C
-  \]
-  The convergence rate $\nu$ corresponds to the negative slope of the plot.
+	\paragraph{Numerical Methodology}
+	The loss of infinite differentiability implies that we can no longer expect spectral (exponential) convergence. To quantify the convergence numerically, we approximate $f_m(x)$ using barycentric polynomial interpolation over $n$ second-kind Chebyshev nodes, defined algebraically as:
+	\[
+		x_j = -\cos\left(\frac{j-1}{n-1}\pi\right), \quad j=1,\dots,n
+	\]
+	The $L^\infty$-norm (maximum absolute error) is approximated by evaluating the interpolant over a dense, uniform grid of $4000$ points. The relationship between the error and the degree $n$ is evaluated on a log-log scale. For algebraic convergence of the form $\|f_m - p_n\|_\infty \approx C n^{-\nu}$, taking the natural logarithm yields:
+	\[
+		\ln \|f_m - p_n\|_\infty \approx -\nu \ln n + \ln C
+	\]
+	The convergence rate $\nu$ corresponds to the negative slope of the plot.
 
-  \paragraph{Results}
-  The computed slopes from the numerical experiments are compared against theoretical predictions in Table~\ref{tab:convergence_rates}. Figure~\ref{fig:convergence_rates} visualizes the algebraic convergence corresponding to the log-log linear decay.
+	\paragraph{Results}
+	The computed slopes from the numerical experiments are compared against theoretical predictions in Table~\ref{tab:convergence_rates}. Figure~\ref{fig:convergence_rates} visualizes the algebraic convergence corresponding to the log-log linear decay.
 
-  \begin{center}
-      \centering
-      \captionof{table}{Observed versus predicted convergence rates (log-log slopes) for $f_m(x)=|x|^m$.}
-      \label{tab:convergence_rates}
-      \begin{tabular}{rccc}
-          \toprule
-          $m$ & \textbf{Continuous Derivatives ($m-1$)} & \textbf{Observed Slope} & \textbf{Predicted Slope} \\
-          \midrule
-          1   & 0  & $-1.051$  & $-1$ \\
-          3   & 2  & $-3.147$  & $-3$ \\
-          5   & 4  & $-5.324$  & $-5$ \\
-          7   & 6  & $-7.660$  & $-7$ \\
-          9   & 8  & $-10.418$ & $-9$ \\
-          11  & 10 & $-12.724$ & $-11$ \\
-          \bottomrule
-      \end{tabular}
-  \end{center}
+	\begin{center}
+		\centering
+		\captionof{table}{Observed versus predicted convergence rates (log-log slopes) for $f_m(x)=|x|^m$.}
+		\label{tab:convergence_rates}
+		\begin{tabular}{rccc}
+			\toprule
+			$m$ & \textbf{Continuous Derivatives ($m-1$)} & \textbf{Observed Slope} & \textbf{Predicted Slope} \\
+			\midrule
+			1   & 0                                       & $-1.051$                & $-1$                     \\
+			3   & 2                                       & $-3.147$                & $-3$                     \\
+			5   & 4                                       & $-5.324$                & $-5$                     \\
+			7   & 6                                       & $-7.660$                & $-7$                     \\
+			9   & 8                                       & $-10.418$               & $-9$                     \\
+			11  & 10                                      & $-12.724$               & $-11$                    \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
 
-  \begin{center}
-      \centering
-      \includegraphics[width=0.85\linewidth]{figures/3-4/convergence-rates.pdf}
-      \captionof{figure}{Log-log plot demonstrating algebraic convergence of Chebyshev polynomial interpolation for functions with limited regularity. The steepness of the slope corresponds strictly to the parameter $m$.}
-      \label{fig:convergence_rates}
-  \end{center}
+	\begin{center}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figures/3-4/convergence-rates.pdf}
+		\captionof{figure}{Log-log plot demonstrating algebraic convergence of Chebyshev polynomial interpolation for functions with limited regularity. The steepness of the slope corresponds strictly to the parameter $m$.}
+		\label{fig:convergence_rates}
+	\end{center}
 
-  \paragraph{Discussion \& Asymptotic Hypothesis}
-  Spectral accuracy relies fundamentally on a function being analytic or, minimally, infinitely differentiable. In contrast, $f_m(x) = |x|^m$ inherently contains a geometric "kink" at the origin $x=0$, fundamentally restricting its smoothness. 
+	\paragraph{Discussion \& Asymptotic Hypothesis}
+	Spectral accuracy relies fundamentally on a function being analytic or, minimally, infinitely differentiable. In contrast, $f_m(x) = |x|^m$ inherently contains a geometric "kink" at the origin $x=0$, fundamentally restricting its smoothness.
 
-  As predicted by classical approximation theory (e.g., Jackson's theorems), the rate at which polynomial interpolation converges is intimately linked to the function's regularity. Based on our numerical findings—where the observed log-log slope strongly correlates with $-m$—we formulate the following asymptotic hypothesis:
-  \[
-      \lim_{n \to \infty} \|f_m - p_n\|_\infty \sim \mathcal{O}(n^{-m})
-  \]
-  This algebraic convergence dictates that interpolating functions with local singularities (or discontinuous higher-order derivatives) inherently bottlenecks numerical accuracy to a polynomial rate, explicitly circumventing the exponential decay seen in pure spectral methods.
+	As predicted by classical approximation theory (e.g., Jackson's theorems), the rate at which polynomial interpolation converges is intimately linked to the function's regularity. Based on our numerical findings—where the observed log-log slope strongly correlates with $-m$—we formulate the following asymptotic hypothesis:
+	\[
+		\lim_{n \to \infty} \|f_m - p_n\|_\infty \sim \mathcal{O}(n^{-m})
+	\]
+	This algebraic convergence dictates that interpolating functions with local singularities (or discontinuous higher-order derivatives) inherently bottlenecks numerical accuracy to a polynomial rate, explicitly circumventing the exponential decay seen in pure spectral methods.
 \end{solution}
 
 % TODO: Add the comutational costs of all the algorighms used in this section.

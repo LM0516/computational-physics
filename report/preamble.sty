@@ -20,13 +20,16 @@
 
 \RequirePackage{xcolor}          % Colors
 \RequirePackage{graphicx}
+\graphicspath{{figures/}}
 \RequirePackage{booktabs}        % Better tables
 \RequirePackage{enumitem}        % Custom lists
 \RequirePackage{listings}        % Code blocks
 \RequirePackage{caption}         % Caption styling
 \RequirePackage{fancyhdr}        % Headers & Footers
+\RequirePackage{lastpage}
 \RequirePackage{thmtools}
 \RequirePackage[many]{tcolorbox} % Colorful boxes
+\RequirePackage{url}
 \RequirePackage{hyperref}        % Hyperlinks (load last)
 \RequirePackage{siunitx}
 
@@ -61,7 +64,7 @@
 \fancyhf{}
 \fancyhead[L]{\slshape \rightmark}
 \fancyhead[R]{\slshape \leftmark}
-\fancyfoot[C]{\thepage}
+\fancyfoot[C]{\thepage/\pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.4pt}
 
 % -------------------------------------------------------------------

@@ -8,15 +8,44 @@
 \author{Lorenzo Minuz}
 
 \begin{document}
-    \maketitle
-    \tableofcontents
-    \clearpage
+\begin{titlepage}
+	\centering
+	\null\vfill
+	{\LARGE\bfseries Computational Physics Report\par}
+	% \vspace{1cm}
+	% {\LARGE Report\par}
+	\vspace{2cm}
+	{\Large Lorenzo Minuz\par}
+	\vspace{1cm}
+	{\large Matricola: 926867\par}
+	\vspace{2cm}
+	{\large \today\par}
+	\vspace{3cm}
+	\includegraphics[width=4cm]{figures/university_logo}\par
+	\vspace{1cm}
+	{\large Università degli Studi di Milano-Bicocca\par}
+	\vspace{0.5cm}
+	{\large Anno Accademico 2025/2026\par}
+	\vfill\null
+	\clearpage
+\end{titlepage}
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
 
-    \input{chapters/01_ErrorAnalysis.tex}
-    \input{chapters/02_LinearSystems.tex}
-    \input{chapters/03_Interpolations.tex}
-    \input{chapters/04_RootsOfNonlinearEquations.tex}
-    \input{chapters/05_NumericalIntegration.tex}
-    \input{chapters/06_OrdinaryDifferentialEquations.tex}
+\pagenumbering{arabic}
+
+\input{chapters/01_ErrorAnalysis.tex}
+\input{chapters/02_LinearSystems.tex}
+\input{chapters/03_Interpolations.tex}
+\input{chapters/04_RootsOfNonlinearEquations.tex}
+\input{chapters/05_NumericalIntegration.tex}
+\input{chapters/06_OrdinaryDifferentialEquations.tex}
+
+\clearpage
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{references}
+\clearpage
 
 \end{document}
