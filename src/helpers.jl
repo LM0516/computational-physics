@@ -1,4 +1,6 @@
 """
+    make_log_safe(values; kwargs...) -> log_safe_values
+
 Prepares an array `y` for logarithmic plotting.
 Methods:
 - `:epsilon` : Takes max(abs(y), epsilon) to prevent -Inf. (Default)
@@ -14,10 +16,20 @@ function make_log_safe(y::AbstractArray; epsilon=1e-16, method=:epsilon)
     end
 end
 
+"""
+    absolute_error(approx_value, exact_value) -> relative_errror
+
+Compute the absolute error for a given point.
+"""
 function absolute_error(a::T, b::T) where {T<:AbstractFloat}
     return abs(a - b)
 end
 
+"""
+    relative_error(approx_value, exact_value) -> relative_errror
+
+Compute the relative error for a given point.
+"""
 function relative_error(a::T, b::T) where {T<:AbstractFloat}
     return abs(a - b) / abs(b)
 end

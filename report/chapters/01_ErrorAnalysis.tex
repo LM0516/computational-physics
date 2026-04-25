@@ -121,14 +121,21 @@
 
 \begin{exercise}
 	\begin{enumerate}
-		\item In statistics, we define the variance of a sample of values $x_1,\ldots,x_n$ by
+		\item In statistics, we define the variance of a sample of values
+		      $x_1,\ldots,x_n$ by
 		      \begin{equation}\label{eq:semplevar}
 			      \sigma^2 = \frac{1}{n-1} \sum_{i=1}^n (x_{i} - \overline{x})^{2},
 			      \qquad
 			      \overline{x} = \frac{1}{n} \sum_{i=1}^n x_i.
 		      \end{equation}
-		      Write a function that takes as input a vector $x$ of any length and returns $\sigma^2$ as calculated by the formula. You should test your function with $x=[1,1,\ldots,1]$ and some random vectors.
-		\item One drawback of the formula \eqref{eq:semplevar} is that you must first compute a sum for $\overline{x}$ before performing the sum to compute $\sigma^2$. This means that we have to pass twice through the data. This is undesirable for large data sets or when the sample variance is to be computed as the data is generated. Some textbooks quote a single-loop formula:
+		      Write a function that takes as input a vector $x$ of any length and
+		      returns $\sigma^2$ as calculated by the formula. You should test your function
+		      with $x=[1,1,\ldots,1]$ and some random vectors.
+		\item One drawback of the formula \eqref{eq:semplevar} is that you must
+		      first compute a sum for $\overline{x}$ before performing the sum to compute
+		      $\sigma^2$. This means that we have to pass twice through the data. This is
+		      undesirable for large data sets or when the sample variance is to be computed as
+		      the data is generated. Some textbooks quote a single-loop formula:
 		      \[
 			      \begin{split}
 				      \sigma^2 = \frac{1}{n-1} \left( u - \tfrac{1}{n}v^2 \right), \\
@@ -137,7 +144,8 @@
 				      v = \sum_{i=1}^n x_i.
 			      \end{split}
 		      \]
-		      Try both formulas for the datasets below, each of which has a variance exactly equal to 1. Do this in both single and double precision.
+		      Try both formulas for the datasets below, each of which has a variance
+		      exactly equal to 1. Do this in both single and double precision.
 		      \begin{align*}
 			      x & = [ 1 \times 10^{3}, 1 + 1 \times 10^{3}, 2 + 1 \times 10^{3} ] \\
 			      x & = [ 1 \times 10^{6}, 1 + 1 \times 10^{6}, 2 + 1 \times 10^{6} ] \\
@@ -149,10 +157,11 @@
 \end{exercise}
 
 \begin{solution}
-	We implemented the two-pass algorithm in Julia using \texttt{sum()} and \texttt{broadcast} operations to ensure efficient computation. To investigate numerical stability, we compared this against the "single-pass" (or naive) algorithm. Both algorithms were evaluated using \texttt{Float32} and \texttt{Float64} types to observe the impact of machine epsilon ($\varepsilon_m$) on the final results.
-
-	\paragraph{Results}
-	Initial verification with a constant vector $x = [1, 1, 1, 1]$ yielded a variance of $0.0$ for both precisions, as expected. Random vector tests further confirmed the basic functionality of the \texttt{Float32} and \texttt{Float64} implementations. However, testing with shifted datasets revealed significant discrepancies, summarized in the table below:
+	Initial verification with a constant vector $x = [1, 1, 1, 1]$ yielded a
+	variance of $0.0$ for both precisions, as expected. Random vector tests further
+	confirmed the basic functionality of the \texttt{Float32} and \texttt{Float64}
+	implementations. However, testing with shifted datasets revealed significant
+	discrepancies, summarized in the table below:
 
 	\begin{center}
 		\centering
@@ -168,91 +177,167 @@
 	\end{center}
 
 	\paragraph{Stability Analysis}
-	As illustrated in Figure \ref{fig:stability_plot}, the relative error of the single-pass algorithm grows quadratically with the data offset. In \texttt{Float32}, the algorithm loses all precision once the offset exceeds $10^7$.
+	As illustrated in Figure \ref{fig:stability_plot}, the relative error of the
+	single-pass algorithm grows quadratically with the data offset. In
+	\texttt{Float32}, the algorithm loses all precision once the offset exceeds
+	$10^7$.
 
 	\begin{center}
 		\begin{center}
 			\includegraphics[width=0.95\textwidth]{figures/1-4/single_and_double_pass.pdf}
 		\end{center}
-		\captionof{figure}{Log-log plot comparing the relative error of single-pass and double-pass algorithms. Note the breakdown of the single-pass \texttt{Float32} implementation as the offset approaches the reciprocal of machine epsilon.}\label{fig:stability_plot}
+		\captionof{figure}{Log-log plot comparing the relative error of single-pass
+			and double-pass algorithms.}
+		\label{fig:stability_plot}
 	\end{center}
 
-
 	\paragraph{Discussion}
-	The failure of the single-pass algorithm is a classic example of \textbf{catastrophic cancellation}. The term $(u - \frac{1}{n}v^2)$ involves the subtraction of two very large, nearly identical numbers. When the offset (mean) of the data is large relative to the variance, the significant digits representing the variance are pushed beyond the precision limit of the floating-point representation.
+	The failure of the single-pass algorithm is an example of \textbf{catastrophic
+		cancellation}. The term $(u - \frac{1}{n}v^2)$ involves the subtraction of two
+	very large, nearly identical numbers. When the offset of the data is large
+	relative to the variance, the significant digits representing the variance are
+	pushed beyond the precision limit of the floating-point representation.
 
-	In \texttt{Float32}, which provides approximately 7 decimal digits of precision, the single-pass formula fails as early as $x \approx 10^6$. The result $-131072.0$ demonstrates that the cancellation error can lead to physically impossible (negative) variances. At $10^7$ and above, the result becomes $0.0$ because $u$ and $\frac{1}{n}v^2$ become identical in the representation. While \texttt{Float64} (approx. 15-17 digits) is more robust, it also succumbs to cancellation at $10^8$ for the single-pass method.
+	In \texttt{Float32}, which provides approximately 7 decimal digits of
+	precision, the single-pass formula fails as early as $x \approx 10^6$. The
+	result $-131072.0$ demonstrates that the cancellation error can lead to
+	physically impossible variances. At $10^7$ and above, the result becomes $0.0$
+	because $u$ and $\frac{1}{n}v^2$ become identical in the representation. While
+	\texttt{Float64} (approx. 15-17 digits) is more robust, it also succumbs to
+	cancellation at $10^8$ for the single-pass method.
 
 	\paragraph{Conclusion}
-	The two-pass algorithm is significantly more \textbf{numerically stable} because it centers the data ($x_i - \overline{x}$) before squaring, thereby working with smaller magnitudes and preserving significant digits.
+	The two-pass algorithm is significantly more \textbf{numerically stable}
+	because it centers the data ($x_i - \overline{x}$) before squaring, thereby
+	working with smaller magnitudes and preserving significant digits.
 \end{solution}
 
 \begin{exercise}
 	Let \(f(x) = \frac{e^x-1}{x}\).
 	\begin{enumerate}
-		\item Find the condition number $\kappa_f(x)$. What is the maximum of $\kappa_f(x)$ over the interval \(-1\le x \le 1\)?
+		\item Find the condition number $\kappa_f(x)$. What is the maximum of
+		      $\kappa_f(x)$ over the interval \(-1\le x \le 1\)?
 		\item Use the naive algorithm
 		      \[
 			      f(x)= \frac{e^{x}-1}{x}
 		      \]
 		      to compute \(f(x)\) at \(x=10^{-3},10^{-4},10^{-5},\ldots,10^{-16}\).
-		\item Create a second algorithm from the first $n$ terms of the Maclaurin series, i.e.,
+		\item Create a second algorithm from the first $n$ terms of the Maclaurin
+		      series, i.e.,
 		      \[
 			      p(x) = 1 + \frac{1}{2!}x + \frac{1}{3!}x^2 + \cdots + \frac{1}{(n+1)!}x^n.
 		      \]
-		      Evaluate it at the same values of $x$ as in part (2). To do this you have to choose a value for $n$. Check for the stability of the result when varying $n$. Could you have guessed a good value of $n$ from the start?
-		\item Compare the results from the two implementations as a function of $x$. Which algorithm do you think is more accurate, and why?
+		      Evaluate it at the same values of $x$ as in part (2). To do this you
+		      have to choose a value for $n$. Check for the stability of the result when
+		      varying $n$. Could you have guessed a good value of $n$ from the start?
+		\item Compare the results from the two implementations as a function of $x$.
+		      Which algorithm do you think is more accurate, and why?
 	\end{enumerate}
 \end{exercise}
 
 \begin{solution}
-	The evaluation of the function $f(x) = \frac{e^x - 1}{x}$ presents a classic challenge in numerical analysis due to \textit{catastrophic cancellation}. For small values of $x$, the term $e^x$ approaches unity, causing a loss of significant digits when performing the subtraction $e^x - 1$. To address this, we compare a direct "naive" implementation against a truncated Maclaurin series expansion. To establish a numerical "ground truth," we also utilize the built-in Julia function \texttt{expm1(x)}, which is specifically implemented to compute $e^x - 1$ with high precision for small arguments.
-
-	The conditioning of the problem is analyzed via the relative condition number $\kappa_f(x)$:
+	The relative condition number of a differentiable function $f(x)$ is defined
+	as:
 	\[
-		\kappa_f(x) = \left| \frac{x f'(x)}{f(x)} \right| = \left| \frac{x e^x}{e^x - 1} - 1 \right|
+		\kappa_f(x) = \left| \frac{x f'(x)}{f(x)} \right|.
 	\]
+	First, we evaluate the derivative of the target function $f(x) =
+		\frac{e^x-1}{x}$:
+	\[
+		f'(x) = \frac{x e^x - (e^x - 1)}{x^2}.
+	\]
+	Substituting $f(x)$ and $f'(x)$ into the condition number definition yields:
+	\[
+		\kappa_f(x) = \left| \frac{x \left[ \frac{x e^x - e^x + 1}{x^2}
+				\right]}{\frac{e^x - 1}{x}} \right| = \left| \frac{x e^x - e^x + 1}{e^x - 1}
+		\right|.
+	\]
+	To find the maximum of $\kappa_f(x)$ over the interval $[-1, 1]$, we analyze
+	its behavior. Notably, as $x \to 0$, Taylor expansion reveals that $\kappa_f(x)
+		\to 0$, indicating the problem is exceptionally well-conditioned near the
+	origin. The function $\kappa_f(x)$ is monotonically increasing on $(0, 1]$, thus
+	reaching its maximum at the boundary $x = 1$:
+	\[
+		\max_{x \in [-1, 1]} \kappa_f(x) = \kappa_f(1) = \frac{1 \cdot e^1 - e^1 +
+			1}{e^1 - 1} = \frac{1}{e - 1} \approx 0.5819767.
+	\]
+	Because $\kappa_f(x) < 1$ for all $x \in [-1, 1]$, the underlying mathematical
+	problem is stable.
+
+	\paragraph{Numerical methodology}
+	To determine the optimal truncation order $n$, we note that the truncation
+	error bounds the next term in the series. To preserve full precision in
+	\texttt{Float64}, we require the $(n+1)$-th term to be smaller than the machine
+	epsilon for the largest argument in the domain ($x=1$):
+	\[
+		\frac{1^{n+1}}{(n+2)!} < \epsilon_{mach}.
+	\]
+	By programmatic iteration, we find that the condition is satisfied for $n \ge
+		16$. Thus, we selected $n=16$ as our optimal polynomial degree.
 
 	\paragraph{Results}
-	The condition number $\kappa_f(x)$ remains small throughout the domain $[-1, 1]$.
-	\begin{itemize}
-		\item \textbf{Maximum Condition Number:} $\kappa_f(1) = \frac{1}{e-1} \approx 0.58198$.
-		\item \textbf{Behavior at the Origin:} $\lim_{x \to 0} \kappa_f(x) = 0$, confirming the problem is well-conditioned despite the removable singularity.
-	\end{itemize}
-
-	The naive algorithm was compared against the Maclaurin series for $x \in [10^{-16}, 10^{-3}]$. While the naive approach fails as $x \to \epsilon_{mach}$, the Maclaurin series remains stable.
+	The numerical evaluation of $f(x)$ for logarithmically spaced values $x =
+			10^{-k}$ where $k \in \{3, 4, \dots, 16\}$ reveals stark differences between the
+	two implementations. Selected results are summarized in
+	Table~\ref{tab:comparison} and visually represented in
+	Figure~\ref{fig:series_comparison}.
 
 	\begin{center}
 		\centering
-		\captionof{table}{Comparison of Naive vs. Maclaurin ($n=5$) algorithms for small $x$.}
-		\begin{tabular}{cccc}
+		\captionof{table}{Comparison of the Naive and Maclaurin algorithms for evaluating $f(x)$ as $x \to 0$.}
+		\label{tab:comparison}
+		\begin{tabular}{r l l}
 			\hline
-			$x$        & \textbf{Naive} $f(x)$ & \textbf{Maclaurin} $p(x)$ & \textbf{Absolute Difference} \\
+			$x$        & \textbf{Naive Algorithm} & \textbf{Maclaurin Series ($n=16$)} \\
 			\hline
-			$10^{-3}$  & 1.00050016670838      & 1.00050016670834          & $4.28 \times 10^{-14}$       \\
-			$10^{-8}$  & 0.99999999392253      & 1.00000000500000          & $1.11 \times 10^{-08}$       \\
-			$10^{-12}$ & 1.00008890058234      & 1.00000000000050          & $8.89 \times 10^{-05}$       \\
-			$10^{-15}$ & 1.11022302462516      & 1.00000000000000          & $1.10 \times 10^{-01}$       \\
-			$10^{-16}$ & 0.00000000000000      & 1.00000000000000          & $1.00 \times 10^{+00}$       \\
+			$10^{-3}$  & 1.0005001667083846       & 1.0005001667083417                 \\
+			$10^{-7}$  & 1.0000000494336803       & 1.0000000500000017                 \\
+			$10^{-11}$ & 1.000000082740371        & 1.000000000005                     \\
+			$10^{-15}$ & 1.1102230246251565       & 1.0000000000000004                 \\
+			$10^{-16}$ & 0.0                      & 1.0                                \\
 			\hline
 		\end{tabular}
 	\end{center}
 
-	% TODO: Increase the size of the image.
 	\begin{center}
 		\centering
-		\includegraphics[width=0.9\textwidth]{figures/1-4/series_comparison.pdf}
-		\captionof{figure}{Comparison of algorithms. The bottom panel demonstrates the catastrophic cancellation in the naive algorithm as $x \to 0$, while the Maclaurin approach tracks the stable \texttt{expm1(x)} baseline.}
+		% Adjust the width or path if necessary depending on your document structure
+		\includegraphics[width=0.95\textwidth]{figures/1-4/series_comparison.pdf}
+		\captionof{figure}{Left: Analytical and numerical condition number
+			$\kappa_f(x)$ over $[-1, 1]$. Right: Comparison of the computed $f(x)$ using the
+			naive algorithm, the Maclaurin series ($n=16$), and the exact \texttt{expm1}
+			implementation. The naive algorithm exhibits severe instability as $x \to 0$.}
 		\label{fig:series_comparison}
 	\end{center}
 
-	\paragraph{Discussion}
-	The instability of the naive algorithm is evident in Figure \ref{fig:series_comparison} for $x < 10^{-8}$. At $x=10^{-16}$, $e^x$ is rounded to $1.0$ in \texttt{Float64} precision, resulting in a computed value of $0$, a total loss of accuracy.
+	Varying $n \in \{3, 5, 7, \dots\}$ demonstrates that for strictly small $x$
+	(e.g., $x=10^{-5}$), even $n=3$ converges to the correct representation within
+	machine precision limits. However, $n=16$ guarantees stability across the entire
+	$[-1, 1]$ interval.
 
-	In contrast, the Maclaurin series provides a robust alternative. To verify its accuracy, we compared the results against the Julia intrinsic \texttt{expm1(x)}. For $n=15$, the Maclaurin series and \texttt{expm1(x)} results are identical within machine precision, with an absolute difference of $0.0$ for nearly all tested values of $x$. This confirms that the Taylor expansion effectively reproduces the behavior of professional-grade numerical libraries in the vicinity of $x=0$.
+	\paragraph{Discussion}
+	As evidenced by Figure~\ref{fig:series_comparison}, the Maclaurin series
+	algorithm proves to be vastly superior in terms of accuracy for small values of
+	$x$. The discrepancy originates from catastrophic cancellation.
+
+	In the naive algorithm, as $x$ approaches zero, $e^x$ approaches $1$. Because
+	\texttt{Float64} stores values with approximately 16 decimal digits of
+	precision, evaluating $e^x$ for $x \le 10^{-16}$ results in exactly $1.0$ due to
+	rounding. Consequently, the numerator evaluates to $1.0 - 1.0 = 0.0$, driving
+	the final result arbitrarily to zero. Even before reaching exactly zero,
+	starting around $x=10^{-8}$, subtracting two nearly identical floating-point
+	numbers eradicates significant digits, causing the fluctuations observed in the
+	plot.
+
+	Conversely, the Maclaurin series inherently avoids this subtraction. By
+	rewriting the function as an addition of positive terms $1 + x/2 + x^2/6 +
+		\dots$, no numerical cancellation occurs. The differences computed against
+	Julia's numerically stable built-in function (\texttt{expm1(x)/x}) demonstrate
+	that the Maclaurin series bounds the absolute error strictly to $\approx 2.22
+		\times 10^{-16}$, proving its robustness.
 
 	\paragraph{Conclusion}
-	The Maclaurin series is significantly more accurate for small $|x|$ than the naive formula. The analysis demonstrates that even for well-conditioned problems ($\kappa_f \le 1$), algorithm choice is critical. For practical implementation, using optimized intrinsics like \texttt{expm1(x)} or switched logic (Taylor series for small $x$, naive for large $x$) is essential for numerical stability.
+	For evaluations proximal to $x=0$, the naive formula suffers from catastrophic
+	cancellation. Expanding the function via a Maclaurin series circumvents this
+	hazard entirely.
 \end{solution}
-
-% TODO: Add the comutational costs of all the algorighms used in this section.

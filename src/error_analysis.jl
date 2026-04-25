@@ -74,24 +74,37 @@ function mclaurin_series(x::Float64, n::Int)
     return sum
 end
 
-# === Double-pass variance (two loops) ===
+"""
+    var_double_pass(values) -> variance
+
+Compute the double-pass variance (two loops).
+"""
 function var_double_pass(x::AbstractVector{T}) where {T<:AbstractFloat}
     n = length(x)
     mean_x = sum(x) / T(n)
+
     return sum((xi - mean_x)^2 for xi in x) / (n - 1)
 end
 
-# === Single-pass variance ===
-function var_single_pass(x::AbstractVector{T}) where {T<:AbstractFloat}
+"""
+    var_double_pass(values) -> variance
 
+Compute the single-pass variance (one loop).
+"""
+function var_single_pass(x::AbstractVector{T}) where {T<:AbstractFloat}
     n = length(x)
     u = sum(xi^2 for xi in x)
     v = sum(x)
-
     nT = T(n)
+
     return (u - v^2 / nT) / (nT - one(T))
 end
 
+"""
+    κ_f(x, f(x)) -> condition_number
+
+Compute the condition number of a function.
+"""
 function kappa_f(x, func::Function)
     return abs(x * ForwardDiff.derivative(func, x) / func(x))
 end

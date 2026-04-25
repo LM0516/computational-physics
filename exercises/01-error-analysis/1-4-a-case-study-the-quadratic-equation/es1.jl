@@ -9,7 +9,10 @@ function generate_stability(offsets, datasets)
 
     clamp_err(e) = max(e, floor_val)
 
-    # TODO: Explain this code.
+    # Compute relative error for each dataset and precision/algorithm combination.
+    # clamp_err sets a floor on errors below Float64 machine epsilon so they
+    # appear on the log-scale plot (values below floor_val → -inf on log10).
+    # Each dataset [c, c+1, c+2] has true variance = 1 regardless of offset c.
     err_sp32 = [clamp_err(abs(var_single_pass(Float32.(d)) - true_var) / true_var) for d in datasets]
     err_dp32 = [clamp_err(abs(var_double_pass(Float32.(d)) - true_var) / true_var) for d in datasets]
     err_sp64 = [clamp_err(abs(var_single_pass(Float64.(d)) - true_var) / true_var) for d in datasets]
@@ -22,6 +25,7 @@ function generate_stability(offsets, datasets)
         xlabel="Data Offset (C)",
         ylabel="Relative Error")
 
+    # Reference lines showing machine epsilon for each precision.
     hline!([1.19e-7], color=:black, ls=:dash, label="F32 Machine Epsilon")
     hline!([2.22e-16], color=:grey, ls=:dot, label="F64 Machine Epsilon")
 
@@ -64,7 +68,8 @@ function main()
     println("True variance = 1 for all datasets")
     println("="^60)
 
-    # Sweep offsets more densely: 10^1 to 10^10
+    # Each dataset [c, c+1, c+2] has variance = 1 by construction,
+    # regardless of the offset c.
     offsets = [10.0^k for k in 1:0.5:10]
     datasets = [[c, c + 1.0, c + 2.0] for c in offsets]
 
