@@ -46,5 +46,6 @@ export t_independent_hamiltonian, schrodinger_solver1D, plot_snapshots, compute_
 # include("fft.jl")
 include("helpers.jl")
 export make_log_safe
+export absolute_error, relative_error
 
 end # module ComputationalPhysics

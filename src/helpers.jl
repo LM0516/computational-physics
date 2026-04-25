@@ -13,3 +13,11 @@ function make_log_safe(y::AbstractArray; epsilon=1e-16, method=:epsilon)
         throw(ArgumentError("Unknown method. Use :epsilon or :missing"))
     end
 end
+
+function absolute_error(a::T, b::T) where {T<:AbstractFloat}
+    return abs(a - b)
+end
+
+function relative_error(a::T, b::T) where {T<:AbstractFloat}
+    return abs(a - b) / abs(b)
+end
