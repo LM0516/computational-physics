@@ -1,4 +1,5 @@
 \section{Linear Systems}
+
 \subsection{Triangular Systems}
 
 \begin{exercise}
@@ -24,18 +25,27 @@
             -4 \\ 1 \\ -3 \\ 5
             \end{bmatrix}
         \]
-    You can verify the solution by solving the system by hand and/or computing $\mathbf{L}\mathbf{x}$ and subtracting $\mathbf{b}$.
+    You can verify the solution by solving the system by hand and/or computing
+    $\mathbf{L}\mathbf{x}$ and subtracting $\mathbf{b}$.
 \end{exercise}
 
 \begin{solution}
-    The systems were solved using a standard forward substitution algorithm. For a lower triangular matrix $\mathbf{L} \in \mathbb{R}^{n \times n}$, the components of the solution vector $\mathbf{x}$ are computed sequentially from $i = 1$ to $n$ according to:
+
+    The systems were solved using a standard forward substitution algorithm. For
+    a lower triangular matrix $\mathbf{L} \in \mathbb{R}^{n \times n}$, the
+    components of the solution vector $\mathbf{x}$ are computed sequentially from $i
+    = 1$ to $n$ according to:
     \[
       x_i = \frac{1}{l_{ii}} \left( b_i - \sum_{j=1}^{i-1} l_{ij} x_j \right) 
     \]
-    The implementation utilized \texttt{Julia}'s \texttt{Float64} type. To handle multiple right-hand sides (as seen in the random matrix test), the function was extended to accept $\mathbf{B} \in \mathbb{R}^{n \times m}$, effectively solving $\mathbf{L}\mathbf{X} = \mathbf{B}$ via broadcasted substitution.
+    To handle multiple right-hand sides (as seen in the random matrix test), the
+    function was extended to accept $\mathbf{B} \in \mathbb{R}^{n \times m}$,
+    effectively solving $\mathbf{L}\mathbf{X} = \mathbf{B}$ via broadcasted
+    substitution.
 
     \paragraph{Results}
-    The numerical outputs for the test systems are presented in Table~\ref{tab:forward_results}.
+    The numerical outputs for the test systems are presented in
+    Table~\ref{tab:forward_results}.
     \begin{center}
         \centering
         \captionof{table}{Forward Substitution Results}
@@ -51,7 +61,9 @@
     \end{center}
 
     \paragraph{Discussion}
-    The algorithm demonstrated high numerical stability. For both systems, the residual $\mathbf{L}\mathbf{x} - \mathbf{b}$ was nullified to a precision of $10^{-16}$, well within the requested $10^{-10}$ threshold. This confirms that for well-conditioned triangular matrices, forward substitution remains a robust $O(n^2)$ solver.
+    The algorithm demonstrated high numerical stability. For both systems, the
+    residual $\mathbf{L}\mathbf{x} - \mathbf{b}$ was nullified to a precision of
+    $10^{-16}$, well within the requested $10^{-10}$ threshold.
 
 \end{solution}
 
@@ -75,17 +87,21 @@
         4 \\ 1 \\ 1 \\ 5
     \end{bmatrix}
     \]
-    You can verify the solution by solving the system by hand and/or computing $\mathbf{U}\mathbf{x}$ and subtracting $\mathbf{b}$.
+    You can verify the solution by solving the system by hand and/or computing
+    $\mathbf{U}\mathbf{x}$ and subtracting $\mathbf{b}$.
 \end{exercise}
 
 \begin{solution}
-    Backward substitution was applied for the upper triangular matrices $\mathbf{U}$. The solution vector is computed in reverse order, from $i = n$ down to $1$:
+    Backward substitution was applied for the upper triangular matrices
+    $\mathbf{U}$. The solution vector is computed in reverse order, from $i = n$
+    down to $1$:
     \[ 
       x_i = \frac{1}{u_{ii}} \left( b_i - \sum_{j=i+1}^{n} u_{ij} x_j \right) 
     \]
     
     \paragraph{Results}
-    The numerical outputs for the test systems are presented in Table~\ref{tab:backward_results}.
+    The numerical outputs for the test systems are presented in
+    Table~\ref{tab:backward_results}.
     \begin{center}
         \centering
         \captionof{table}{Backward Substitution Results}
@@ -101,15 +117,17 @@
     \end{center}
 
     \paragraph{Discussion}
-    In system $\mathcal{S}_4$, we observe the emergence of a non-terminating decimal in the first component ($x_1 = -10/3$). This introduces a minor representation error in floating-point arithmetic. However, due to the high precision of \texttt{Float64}, the verification function \texttt{check()} confirmed that the residual remained below $10^{-10}$. This highlights the efficacy of the backward substitution method even when dealing with rational numbers that cannot be represented exactly in binary.
+    In system $\mathcal{S}_4$, we observe the emergence of a non-terminating
+    decimal in the first component ($x_1 = -10/3$). This introduces a minor
+    representation error in floating-point arithmetic. However the verification
+    function confirmed that the residual remained below $10^{-10}$.
+
 \end{solution}
 
 \subsection{LU Decomposition}
-% \begin{exercise}
-%     Write a function that performs the LU-decomposition of a $n\times n$ matrix.
-% \end{exercise}
 
 \begin{exercise}\label{ex:2.6}
+
     For each matrix, compute their LU-factorization and verify the correctness.
     \[
         \begin{bmatrix}
