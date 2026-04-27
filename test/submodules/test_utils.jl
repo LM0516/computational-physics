@@ -17,7 +17,7 @@ behavior without hard-coding a single mesh refinement ratio.
 function empirical_order(ns, errors)
     xs = log.(Float64.(ns))
     ys = log.(Float64.(errors))
-    slope = sum((xs .- mean(xs)) .* (ys .- mean(ys))) / sum((xs .- mean(xs)).^2)
+    slope = sum((xs .- mean(xs)) .* (ys .- mean(ys))) / sum((xs .- mean(xs)) .^ 2)
     return -slope
 end
 
