@@ -55,7 +55,6 @@ function main()
     p_errors = plot(
         xlabel="n",
         ylabel=L"||f_m - p||_{\infty}",
-        title="Convergence for |x|^m with Chebyshev Nodes (Algebraic Convergence)",
         legend=:bottomleft,
         size=(1000, 700),
         xaxis=:log,      # Log scale on x-axis

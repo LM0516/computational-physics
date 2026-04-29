@@ -41,8 +41,8 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
         label="", markersize=4, color=:black, alpha=0.5)
 
     # Maximum error
-    norm = @. abs(f.(x_eval_range) - p_interp)
-    max_error = maximum(norm)
+    err = @. abs(f.(x_eval_range) - p_interp)
+    max_error = maximum(err)
 
     return p1, max_error
 end
