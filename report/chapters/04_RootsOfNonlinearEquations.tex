@@ -1,6 +1,7 @@
 \section{Roots of Nonlinear Equations}
 
-\subsection*{Some observations about the convergence rate}\label{sec:convergence-rate}
+\subsection{Some observations about the convergence rate}\label{sec:convergence-rate}
+
 \paragraph{Convergence rate:}
 By definition, an iterative method has an order of convergence $q$ and an
 asymptotic error constant $C$ if the sequence of errors $\epsilon_k = x_k - r$
@@ -75,7 +76,7 @@ approximation:
 \end{equation*}
 To compute this practically, we run into the same problem: we don't know $r$.
 However, iterative algorithms are typically run until the difference between
-steps drops below machine precision (e.g., $10^{-15}$).
+steps drops below machine precision.
 
 Therefore, the final approximation the algorithm produces, $x_{final}$, is
 virtually indistinguishable from the exact root $r$ for our precision levels.
@@ -83,10 +84,6 @@ We make the substitution $r \approx x_{final}$:
 \begin{equation*}
 	C \approx \frac{|x_{k+1} - x_{final}|}{|x_k - x_{final}|^q}
 \end{equation*}
-
-\paragraph{Conclusions:}
-This calculated formulas are implemented in the algorithms and used to determine
-the convergence rate and the asymptotic error constant in the exercises.
 
 \subsection{Bisection Method}
 

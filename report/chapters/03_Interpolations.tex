@@ -199,11 +199,11 @@
 \begin{exercise}
 	\begin{enumerate}
 		\item For each case below, compute the polynomial interpolant using $n$
-		second-kind Chebyshev nodes in $[-1,1]$ for $n=4,8,12,\ldots,60$. At each value
-		of $n$, compute the $\infty$-norm error (that is,
-		$||f-p||_\infty=\max_{x\in[-1,1]} |p(x)-f(x)|$ evaluated for at least 4000
-		values of $x$). Using a log-linear scale, plot the error as a function of $n$,
-		then determine a good approximation to the constant $K$ in {eq}`eq-spectral`.
+		      second-kind Chebyshev nodes in $[-1,1]$ for $n=4,8,12,\ldots,60$. At each value
+		      of $n$, compute the $\infty$-norm error (that is,
+		      $||f-p||_\infty=\max_{x\in[-1,1]} |p(x)-f(x)|$ evaluated for at least 4000
+		      values of $x$). Using a log-linear scale, plot the error as a function of $n$,
+		      then determine a good approximation to the constant $K$ in {eq}`eq-spectral`.
 		      \begin{enumerate}
 			      \item $f(x) = 1/(25x^2+1)$
 			      \item $f(x) = \tanh(5 x+2)$
@@ -211,7 +211,7 @@
 			      \item $f(x) = \sin(\cosh x)$
 		      \end{enumerate}
 		\item Make an analogous plot using $n$ equidistant points for the
-		interpolation.
+		      interpolation.
 	\end{enumerate}
 \end{exercise}
 
@@ -246,7 +246,7 @@
 	\begin{center}
 		\centering
 		\captionof{table}{Estimated spectral convergence constant $K$ and
-logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
+			logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 		\label{tab:interp_errorss}
 		\begin{tabular}{lcccc}
 			\toprule
@@ -324,17 +324,17 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 	\paragraph{Discussion}
 	\begin{itemize}
 		\item \textbf{Equidistant Nodes \& Runge's Phenomenon:} The uniformly spaced
-		nodes lead to highly erratic polynomial oscillations near the boundaries $x=\pm
-		1$. This catastrophic cancellation phenomenon is strictly captured by the data:
-		$K < 1$ and $m > 0$ for all models, highlighting that the $L^\infty$-norm
-		diverges exponentially as the polynomial degree $n$ increases.
+		      nodes lead to highly erratic polynomial oscillations near the boundaries $x=\pm
+			      1$. This catastrophic cancellation phenomenon is strictly captured by the data:
+		      $K < 1$ and $m > 0$ for all models, highlighting that the $L^\infty$-norm
+		      diverges exponentially as the polynomial degree $n$ increases.
 
 		\item \textbf{Chebyshev Nodes \& Spectral Convergence:} Deploying Chebyshev
-		points effectively mitigates the boundary oscillations. The values of $K > 1$
-		reflect the expected theoretical bounds for exponential error decay. The Runge
-		function $1/(25x^2+1)$ holds complex poles near the real axis. By contrast,
-		entire mathematical functions devoid of poles, such as $\cosh(\sin x)$,
-		theoretically guarantee super-exponential convergence.
+		      points effectively mitigates the boundary oscillations. The values of $K > 1$
+		      reflect the expected theoretical bounds for exponential error decay. The Runge
+		      function $1/(25x^2+1)$ holds complex poles near the real axis. By contrast,
+		      entire mathematical functions devoid of poles, such as $\cosh(\sin x)$,
+		      theoretically guarantee super-exponential convergence.
 	\end{itemize}
 
 	\paragraph{Conclusion}
@@ -389,8 +389,8 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 		\centering
 		\includegraphics[width=0.8\textwidth]{figures/3-4/cosh(sinh(x)) graph.pdf}
 		\captionof{figure}{Barycentric Chebyshev interpolation of $f(x) = \cosh(\sin
-		x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a
-		logarithmic scale.}
+				x)$ over $[0, 2\pi]$ using $n=40$ nodes. The function $y$ is plotted on a
+			logarithmic scale.}
 		\label{fig:cheb_interp2}
 	\end{center}
 
@@ -430,14 +430,14 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 	$n=30$. Your plot should show $q(z)$ evaluated at 1000 evenly spaced points in
 	$[-6,6]$, with markers at the nodal values (those lying within the $[-6,6]$
 	window). [Hint: If you prefer avoid dealing with potential infinities consider
-	using the Chebyshev nodes of the first kind.]
+			using the Chebyshev nodes of the first kind.]
 
 \end{exercise}
 
 \begin{solution}
 
 	To interpolate $f(z)$ on the infinite domain, we utilize a mapping $\phi: (-1,
-	1) \to \mathbb{R}$. We employ Chebyshev nodes of the first kind to avoid the
+		1) \to \mathbb{R}$. We employ Chebyshev nodes of the first kind to avoid the
 	singularities at $x = \pm 1$. The inverse mapping is defined as:
 	\[
 		x = \phi^{-1}(z) = \frac{-1 + \sqrt{1 + z^2}}{z}, \quad z \neq 0
@@ -456,8 +456,8 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/3-4/cheb_interpolation_plot.pdf}
 		\captionof{figure}{Interpolation of $f(z) = (z^2-2z+2)^{-1}$ on the real
-		line using $n=30$ transformed Chebyshev nodes. The markers indicate the nodal
-		points $z_i$ that fall within the viewing window.}
+			line using $n=30$ transformed Chebyshev nodes. The markers indicate the nodal
+			points $z_i$ that fall within the viewing window.}
 		\label{fig:cheb_interp}
 	\end{center}
 
@@ -480,12 +480,12 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 	\begin{enumerate}
 		\item How many continuous derivatives over $[-1,1]$ does $f_m$ possess?
 		\item Compute the polynomial interpolant using $n$ second-kind Chebyshev
-		nodes in $[-1,1]$ for $n=10,20,30,\ldots,100$. At each value of $n$, compute the
-		max-norm error (that is, $\max |p(x)-f_m(x)|$ evaluated for at least 4000 values
-		of $x$). Using a single log-log graph, plot the error as a function of $n$ for
-		all six values $m=1,3,5,7,9,11$.
+		      nodes in $[-1,1]$ for $n=10,20,30,\ldots,100$. At each value of $n$, compute the
+		      max-norm error (that is, $\max |p(x)-f_m(x)|$ evaluated for at least 4000 values
+		      of $x$). Using a single log-log graph, plot the error as a function of $n$ for
+		      all six values $m=1,3,5,7,9,11$.
 		\item Based on the results of parts (a) and (b), form a hypothesis about the
-		asymptotic behavior of the error for fixed $m$ as $n\rightarrow \infty$.
+		      asymptotic behavior of the error for fixed $m$ as $n\rightarrow \infty$.
 	\end{enumerate}
 
 \end{exercise}
@@ -528,7 +528,7 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 	\begin{center}
 		\centering
 		\captionof{table}{Observed versus predicted convergence rates (log-log
-		slopes) for $f_m(x)=|x|^m$.}
+			slopes) for $f_m(x)=|x|^m$.}
 		\label{tab:convergence_rates}
 		\begin{tabular}{rccc}
 			\toprule
@@ -548,8 +548,8 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 		\centering
 		\includegraphics[width=0.85\linewidth]{figures/3-4/convergence-rates.pdf}
 		\captionof{figure}{Log-log plot demonstrating algebraic convergence of
-		Chebyshev polynomial interpolation for functions with limited regularity. The
-		steepness of the slope corresponds strictly to the parameter $m$.}
+			Chebyshev polynomial interpolation for functions with limited regularity. The
+			steepness of the slope corresponds strictly to the parameter $m$.}
 		\label{fig:convergence_rates}
 	\end{center}
 
@@ -572,4 +572,66 @@ logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 
 \end{solution}
 
-% TODO: Add the comutational costs of all the algorighms used in this section.
+\subsection{Some observations about the algorithms used in this section}
+
+The computational efficiency and numerical stability of interpolation methods
+vary significantly depending on the chosen basis and node distribution.
+
+\paragraph{Direct Linear Systems}
+Solving the polynomial interpolation problem by setting up a general $n \times
+	n$ linear system, such as using the power basis with a \textbf{Vandermonde
+	matrix} $\mathbf{V}_n \mathbf{c} = \mathbf{f}$, is often impractical for large
+$n$. The cost of solving such a system using general-purpose decompositions like
+\textbf{LU} or \textbf{QR} scales as $\propto n^3$.
+
+It is crucial to distinguish between \textbf{interpolation} ($m=n$) and
+\textbf{least squares} ($m > n$). While QR decomposition is slightly more
+computationally demanding than LU, it is highly recommended for least squares
+problems because it is far more stable than solving normal equations. For an $m
+	\times n$ matrix, the thin QR decomposition requires approximately $2mn^2$
+floating-point operations (flops).
+
+\paragraph{Lagrange and Barycentric Forms}
+Standard Lagrange interpolation is frequently cited in textbooks for its
+theoretical elegance but criticized for its computational inefficiency. In its
+basic form, evaluating the interpolating polynomial $p(x)$ at a single point
+requires recomputing $n$ Lagrange basis functions $\ell_j(x)$, each involving a
+product of $n-1$ terms. This leads to an evaluation cost of $\propto n^2$.
+
+The \textbf{barycentric form} of Lagrange interpolation overcomes these
+limitations by separating the calculation into a pre-computation step and an
+evaluation step:
+\begin{equation*}
+	p(x) = \Phi_{n}(x) \sum_{j=1}^{n} \frac{\lambda_{j}}{x - x_{j}}f(x_{j})
+\end{equation*}
+The support coefficients (or weights) $\lambda_j$ depend only on the node
+positions. Computing all $n$ weights requires $O(n^2)$ operations, but once they
+are known, evaluating $p(x)$ for any $x$ costs only $\propto n$ flops.
+Furthermore, the barycentric form is exceptionally efficient for
+\textbf{updating} the interpolant; adding a new point $x_{k}$ costs only
+$\propto (k-1)$ flops to update the weights.
+
+\paragraph{The Chebyshev Advantage}
+For certain node distributions, the computational burden is even lower. For
+\textbf{equidistant} or \textbf{Chebyshev points}, analytic formulas allow the
+weights $\lambda_j$ to be calculated in only $O(n)$ operations. In these cases,
+the barycentric formula is considered superior to almost all other interpolation
+schemes.
+
+Chebyshev points, in particular, provide several critical advantages:
+\begin{itemize}
+	\item \textbf{Improved Conditioning:} Chebyshev nodes significantly improve
+	      the conditioning of the interpolation problem compared to equidistant nodes,
+	      making the result far less sensitive to rounding errors.
+	\item \textbf{Numerical Stability:} When paired with the barycentric form,
+	      Chebyshev nodes of the second kind demonstrate excellent stability. Potential
+	      numerical issues near nodes are mitigated as errors in the numerator and
+	      denominator essentially cancel out.
+	\item \textbf{Avoidance of Precision Loss:} Unlike equidistant nodes, which
+	      lead to Runge's phenomenon and a massive loss of accurate digits as $n$
+	      increases, Chebyshev points distribute nodes in a way that minimizes error
+	      amplification and maintains structural integrity even for high degrees.
+\end{itemize}
+
+
+

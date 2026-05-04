@@ -54,11 +54,11 @@ using ComputationalPhysics
     @test length(hist_newton) < length(hist_secant) < theoretical_bisection_steps
 
     print_method_table("Nonlinear Metrics", [
-        ("Newton", newton_order, length(hist_newton)),
-        ("Secant", secant_order, length(hist_secant)),
-        ("IQI", missing, length(hist_iqi)),
-        ("Bisection", missing, theoretical_bisection_steps),
-    ]; headers=("Function", "Convergence rate", "Computational cost"))
+        ("Newton", newton_order, length(hist_newton), newton_order^(1 / 2)),
+        ("Secant", secant_order, length(hist_secant), secant_order^(1 / 1)),
+        ("IQI", 1.839, length(hist_iqi), 1.839^(1 / 1)),
+        ("Bisection", 1.0, theoretical_bisection_steps, 1.0^(1 / 1)),
+    ]; headers=("Function", "Convergence rate", "Computational cost", "Efficiency index"))
 
     print_metric_table("Nonlinear Details", [
         ("Newton C tail", sample_tail(c_newton)),

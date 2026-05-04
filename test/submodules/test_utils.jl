@@ -102,27 +102,30 @@ function print_metric_table(title, rows; headers=("Metric", "Value"))
 end
 
 """
-    print_method_table(title, rows; headers=("Function", "Convergence", "Cost"))
+    print_method_table(title, rows; headers)
 
 Print a compact ASCII table where each row summarizes one numerical method with
-separate columns for convergence information and computational cost.
+arbitrary columns.
 
-Each row must be a three-element tuple `(method, convergence, cost)`.
+Each row must be a tuple with the same number of elements as `headers`.
 """
 function print_method_table(title, rows; headers=("Function", "Convergence", "Cost"))
-    formatted_rows = [(string(name), format_metric(conv), format_metric(cost)) for (name, conv, cost) in rows]
-    width1 = maximum(length.([headers[1]; getindex.(formatted_rows, 1)]))
-    width2 = maximum(length.([headers[2]; getindex.(formatted_rows, 2)]))
-    width3 = maximum(length.([headers[3]; getindex.(formatted_rows, 3)]))
-    sep = "+" * repeat("-", width1 + 2) * "+" * repeat("-", width2 + 2) * "+" * repeat("-", width3 + 2) * "+"
+    num_cols = length(headers)
+    formatted_rows = [tuple([format_metric(row[i]) for i in 1:num_cols]...) for row in rows]
+    
+    widths = [maximum(length.([string(headers[i]); [string(row[i]) for row in formatted_rows]])) for i in 1:num_cols]
+    
+    sep = "+" * join([repeat("-", w + 2) for w in widths], "+") * "+"
 
     println()
     println(title)
     println(sep)
-    println("| ", rpad(headers[1], width1), " | ", rpad(headers[2], width2), " | ", rpad(headers[3], width3), " |")
+    header_line = "| " * join([rpad(string(headers[i]), widths[i]) for i in 1:num_cols], " | ") * " |"
+    println(header_line)
     println(sep)
-    for (name, conv, cost) in formatted_rows
-        println("| ", rpad(name, width1), " | ", rpad(conv, width2), " | ", rpad(cost, width3), " |")
+    for row in formatted_rows
+        row_line = "| " * join([rpad(string(row[i]), widths[i]) for i in 1:num_cols], " | ") * " |"
+        println(row_line)
     end
     println(sep)
 end
