@@ -28,7 +28,7 @@ function solutions(a::Real, b::Real, f::Function, nodes, label, exact; rule::Str
     return s, p
 end
 
-function errors(s::Vector{Float64}, exact::Float64, nodes)
+function errors(s::Vector{Float64}, exact::Float64, nodes, label)
     println("-"^40)
 
     relative_errors = @. abs(s - exact) / abs(exact)
@@ -40,7 +40,7 @@ function errors(s::Vector{Float64}, exact::Float64, nodes)
     ylabel!("Relative error")
 
     # Plot absolute errors
-    absolute_plots = plot(nodes, make_log_safe(absolute_errors), label="Absolute errors", yscale=:log10, xscale=:log10)
+    absolute_plots = plot(nodes, make_log_safe(absolute_errors), label=label, yscale=:log10, xscale=:log10)
     xlabel!("Nodes")
     ylabel!("Absolute error")
 
@@ -62,7 +62,7 @@ function main()
     exact1 = 1 / 4
     s1, p1 = solutions(a1, b1, f1, nodes, L"x log(1 + x)", exact1, rule=rule)
     println("Solution: $(s1[end])")
-    rp1, ap1 = errors(s1, exact1, nodes)
+    rp1, ap1 = errors(s1, exact1, nodes, L"x log(1 + x)")
 
     println("=== Second integral: x^2 tan^-1(x) ===")
     f2 = x -> x^2 * atan(x)
@@ -71,7 +71,7 @@ function main()
     exact2 = (π - 2 + 2log(2)) / 12
     s2, p2 = solutions(a2, b2, f2, nodes, L"x^2 tan^{-1}(x)", exact2, rule=rule)
     println("Solution: $(s2[end])")
-    rp2, ap2 = errors(s2, exact2, nodes)
+    rp2, ap2 = errors(s2, exact2, nodes, L"x^2 tan^{-1}(x)")
 
     println("=== Third integral: e^x cos(x) ===")
     f3 = x -> exp(x) * cos(x)
@@ -80,7 +80,7 @@ function main()
     exact3 = (exp(π / 2) - 1) / 2
     s3, p3 = solutions(a3, b3, f3, nodes, L"e^x cos(x)", exact3, rule=rule)
     println("Solution: $(s3[end])")
-    rp3, ap3 = errors(s3, exact3, nodes)
+    rp3, ap3 = errors(s3, exact3, nodes, L"e^x cos(x)")
 
     println("=== Fourth integral: (tan^-1 (√2 + x^2))/(1 + x^2)(√2 + x^2) ===")
     f4 = x -> atan(sqrt(2 + x^2)) / ((1 + x^2) * sqrt(2 + x^2))
@@ -89,7 +89,7 @@ function main()
     exact4 = 5π^2 / 96
     s4, p4 = solutions(a4, b4, f4, nodes, L"\frac{\tan^{-1} (\sqrt{2 + x^2})}{(1 + x^2)\sqrt{2 + x^2}}", exact4, rule=rule)
     println("Solution: $(s4[end])")
-    rp4, ap4 = errors(s4, exact4, nodes)
+    rp4, ap4 = errors(s4, exact4, nodes, L"\frac{\tan^{-1} (\sqrt{2 + x^2})}{(1 + x^2)\sqrt{2 + x^2}}")
 
     println("=== Fifth integral: √x log(x) ===")
     f5 = x -> sqrt(x) * log(x)
@@ -98,7 +98,7 @@ function main()
     exact5 = -4 / 9
     s5, p5 = solutions(a5, b5, f5, nodes, L"\sqrt{x} log(x)", exact5, rule=rule)
     println("Solution: $(s5[end])")
-    rp5, ap5 = errors(s5, exact5, nodes)
+    rp5, ap5 = errors(s5, exact5, nodes, L"\sqrt{x} log(x)")
 
     println("=== Sixth integral: √(1 - x^2) ===")
     f6 = x -> sqrt(1 - x^2)
@@ -107,7 +107,7 @@ function main()
     exact6 = π / 4
     s6, p6 = solutions(a6, b6, f6, nodes, L"\sqrt{1 - x^2}", exact6, rule=rule)
     println("Solution: $(s6[end])")
-    rp6, ap6 = errors(s6, exact6, nodes)
+    rp6, ap6 = errors(s6, exact6, nodes, L"\sqrt{1 - x^2}")
 
     # Show the results
     p_results = multi_plot(p1, p2, p3, p4, p5, p6, layout=(2, 3), size=(1200, 800))

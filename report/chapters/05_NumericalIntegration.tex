@@ -50,16 +50,17 @@
 		\captionof{table}{Comparison of exact analytical solutions and numerical
 			approximations evaluated at $m = 10,240$ nodes.}
 		\label{tab:integral_results}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{clll}
 			\toprule
-			\textbf{Integral} & \textbf{Exact Value}   & \textbf{Numerical Approximation} & \textbf{Absolute Error} \\
+			Integral & Exact Value            & Numerical Approximation & Absolute Error         \\
 			\midrule
-			1                 & $0.25$                 & $0.2500000009482$                & $9.48 \times 10^{-10}$  \\
-			2                 & $\approx 0.210657251$  & $0.2106572528715$                & $1.87 \times 10^{-9}$   \\
-			3                 & $\approx 1.905238690$  & $1.9052386790888$                & $1.14 \times 10^{-8}$   \\
-			4                 & $\approx 0.514041897$  & $0.5140418956028$                & $1.86 \times 10^{-9}$   \\
-			5                 & $\approx -0.444444444$ & $-0.4444422428639$               & $2.20 \times 10^{-6}$   \\
-			6                 & $\approx 0.785398163$  & $0.7853978796777$                & $2.84 \times 10^{-7}$   \\
+			1        & $0.25$                 & $0.2500000009482$       & $9.48 \times 10^{-10}$ \\
+			2        & $\approx 0.210657251$  & $0.2106572528715$       & $1.87 \times 10^{-9}$  \\
+			3        & $\approx 1.905238690$  & $1.9052386790888$       & $1.14 \times 10^{-8}$  \\
+			4        & $\approx 0.514041897$  & $0.5140418956028$       & $1.86 \times 10^{-9}$  \\
+			5        & $\approx -0.444444444$ & $-0.4444422428639$      & $2.20 \times 10^{-6}$  \\
+			6        & $\approx 0.785398163$  & $0.7853978796777$       & $2.84 \times 10^{-7}$  \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
@@ -89,7 +90,7 @@
 		E \leq \frac{(b-a)}{12} h^2 \max_{x \in [a,b]} |f''(x)| = \mathcal{O}(h^2)
 	\]
 	This stipulates that the algorithm demonstrates second-order accuracy
-	\textit{only} if the integrand $f(x)$ is twice continuously differentiable,
+	only if the integrand $f(x)$ is twice continuously differentiable,
 	$f \in C^2[a,b]$.
 
 	As observed in Table~\ref{tab:integral_results} and
@@ -122,8 +123,7 @@
 	\]
 	This implies a theoretical fourth-order convergence ($\mathcal{O}(m^{-4})$),
 	provided that the integrand is at least four times continuously
-	differentiable, $f \in C^4[a,b]$. The integrals were evaluated using
-	double-precision arithmetic (\texttt{Float64}) up to $m = 10,240$ nodes.
+	differentiable, $f \in C^4[a,b]$.
 
 	\paragraph{Results}
 	Table~\ref{tab:simpson_results} details the absolute errors obtained at the
@@ -135,16 +135,17 @@
 		\captionof{table}{Comparison of absolute errors between the Trapezoidal and Simpson's
 			rules evaluated at $m = 10,240$ nodes.}
 		\label{tab:simpson_results}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{clll}
 			\toprule
-			\textbf{Integral} & \textbf{Simpson Approximation} & \textbf{Trapezoidal Error} & \textbf{Simpson Error} \\
+			Integral & Simpson Approximation & Trapezoidal Error      & Simpson Error          \\
 			\midrule
-			1                 & $0.2500000000000007$           & $9.48 \times 10^{-10}$     & $7.00 \times 10^{-16}$ \\
-			2                 & $0.2106572512258067$           & $1.87 \times 10^{-9}$      & $2.00 \times 10^{-16}$ \\
-			3                 & $1.9052386904826724$           & $1.14 \times 10^{-8}$      & $2.60 \times 10^{-15}$ \\
-			4                 & $0.5140418958900695$           & $1.86 \times 10^{-9}$      & $1.20 \times 10^{-15}$ \\
-			5                 & $-0.4444440750259714$          & $2.20 \times 10^{-6}$      & $3.69 \times 10^{-7}$  \\
-			6                 & $0.7853981242237340$           & $2.84 \times 10^{-7}$      & $3.91 \times 10^{-8}$  \\
+			1        & $0.2500000000000007$  & $9.48 \times 10^{-10}$ & $7.00 \times 10^{-16}$ \\
+			2        & $0.2106572512258067$  & $1.87 \times 10^{-9}$  & $2.00 \times 10^{-16}$ \\
+			3        & $1.9052386904826724$  & $1.14 \times 10^{-8}$  & $2.60 \times 10^{-15}$ \\
+			4        & $0.5140418958900695$  & $1.86 \times 10^{-9}$  & $1.20 \times 10^{-15}$ \\
+			5        & $-0.4444440750259714$ & $2.20 \times 10^{-6}$  & $3.69 \times 10^{-7}$  \\
+			6        & $0.7853981242237340$  & $2.84 \times 10^{-7}$  & $3.91 \times 10^{-8}$  \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
@@ -164,13 +165,13 @@
 	requirements of Simpson's rule:
 
 	\begin{itemize}
-		\item \textbf{Smooth Integrands (Integrals 1--4):} These functions satisfy
+		\item Smooth Integrands (Integrals 1--4): These functions satisfy
 		      $f \in C^4[a,b]$. Because Simpson's rule scales at $\mathcal{O}(h^4)$, the
 		      truncation error diminishes so rapidly that it essentially hits the
-		      \texttt{Float64} machine epsilon limit ($\approx 2.22 \times 10^{-16}$) at a
-		      fraction of the maximum nodes. Further increases in node count merely
-		      accumulate numerical round-off noise.
-		\item \textbf{Singular Integrands (Integrals 5--6):} The fourth derivative
+		      \texttt{Float64} machine epsilon limit at a fraction of the maximum
+		      nodes. Further increases in node count merely accumulate numerical round-off
+		      noise.
+		\item Singular Integrands (Integrals 5--6): The fourth derivative
 		      $f^{(4)}(x)$ approaches infinity at the boundaries for both
 		      $\sqrt{x}\log(x)$ and $\sqrt{1-x^2}$. Consequently, the $\mathcal{O}(h^4)$
 		      theoretical bound is entirely invalidated. Simpson's rule offers negligible
@@ -250,21 +251,22 @@
 			$n=2,3,4,5$. Results match the \texttt{GaussQuadrature} library within
 			$10^{-14}$ accuracy.}
 		\label{tab:gauss_legendre}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{crr}
 			\toprule
-			\textbf{Order ($n$)} & \textbf{Node ($x_k$)}    & \textbf{Weight ($w_k$)} \\
+			Order ($n$) & Node ($x_k$)             & Weight ($w_k$)       \\
 			\midrule
-			2                    & $\pm 0.5773502691896257$ & $1.0000000000000000$    \\
+			2           & $\pm 0.5773502691896257$ & $1.0000000000000000$ \\
 			\midrule
-			3                    & $0.0000000000000000$     & $0.8888888888888888$    \\
-			                     & $\pm 0.7745966692414834$ & $0.5555555555555556$    \\
+			3           & $0.0000000000000000$     & $0.8888888888888888$ \\
+			            & $\pm 0.7745966692414834$ & $0.5555555555555556$ \\
 			\midrule
-			4                    & $\pm 0.3399810435848563$ & $0.6521451548625462$    \\
-			                     & $\pm 0.8611363115940526$ & $0.3478548451374538$    \\
+			4           & $\pm 0.3399810435848563$ & $0.6521451548625462$ \\
+			            & $\pm 0.8611363115940526$ & $0.3478548451374538$ \\
 			\midrule
-			5                    & $0.0000000000000000$     & $0.5688888888888889$    \\
-			                     & $\pm 0.5384693101056831$ & $0.4786286704993665$    \\
-			                     & $\pm 0.9061798459386640$ & $0.2369268850561890$    \\
+			5           & $0.0000000000000000$     & $0.5688888888888889$ \\
+			            & $\pm 0.5384693101056831$ & $0.4786286704993665$ \\
+			            & $\pm 0.9061798459386640$ & $0.2369268850561890$ \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
@@ -306,15 +308,16 @@
 		\captionof{table}{Exact solutions versus numerical approximations at $n=40$}
 		\label{tab:results-glq}
 		\resizebox{\textwidth}{!}{
+			\renewcommand{\arraystretch}{1.2}
 			\begin{tabular}{c r r r}
 				\toprule
-				\textbf{Integral} & \textbf{Exact Solution} & \textbf{Fejér}        & \textbf{Gauss-Legendre} \\
+				Integral & Exact Solution        & Fejér                 & Gauss-Legendre        \\
 				\midrule
-				1                 & $13.644958598563875$    & $13.644958598563875$  & $13.644958598563878$    \\
-				2                 & $0.5908048988396807$    & $0.5908048988396811$  & $0.5908048988396809$    \\
-				3                 & $1.7315389664793173$    & $1.7315389664793175$  & $1.7315389664793173$    \\
-				4                 & $0.8326971815988362$    & $0.8326971821009688$  & $0.8326971815925093$    \\
-				5                 & $-0.9252754126021273$   & $-0.9252754126021280$ & $-0.9252754126021260$   \\
+				1        & $13.644958598563875$  & $13.644958598563875$  & $13.644958598563878$  \\
+				2        & $0.5908048988396807$  & $0.5908048988396811$  & $0.5908048988396809$  \\
+				3        & $1.7315389664793173$  & $1.7315389664793175$  & $1.7315389664793173$  \\
+				4        & $0.8326971815988362$  & $0.8326971821009688$  & $0.8326971815925093$  \\
+				5        & $-0.9252754126021273$ & $-0.9252754126021280$ & $-0.9252754126021260$ \\
 				\bottomrule
 			\end{tabular}
 		}
@@ -338,6 +341,7 @@
 	The evolution of the absolute errors on a semi-logarithmic scale are illustrated below.
 
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-1.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-2.pdf}   \\
@@ -409,15 +413,16 @@
 			approximations at $n=60$ ($N=30$).}
 		\label{tab:de-results}
 		\resizebox{\textwidth}{!}{
+			\renewcommand{\arraystretch}{1.2}
 			\begin{tabular}{c r r}
 				\toprule
-				\textbf{Integral} & \textbf{Exact Solution} & \textbf{Computed Approximation ($n=60$)} \\
+				Integral & Exact Solution       & Computed Approximation ($n=60$) \\
 				\midrule
-				1                 & $1.8137993642342178$    & $1.8137993642334227$                     \\
-				2                 & $1.3803884470431430$    & $1.3803884470431436$                     \\
-				3                 & $7.2859519436627430$    & $7.2859519436627450$                     \\
-				4                 & $1.5707963267948966$    & $1.5707963267948963$                     \\
-				5                 & $1.7724538509055159$    & $1.7724538509055163$                     \\
+				1        & $1.8137993642342178$ & $1.8137993642334227$            \\
+				2        & $1.3803884470431430$ & $1.3803884470431436$            \\
+				3        & $7.2859519436627430$ & $7.2859519436627450$            \\
+				4        & $1.5707963267948966$ & $1.5707963267948963$            \\
+				5        & $1.7724538509055159$ & $1.7724538509055163$            \\
 				\bottomrule
 			\end{tabular}
 		}
@@ -450,6 +455,7 @@
 	\vspace{1em}
 
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-1.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/5-3/double-exponential-quadrature-2.pdf}   \\
@@ -517,16 +523,17 @@
 		\captionof{table}{Final evaluated approximations at $n=60$ ($N=30$ for DE).}
 		\label{tab:comparison-results}
 		\resizebox{\textwidth}{!}{
+			\renewcommand{\arraystretch}{1.2}
 			\begin{tabular}{c r r r}
 				\toprule
-				\textbf{Integral}        & \textbf{Exact Solution} & \textbf{GLQ ($n=60$)} & \textbf{DEQ ($N=30$)} \\
+				Integral                 & Exact Solution        & GLQ ($n=60$)          & DEQ ($N=30$)          \\
 				\midrule
-				$\frac{1}{\sqrt{1-x^2}}$ & $1.5707963267948966$    & $1.5606199819857367$  & $1.5707963237302416$  \\
-				$\sqrt{x} \log x$        & $-0.4444444444444444$   & $-0.4444486588707492$ & $-0.4444444444444445$ \\
-				$\sqrt{1-x^2}$           & $0.7853981633974483$    & $0.7853988210355238$  & $0.7853981633974482$  \\
-				$(\log x)^2$             & $2.0000000000000000$    & $1.9965066840331340$  & $2.0000000042167450$  \\
-				$\log(\cos x)$           & $-1.0887930451518010$   & $-1.0885220739672092$ & $-1.0887930451517975$ \\
-				$\sqrt{\tan x}$          & $2.2214414690791830$    & $2.2034051373383350$  & $2.2214414784702050$  \\
+				$\frac{1}{\sqrt{1-x^2}}$ & $1.5707963267948966$  & $1.5606199819857367$  & $1.5707963237302416$  \\
+				$\sqrt{x} \log x$        & $-0.4444444444444444$ & $-0.4444486588707492$ & $-0.4444444444444445$ \\
+				$\sqrt{1-x^2}$           & $0.7853981633974483$  & $0.7853988210355238$  & $0.7853981633974482$  \\
+				$(\log x)^2$             & $2.0000000000000000$  & $1.9965066840331340$  & $2.0000000042167450$  \\
+				$\log(\cos x)$           & $-1.0887930451518010$ & $-1.0885220739672092$ & $-1.0887930451517975$ \\
+				$\sqrt{\tan x}$          & $2.2214414690791830$  & $2.2034051373383350$  & $2.2214414784702050$  \\
 				\bottomrule
 			\end{tabular}
 		}
@@ -540,7 +547,7 @@
 	$10^{-9}$) with high efficiency, demonstrating
 	unparalleled robustness for improper integrals.
 
-	\textit{Note on computational evaluation:} During the evaluation of Integrals
+	Note on computational evaluation: During the evaluation of Integrals
 	1 and 4, the DE algorithm yielded repeated bounds-decay warnings. This is an
 	expected artifact of the extreme asymptotic behavior of these integrands.
 	Because the pole $1/\sqrt{1-x^2} \to \infty$ as $x \to 1$ and the pole $(\log
@@ -555,6 +562,7 @@
 
 	\vspace{1em}
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-1.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/5-3/comparison-gl-deq-2.pdf}   \\

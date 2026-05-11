@@ -36,10 +36,10 @@
 	(\texttt{Float64}). For each precision type, two iterative strategies are
 	employed:
 	\begin{enumerate}
-		\item \textbf{Normal ordering (Forward):} The loop iterates from $1$ to $N$,
+		\item Normal ordering (Forward): The loop iterates from $1$ to $N$,
 		      adding successively smaller terms $\mathcal{O}(1/N^2)$ to an $\mathcal{O}(1)$
 		      accumulator.
-		\item \textbf{Reverse ordering (Backward):} The loop iterates from $N$ down
+		\item Reverse ordering (Backward): The loop iterates from $N$ down
 		      to $1$, aggregating the smallest terms first before adding them to the larger
 		      components of the sum.
 	\end{enumerate}
@@ -59,12 +59,12 @@
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{@{}llc@{}}
 			\toprule
-			\textbf{Precision}        & \textbf{Ordering} & \textbf{Absolute Error} \\
+			Precision                 & Ordering & Absolute Error         \\
 			\midrule
-			Single (\texttt{Float32}) & Normal            & $2.087 \times 10^{-4}$  \\
-			                          & Reverse           & $1.073 \times 10^{-6}$  \\
-			Double (\texttt{Float64}) & Normal            & $1.001 \times 10^{-6}$  \\
-			                          & Reverse           & $1.001 \times 10^{-6}$  \\
+			Single (\texttt{Float32}) & Normal   & $2.087 \times 10^{-4}$ \\
+			                          & Reverse  & $1.073 \times 10^{-6}$ \\
+			Double (\texttt{Float64}) & Normal   & $1.001 \times 10^{-6}$ \\
+			                          & Reverse  & $1.001 \times 10^{-6}$ \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
@@ -165,13 +165,14 @@
 
 	\begin{center}
 		\centering
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lcccc}
-			\hline
-			\textbf{Dataset Offset} & \textbf{Two-Pass (F32)} & \textbf{Two-Pass (F64)} & \textbf{One-Pass (F32)} & \textbf{One-Pass (F64)} \\ \hline
-			$10^3$                  & 1.0                     & 1.0                     & 1.0                     & 1.0                     \\
-			$10^6$                  & 1.0                     & 1.0                     & -131072.0               & 1.0                     \\
-			$10^7$                  & 1.0                     & 1.0                     & 0.0                     & 1.0                     \\
-			$10^8$                  & 0.0                     & 1.0                     & 0.0                     & 0.0                     \\ \hline
+			\toprule
+			Dataset Offset & Two-Pass (F32) & Two-Pass (F64) & One-Pass (F32) & One-Pass (F64) \\ \midrule
+			$10^3$         & 1.0            & 1.0            & 1.0            & 1.0            \\
+			$10^6$         & 1.0            & 1.0            & -131072.0      & 1.0            \\
+			$10^7$         & 1.0            & 1.0            & 0.0            & 1.0            \\
+			$10^8$         & 0.0            & 1.0            & 0.0            & 0.0            \\ \bottomrule
 		\end{tabular}
 		\captionof{table}{Comparison of variance calculations (True Variance = 1.0)}
 	\end{center}
@@ -207,7 +208,7 @@
 	cancellation at $10^8$ for the single-pass method.
 
 	\paragraph{Conclusion}
-	The two-pass algorithm is significantly more \textbf{numerically stable}
+	The two-pass algorithm is significantly more numerically stable
 	because it centers the data ($x_i - \overline{x}$) before squaring, thereby
 	working with smaller magnitudes and preserving significant digits.
 \end{solution}
@@ -286,16 +287,17 @@
 		\centering
 		\captionof{table}{Comparison of the Naive and Maclaurin algorithms for evaluating $f(x)$ as $x \to 0$.}
 		\label{tab:comparison}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{r l l}
-			\hline
-			$x$        & \textbf{Naive Algorithm} & \textbf{Maclaurin Series ($n=16$)} \\
-			\hline
-			$10^{-3}$  & 1.0005001667083846       & 1.0005001667083417                 \\
-			$10^{-7}$  & 1.0000000494336803       & 1.0000000500000017                 \\
-			$10^{-11}$ & 1.000000082740371        & 1.000000000005                     \\
-			$10^{-15}$ & 1.1102230246251565       & 1.0000000000000004                 \\
-			$10^{-16}$ & 0.0                      & 1.0                                \\
-			\hline
+			\toprule
+			$x$        & Naive Algorithm    & Maclaurin Series ($n=16$) \\
+			\midrule
+			$10^{-3}$  & 1.0005001667083846 & 1.0005001667083417        \\
+			$10^{-7}$  & 1.0000000494336803 & 1.0000000500000017        \\
+			$10^{-11}$ & 1.000000082740371  & 1.000000000005            \\
+			$10^{-15}$ & 1.1102230246251565 & 1.0000000000000004        \\
+			$10^{-16}$ & 0.0                & 1.0                       \\
+			\bottomrule
 		\end{tabular}
 	\end{center}
 

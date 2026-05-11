@@ -91,7 +91,7 @@ We make the substitution $r \approx x_{final}$:
 	\begin{enumerate}
 		\item Use the bisection method to find the solutions for $x^3 - 7x^2 +
 			      14x - 6 = 0$ on $[0,\, 1]$.
-		\item Study the convergence of the bisection method to the root found in (a).
+		\item Study the convergence of the bisection method to the root found in (1).
 		      You can take as an approximation for the root $r = m_{n_\text{max}}$
 		      where $n_\text{max}$ is the index corresponding to the last bisection
 		      iteration. What is its order of convergence $q$? Can you estimate the
@@ -101,9 +101,8 @@ We make the substitution $r \approx x_{final}$:
 \end{exercise}
 
 \begin{solution}
-	The root-finding problem for the non-linear function $f(x) = x^3 - 7x^2 + 14x - 6$
-	was computationally investigated over the interval $[0, 1]$ utilizing the
-	bisection method. The iterative process was designed to terminate when the
+	The iterative process, to solve the root-finding problem for the non-linear
+	function $f(x) = x^3 - 7x^2 + 14x - 6$, was designed to terminate when the
 	interval width, representing the maximum absolute error, dropped below a
 	strictly defined tolerance of $\texttt{tol} = 10^{-14}$.
 
@@ -144,15 +143,15 @@ We make the substitution $r \approx x_{final}$:
 		\centering
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cccc}
-			\hline
-			\textbf{Skipped Iterations ($k$)} & \textbf{Analyzed Tail} & \textbf{Convergence Order ($q$)} & \textbf{Error Constant ($C$)} \\
-			\hline
+			\toprule
+			Skipped Iterations ($k$) & Analyzed Tail & Convergence Order ($q$) & Error Constant ($C$) \\
+			\midrule
 			1                                 & 46                     & 0.9789                           & 0.3431                        \\
 			5                                 & 42                     & 0.9744                           & 0.3078                        \\
 			9                                 & 38                     & 0.9688                           & 0.2616                        \\
 			15                                & 32                     & 0.9558                           & 0.1822                        \\
 			19                                & 28                     & 0.9391                           & 0.1165                        \\
-			\hline
+			\bottomrule
 		\end{tabular}
 		\captionof{table}{Empirical convergence parameters $q$ and $C$ as a
 			function of skipped initial iterations.}
@@ -180,8 +179,8 @@ We make the substitution $r \approx x_{final}$:
 	markers.
 
 	This discrepancy arises from the nature of the bisection method: while the
-	\textit{maximum bound} of the error decreases monotonically by exactly $1/2$
-	at each step, the \textit{actual} error $\epsilon_n = |x_n - r|$ does not
+	maximum bound of the error decreases monotonically by exactly $1/2$
+	at each step, the actual error $\epsilon_n = |x_n - r|$ does not
 	strictly decrease monotonically. Depending on the geometry of the interval, a
 	given approximation $x_n$ can occasionally land extremely close to the true
 	root early on, introducing high variance and non-smooth progression in the
@@ -278,26 +277,17 @@ We make the substitution $r \approx x_{final}$:
 
 	\begin{enumerate}
 		\item For $x^2 = e^{-x}$:
-		      \[
-			      \begin{aligned}
-				      f_1(x)  & = x^2 - e^{-x}, \\
-				      f_1'(x) & = 2x + e^{-x}.
-			      \end{aligned}
-		      \]
+		      \begin{equation*}
+			      f_1(x) = x^2 - e^{-x}, \quad f_1'(x) = 2x + e^{-x}.
+		      \end{equation*}
 		\item For $2x = \tan x$:
-		      \[
-			      \begin{aligned}
-				      f_2(x)  & = 2x - \tan x,  \\
-				      f_2'(x) & = 2 - \sec^2 x.
-			      \end{aligned}
-		      \]
+		      \begin{equation*}
+			      f_2(x)  = 2x - \tan x, \quad f_2'(x) = 2 - \sec^2 x.
+		      \end{equation*}
 		\item For $e^{x+1} = 2+x$:
-		      \[
-			      \begin{aligned}
-				      f_3(x)  & = e^{x+1} - x - 2, \\
-				      f_3'(x) & = e^{x+1} - 1.
-			      \end{aligned}
-		      \]
+		      \begin{equation*}
+			      f_3(x) = e^{x+1} - x - 2, \quad f_3'(x) = e^{x+1} - 1.
+		      \end{equation*}
 	\end{enumerate}
 
 	\paragraph{Numerical Methodology}
@@ -324,27 +314,27 @@ We make the substitution $r \approx x_{final}$:
 		\centering
 		\captionof{table}{Numerical roots $r$, observed convergence rates $q$, and asymptotic error constants $C$ obtained via Newton's method in \texttt{Float64} precision.}
 		\label{tab:newton_results}
-		\renewcommand{\arraystretch}{1.3}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{l c c c}
-			\hline\hline
-			\textbf{Function}          & \textbf{Root Estimate ($r$)} & \textbf{Convergence Rate ($q$)} & \textbf{Error Constant ($C$)} \\
-			\hline
+			\toprule
+			Function          & Root Estimate ($r$) & Convergence Rate ($q$) & Error Constant ($C$) \\
+			\midrule
 			$f_1(x) = x^2 - e^{-x}$    & $0.703467422498$             & $2.0007$                        & $0.3978$                      \\
 			$f_2(x) = 2x - \tan x$     & $1.165561185207$             & $2.0003$                        & $3.3956$                      \\
 			$f_3(x) = e^{x+1} - x - 2$ & $-1.00000000372$             & $1.0113$                        & $0.7841$                      \\
-			\hline\hline
+			\bottomrule
 		\end{tabular}
 	\end{center}
 
 	\paragraph{Discussion}
 	The numerical results strongly align with theoretical expectations for Newton's method:
 	\begin{itemize}
-		\item \textbf{Functions 1 and 2:} Both exhibit a convergence rate of $q
+		\item Functions 1 and 2: Both exhibit a convergence rate of $q
 			      \approx 2$. This numerically confirms quadratic convergence, which is
 		      expected since the roots are simple (i.e., $f'(r) \neq 0$). The process
 		      successfully converges to machine epsilon limits without numerical
 		      instability.
-		\item \textbf{Function 3:} The convergence rate degenerates to $q
+		\item Function 3: The convergence rate degenerates to $q
 			      \approx 1$ (linear convergence). This is analytically justified by
 		      evaluating the exact root at $x = -1$. Observe that $f_3(-1) = 0$ and
 		      $f'_3(-1) = 0$. Because the first derivative vanishes at the root, the
@@ -372,7 +362,7 @@ We make the substitution $r \approx x_{final}$:
 	method to $f$, and make a table showing $x_1$ and the resulting root found
 	by the method. In which case does the iteration converge to a root other
 	than the one closest to it? Use the plot to explain why that happened.
-	(\textbf{Optional}) Repeat the exercise including bracketing.
+	(Optional) Repeat the exercise including bracketing.
 \end{exercise}
 
 \begin{solution}
@@ -400,15 +390,13 @@ We make the substitution $r \approx x_{final}$:
 
 	\begin{center}
 		\centering
-		\captionof{table}{Newton's method results for varying initial guesses.
-			"Overshoot" denotes instances where the algorithm converged to a root
-			other than the one geometrically closest to the initial guess.}
+		\captionof{table}{Newton's method results for varying initial guesses.}
 		\label{tab:newton_multiple_roots}
-		\renewcommand{\arraystretch}{1.3}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{c c c c c}
-			\hline\hline
-			\textbf{Initial Guess ($x_1$)} & \textbf{Converged Root ($r$)} & \textbf{Closest Root} & \textbf{Conv. Rate ($q$)} \\
-			\hline
+			\toprule
+			Initial Guess ($x_1$) & Converged Root ($r$) & Closest Root & Conv. Rate ($q$) \\
+			\midrule
 			$1.0$                          & $1.06822$                     & $1.06822$             & $2.0024$                  \\
 			$2.0$                          & $6.30832$                     & $3.03265$             & $2.0283$                  \\
 			$3.0$                          & $3.03265$                     & $3.03265$             & $2.0221$                  \\
@@ -416,7 +404,7 @@ We make the substitution $r \approx x_{final}$:
 			$5.0$                          & $9.41349$                     & $6.30832$             & $1.7087$                  \\
 			$6.0$                          & $6.30832$                     & $6.30832$             & $2.0188$                  \\
 			$7.0$                          & $6.30832$                     & $6.30832$             & $2.1579$                  \\
-			\hline\hline
+			\bottomrule
 		\end{tabular}
 	\end{center}
 
@@ -430,14 +418,14 @@ We make the substitution $r \approx x_{final}$:
 	initial guess, as seen in Figure \ref{fig:multiple_roots}. The Newton step
 	size is inversely proportional to the derivative $f'(x_n)$.
 	\begin{itemize}
-		\item \textbf{Case $x_1 = 2.0$:} The function has a local minimum
+		\item Case $x_1 = 2.0$: The function has a local minimum
 		      slightly before $x=2$. At $x=2$, the derivative $f'(2)$ is relatively
 		      small, making the tangent line shallow. Because $f(2)$ is negative and
 		      the slope is gently positive, the tangent line projects far across the
 		      $x$-axis to the right, stepping over the nearby root at $r \approx 3.03$
 		      and landing directly into the basin of attraction for the root at $r
 			      \approx 6.31$.
-		\item \textbf{Case $x_1 = 5.0$:} Similarly, $x=5$ sits near a local
+		\item Case $x_1 = 5.0$: Similarly, $x=5$ sits near a local
 		      maximum (which occurs near $3\pi/2 \approx 4.71$). The shallow negative
 		      slope at $x=5$ projects the next guess far to the right, skipping over
 		      the closest root $r \approx 6.31$ and instead converging to $r \approx
@@ -558,6 +546,7 @@ We make the substitution $r \approx x_{final}$:
 		2x      & = \tan x, \quad \text{over } [-0.2,1.4] \\
 		e^{x+1} & = 2+x, \quad \text{over } [-2,2]
 	\end{align*}
+
 \end{exercise}
 
 \begin{solution}
@@ -583,8 +572,8 @@ We make the substitution $r \approx x_{final}$:
 	\paragraph{Numerical Results}
 	The secant method successfully converged for all three functions. To
 	evaluate the order of convergence $q$, two distinct algorithms were
-	employed. \textbf{Algorithm 1} utilises a linear least-squares fit on the
-	logarithmic errors, whereas \textbf{Algorithm 2} computes the local
+	employed. Algorithm 1 utilises a linear least-squares fit on the
+	logarithmic errors, whereas Algorithm 2 computes the local
 	convergence rate using successive differences (see
 	Section~\ref{sec:convergence-rate}). The computed roots $x^*$ and the
 	estimated convergence rates are summarised in
@@ -596,9 +585,10 @@ We make the substitution $r \approx x_{final}$:
 			estimated orders of convergence ($q$). The theoretical expected rate for simple
 			roots is $q \approx 1.618$.}
 		\label{tab:secant_results}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{l c S[table-format=2.6] S[table-format=2.3] c}
 			\toprule
-			\textbf{Function} & \textbf{Interval} & {\textbf{Root} ($x^*$)} & {$q$ \textbf{(Alg 1)}} & {$q$ \textbf{(Alg 2)}} \\
+			Function & Interval & {Root ($x^*$)} & {$q$ (Alg 1)} & {$q$ (Alg 2)} \\
 			\midrule
 			$f_1(x)$          & $[-2, 2]$         & 0.703467                & 1.606                  & 2.368                  \\
 			$f_2(x)$          & $[0.2, 1.4]$      & 1.165561                & 0.073                  & 39.283                 \\
@@ -622,7 +612,7 @@ We make the substitution $r \approx x_{final}$:
 		\item For $f_3(x)$, the algorithm drops to linear convergence ($q
 			      \approx 1.016$). This perfectly matches numerical theory: evaluating the
 		      derivative $f_3'(x) = e^{x+1} - 1$ at $x = -1$ yields $0$. Therefore, $x
-			      = -1$ is a \textit{multiple root} (multiplicity $m=2$), and root-finding
+			      = -1$ is a multiple root (multiplicity $m=2$), and root-finding
 		      methods strictly degrade to linear convergence in such cases.
 	\end{itemize}
 
@@ -638,7 +628,7 @@ We make the substitution $r \approx x_{final}$:
 	\]
 	As the sequence converges, $d_k$ approaches the machine epsilon.
 	Subtracting two nearly identical floating-point numbers triggers
-	\textit{catastrophic cancellation}, severely amplifying numerical noise.
+	catastrophic cancellation, severely amplifying numerical noise.
 	Despite implementing a truncation threshold ($d_i < 10^{-7}$), the sequence
 	becomes too short or highly erratic, leading to wild overestimations (e.g.,
 	$q \approx 39.2$ for $f_2$) or total failure (e.g., \texttt{NaN} for $f_3$
@@ -655,6 +645,15 @@ We make the substitution $r \approx x_{final}$:
 	high-frequency quantization noise caused by floating-point arithmetic.
 	Consequently, Algorithm 1 remains robust and stable even when local errors
 	approach the threshold of numerical precision.
+
+	\paragraph{Conclusion}
+	Overall, the secant method successfully located the roots of all three
+	nonlinear equations, demonstrating its effectiveness as a derivative-free
+	root-finding technique. The numerical experiments confirmed the expected
+	superlinear convergence behaviour for simple roots, while also illustrating the
+	theoretical degradation to linear convergence in the presence of a multiple
+	root.
+
 \end{solution}
 
 \begin{exercise}
@@ -702,9 +701,10 @@ We make the substitution $r \approx x_{final}$:
 			alongside the estimated order of convergence ($q$) and asymptotic
 			constant ($C$). Theoretical $q \approx 1.839$ for simple roots.}
 		\label{tab:iqi_results}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{l c S[table-format=2.6] S[table-format=1.3] S[table-format=1.3]}
 			\toprule
-			\textbf{Function} & \textbf{Initial Estimates} & {\textbf{Root} ($x^*$)} & {$q$} & {$C$} \\
+			Function & Initial Estimates & {Root ($x^*$)} & {$q$} & {$C$} \\
 			\midrule
 			$f_1(x)$          & $(0.0, 0.5, 1.0)$          & 0.703467                & 1.888 & 0.930 \\
 			$f_2(x)$          & $(1.0, 1.2, 1.4)$          & 1.165561                & 1.842 & 3.890 \\
@@ -724,8 +724,8 @@ We make the substitution $r \approx x_{final}$:
 	higher-order methods (like Secant and IQI) to revert to linear convergence.
 
 	To calculate the convergence rate $q$, only the least-squares fitting
-	technique (\textbf{Algorithm 1}) was used. The successive differences
-	approach (\textbf{Algorithm 2}) consistently failed for this exercise,
+	technique (Algorithm 1) was used. The successive differences
+	approach (Algorithm 2) consistently failed for this exercise,
 	producing \texttt{NaN} outputs and triggering warnings for insufficient
 	iterations.
 
@@ -738,3 +738,127 @@ We make the substitution $r \approx x_{final}$:
 	making it the superior—and necessary—choice for evaluating rapidly converging
 	algorithms.
 \end{solution}
+
+\subsection{Some observations about the algorithms used in this section}
+
+The numerical experiments performed in this chapter highlight the different
+trade-offs between robustness, convergence speed, and computational cost. A
+useful quantity for understanding the sensitivity of a root-finding problem is
+the condition number of the root:
+\begin{equation*}
+	\kappa_r = \left| f'(r) \right|^{-1}.
+\end{equation*}
+When $\left| f'(r) \right|$ is small, small perturbations in the function value
+may correspond to large perturbations in the root location. This explains why
+multiple roots, where the derivative vanishes at the root, are typically much
+harder to approximate accurately.
+
+The asymptotic error constant is defined as
+\begin{equation*}
+	C = \lim_{n \to \infty}
+	\frac{\left| x_{n+1} - r \right|}
+	     {\left| x_n - r \right|^q},
+\end{equation*}
+where $q$ is the order of convergence. In the asymptotic regime, a finite
+positive value of $C$ indicates that the method follows the expected error law
+$|x_{n+1}-r| \approx C |x_n-r|^q$.
+
+To compare methods more fairly, one must also account for the work required by
+each iteration. If an iterative method has convergence order $q$ and each
+iteration requires $s$ units of work, its efficiency index is
+\begin{equation*}
+	E = q^{1/s}.
+\end{equation*}
+Here, a unit of work usually corresponds to one function evaluation, or to the
+evaluation of a derivative such as $f'(x)$. The following summary reports the
+metrics obtained from the numerical tests:
+
+\begin{center}
+	\centering
+	\captionof{table}{Comparison of convergence rate, computational cost, and
+		efficiency index for the root-finding methods considered in this chapter.}
+	\label{tab:nonlinear_method_metrics}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{l c c c}
+		\toprule
+		Method & Convergence Rate & Computational Cost & Efficiency Index \\
+		\midrule
+		Newton          & 1.999767                  & 6                           & 1.414131                  \\
+		Secant          & 1.607453                  & 8                           & 1.607453                  \\
+		IQI             & 1.839000                  & 9                           & 1.839000                  \\
+		Bisection       & 1.000000                  & 48                          & 1.000000                  \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\centering
+	\captionof{table}{Additional convergence diagnostics for Newton's method.}
+	\label{tab:nonlinear_newton_details}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{l c}
+		\toprule
+		Metric & Value \\
+		\midrule
+		Newton $C$ tail & $[0.333343,\ 0.352967,\ 0.353578]$ \\
+		Synthetic $q$   & 2.000000                            \\
+		Synthetic $C$   & 0.500000                            \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+The data in Tables~\ref{tab:nonlinear_method_metrics} and
+\ref{tab:nonlinear_newton_details} were obtained from the automated tests on the
+reference problem $f(x)=x^2-2$, whose exact root is $\sqrt{2}$. The convergence
+rates were estimated from the tail of the error sequence, so they reflect the
+asymptotic behaviour of each method after the first transient iterations. The
+reported computational cost corresponds to the number of iterates required in
+the test, while the efficiency index accounts for the number of function or
+derivative evaluations needed by one iteration. Newton's method therefore shows
+nearly quadratic convergence, the secant method is close to the expected
+superlinear order, IQI is assigned its theoretical order, and bisection remains
+linear but requires the largest number of steps. The second table confirms that
+the convergence estimator is reliable: on a synthetic sequence with prescribed
+$q=2$ and $C=0.5$, it recovers both values accurately.
+
+\paragraph{Bisection method}
+The bisection method converges slowly, but its strength is that it requires only
+continuity and a bracketing interval where the function changes sign. After
+$n$ bisection steps, the root is confined to an interval $(a_n,b_n)$ of length
+$2^{-n}(b_0-a_0)$. If the midpoint $m_n$ is used as an approximation of the
+root $r$, then
+\begin{equation*}
+	|m_n-r| < 2^{-(n+1)}(b_0-a_0).
+\end{equation*}
+Thus, bisection is linearly convergent. It is reliable and independent of the
+smoothness of $f(x)$, but it generally requires many iterations to reach high
+accuracy.
+
+\paragraph{Newton method}
+For simple roots, Newton's method exhibits quadratic convergence
+($q \approx 2$). This means that, once the iterates enter the asymptotic regime,
+the number of correct digits roughly doubles at each step. Its speed comes at
+the cost of requiring both $f(x)$ and $f'(x)$ at every iteration. Consequently,
+Newton's method is very efficient for smooth, well-conditioned problems, but it
+can lose its quadratic behaviour near multiple roots or when the derivative is
+small.
+
+When the multiplicity $m$ of a root is known, the modified Newton iteration
+\begin{equation*}
+	x_{k+1} = x_k - m \frac{f(x_k)}{f'(x_k)}
+\end{equation*}
+restores quadratic convergence under the usual regularity assumptions.
+
+\paragraph{Interpolation methods}
+The secant method replaces the derivative in Newton's method with a finite
+difference approximation. It therefore avoids the explicit evaluation of
+$f'(x)$, but its theoretical convergence rate for simple roots drops to
+$q = (1+\sqrt{5})/2 \approx 1.618$, strictly between linear and quadratic
+convergence.
+
+Inverse Quadratic Interpolation extends this idea by fitting an inverse
+quadratic model through three previous points. For simple roots it has a higher
+theoretical convergence order, approximately $q \approx 1.839$, and in the tests
+it reached the root very rapidly. As with the secant method, however, the
+observed convergence can deteriorate near multiple roots because the underlying
+root-finding problem becomes ill-conditioned.

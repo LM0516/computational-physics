@@ -36,15 +36,15 @@
 	Three primary diagnostics were visualized to evaluate the interpolation
 	scheme:
 	\begin{enumerate}
-		\item \textbf{Condition Number:} Figure \ref{fig:cond_number} demonstrates
+		\item Condition Number: Figure \ref{fig:cond_number} demonstrates
 		      the condition number $\kappa(V)$ as a function of the polynomial degree $n$. It
 		      exhibits clear exponential growth.
-		\item \textbf{Interpolation Error at $x=0$:} Figure \ref{fig:errors}
+		\item Interpolation Error at $x=0$: Figure \ref{fig:errors}
 		      displays the base-10 logarithm of the absolute error $\log_{10}(|c_0 - 1|)$. A
 		      feature in the data is a localized degradation of accuracy around $n=20$, where
 		      the evaluation error spikes noticeably before settling or becoming entirely
 		      consumed by numerical noise at higher degrees.
-		\item \textbf{Global Fit Quality:} Figure \ref{fig:chi2} presents a heatmap
+		\item Global Fit Quality: Figure \ref{fig:chi2} presents a heatmap
 		      of the $\chi^2$ residuals. Consistent with the local error evaluation, the
 		      global $\chi^2$ values exhibit a surge at $n=20$ across multiple wave numbers
 		      $k$, indicating a severe structural breakdown of the global polynomial fit at
@@ -81,17 +81,17 @@
 	The results highlight a complex interplay between sampling density, boundary
 	effects, and numerical stability:
 	\begin{itemize}
-		\item \textbf{Under-sampling (Small $n$, Large $k$):} The highly oscillatory
+		\item Under-sampling (Small $n$, Large $k$): The highly oscillatory
 		      nature of $f_k(x) = \cos(kx)$ requires a sufficient number of nodal points to
 		      capture the waveform. When $n$ is too small relative to $k$, the equidistant
 		      nodes fail to resolve the oscillations, leading to flat or highly inaccurate
 		      approximations.
-		\item \textbf{The $n=20$ Transition Zone:} The severe spike in both local
+		\item The $n=20$ Transition Zone: The severe spike in both local
 		      errors and global $\chi^2$ values at $n=20$ represents a critical numerical
 		      transition. At this degree, the polynomial is flexible enough to trigger massive
 		      oscillations at the boundaries, yet the nodal density is not high enough to lock
 		      onto the tight frequencies of the larger $k$ modes.
-		\item \textbf{Ill-conditioning and Noise (Large $n$):} As $n$ approaches 40,
+		\item Ill-conditioning and Noise (Large $n$): As $n$ approaches 40,
 		      $\kappa(V)$ becomes so astronomically large that the least-squares solver is
 		      effectively fitting pure floating-point noise. While the theoretical error at
 		      the center of the domain should be minimal, the catastrophic cancellation
@@ -149,15 +149,16 @@
 		\captionof{table}{Pseudo-$\chi^2$ error metrics for polynomial interpolation
 			using $n$ evenly spaced nodes.}
 		\label{tab:interp_errors}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{l c r r r}
-			\hline
+			\toprule
 			Function          & Interval  & $n_1$ Error    & $n_2$ Error  & $n_3$ Error  \\
-			\hline
+			\midrule
 			$f(x) = \ln(x)$   & $[1, 10]$ & (n=2) 31.101   & (n=3) 3.285  & (n=4) 0.572  \\
 			$f(x) = \tanh(x)$ & $[-3, 2]$ & (n=2) -29.363  & (n=3) 18.957 & (n=4) -3.529 \\
 			$f(x) = \cosh(x)$ & $[-1, 3]$ & (n=2) 1171.471 & (n=3) 26.629 & (n=4) 2.105  \\
 			$f(x) = |x|$      & $[-2, 1]$ & (n=3) 112.930  & (n=5) 30.394 & (n=7) 5.374  \\
-			\hline
+			\bottomrule
 		\end{tabular}
 	\end{center}
 
@@ -248,16 +249,17 @@
 		\captionof{table}{Estimated spectral convergence constant $K$ and
 			logarithmic slope $m$ computed over the interval $n \in[4, 60]$.}
 		\label{tab:interp_errorss}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lcccc}
 			\toprule
-			\textbf{Function} & \multicolumn{2}{c}{\textbf{Chebyshev Nodes}} & \multicolumn{2}{c}{\textbf{Equidistant Nodes}}                        \\
+			Function        & \multicolumn{2}{c}{Chebyshev Nodes} & \multicolumn{2}{c}{Equidistant Nodes}                        \\
 			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
-			                  & $K$                                          & Slope ($m$)                                    & $K$    & Slope ($m$) \\
+			                & $K$                                 & Slope ($m$)                           & $K$    & Slope ($m$) \\
 			\midrule
-			$1/(25x^2 + 1)$   & 1.2035                                       & $-0.1852$                                      & 0.7280 & 0.3175      \\
-			$\tanh(5x + 2)$   & 1.2020                                       & $-0.1840$                                      & 0.8951 & 0.1108      \\
-			$\cosh(\sin x)$   & 1.1513                                       & $-0.1409$                                      & 0.9728 & 0.0276      \\
-			$\sin(\cosh x)$   & 1.1722                                       & $-0.1589$                                      & 0.9845 & 0.0156      \\
+			$1/(25x^2 + 1)$ & 1.2035                              & $-0.1852$                             & 0.7280 & 0.3175      \\
+			$\tanh(5x + 2)$ & 1.2020                              & $-0.1840$                             & 0.8951 & 0.1108      \\
+			$\cosh(\sin x)$ & 1.1513                              & $-0.1409$                             & 0.9728 & 0.0276      \\
+			$\sin(\cosh x)$ & 1.1722                              & $-0.1589$                             & 0.9845 & 0.0156      \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
@@ -323,13 +325,13 @@
 
 	\paragraph{Discussion}
 	\begin{itemize}
-		\item \textbf{Equidistant Nodes \& Runge's Phenomenon:} The uniformly spaced
+		\item Equidistant Nodes \& Runge's Phenomenon: The uniformly spaced
 		      nodes lead to highly erratic polynomial oscillations near the boundaries $x=\pm
 			      1$. This catastrophic cancellation phenomenon is strictly captured by the data:
 		      $K < 1$ and $m > 0$ for all models, highlighting that the $L^\infty$-norm
 		      diverges exponentially as the polynomial degree $n$ increases.
 
-		\item \textbf{Chebyshev Nodes \& Spectral Convergence:} Deploying Chebyshev
+		\item Chebyshev Nodes \& Spectral Convergence: Deploying Chebyshev
 		      points effectively mitigates the boundary oscillations. The values of $K > 1$
 		      reflect the expected theoretical bounds for exponential error decay. The Runge
 		      function $1/(25x^2+1)$ holds complex poles near the real axis. By contrast,
@@ -530,16 +532,17 @@
 		\captionof{table}{Observed versus predicted convergence rates (log-log
 			slopes) for $f_m(x)=|x|^m$.}
 		\label{tab:convergence_rates}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{rccc}
 			\toprule
-			$m$ & \textbf{Continuous Derivatives ($m-1$)} & \textbf{Observed Slope} & \textbf{Predicted Slope} \\
+			$m$ & Continuous Derivatives ($m-1$) & Observed Slope & Predicted Slope \\
 			\midrule
-			1   & 0                                       & $-1.051$                & $-1$                     \\
-			3   & 2                                       & $-3.147$                & $-3$                     \\
-			5   & 4                                       & $-5.324$                & $-5$                     \\
-			7   & 6                                       & $-7.660$                & $-7$                     \\
-			9   & 8                                       & $-10.418$               & $-9$                     \\
-			11  & 10                                      & $-12.724$               & $-11$                    \\
+			1   & 0                              & $-1.051$       & $-1$            \\
+			3   & 2                              & $-3.147$       & $-3$            \\
+			5   & 4                              & $-5.324$       & $-5$            \\
+			7   & 6                              & $-7.660$       & $-7$            \\
+			9   & 8                              & $-10.418$      & $-9$            \\
+			11  & 10                             & $-12.724$      & $-11$           \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
@@ -582,10 +585,10 @@ Solving the polynomial interpolation problem by setting up a general $n \times
 	n$ linear system, such as using the power basis with a \textbf{Vandermonde
 	matrix} $\mathbf{V}_n \mathbf{c} = \mathbf{f}$, is often impractical for large
 $n$. The cost of solving such a system using general-purpose decompositions like
-\textbf{LU} or \textbf{QR} scales as $\propto n^3$.
+LU or QR scales as $\propto n^3$.
 
-It is crucial to distinguish between \textbf{interpolation} ($m=n$) and
-\textbf{least squares} ($m > n$). While QR decomposition is slightly more
+It is crucial to distinguish between interpolation ($m=n$) and
+least squares ($m > n$). While QR decomposition is slightly more
 computationally demanding than LU, it is highly recommended for least squares
 problems because it is far more stable than solving normal equations. For an $m
 	\times n$ matrix, the thin QR decomposition requires approximately $2mn^2$
@@ -598,7 +601,7 @@ basic form, evaluating the interpolating polynomial $p(x)$ at a single point
 requires recomputing $n$ Lagrange basis functions $\ell_j(x)$, each involving a
 product of $n-1$ terms. This leads to an evaluation cost of $\propto n^2$.
 
-The \textbf{barycentric form} of Lagrange interpolation overcomes these
+The barycentric form of Lagrange interpolation overcomes these
 limitations by separating the calculation into a pre-computation step and an
 evaluation step:
 \begin{equation*}
@@ -608,26 +611,26 @@ The support coefficients (or weights) $\lambda_j$ depend only on the node
 positions. Computing all $n$ weights requires $O(n^2)$ operations, but once they
 are known, evaluating $p(x)$ for any $x$ costs only $\propto n$ flops.
 Furthermore, the barycentric form is exceptionally efficient for
-\textbf{updating} the interpolant; adding a new point $x_{k}$ costs only
+updating the interpolant; adding a new point $x_{k}$ costs only
 $\propto (k-1)$ flops to update the weights.
 
 \paragraph{The Chebyshev Advantage}
 For certain node distributions, the computational burden is even lower. For
-\textbf{equidistant} or \textbf{Chebyshev points}, analytic formulas allow the
+equidistant or Chebyshev points, analytic formulas allow the
 weights $\lambda_j$ to be calculated in only $O(n)$ operations. In these cases,
 the barycentric formula is considered superior to almost all other interpolation
 schemes.
 
 Chebyshev points, in particular, provide several critical advantages:
 \begin{itemize}
-	\item \textbf{Improved Conditioning:} Chebyshev nodes significantly improve
+	\item Improved Conditioning: Chebyshev nodes significantly improve
 	      the conditioning of the interpolation problem compared to equidistant nodes,
 	      making the result far less sensitive to rounding errors.
-	\item \textbf{Numerical Stability:} When paired with the barycentric form,
+	\item Numerical Stability: When paired with the barycentric form,
 	      Chebyshev nodes of the second kind demonstrate excellent stability. Potential
 	      numerical issues near nodes are mitigated as errors in the numerator and
 	      denominator essentially cancel out.
-	\item \textbf{Avoidance of Precision Loss:} Unlike equidistant nodes, which
+	\item Avoidance of Precision Loss: Unlike equidistant nodes, which
 	      lead to Runge's phenomenon and a massive loss of accurate digits as $n$
 	      increases, Chebyshev points distribute nodes in a way that minimizes error
 	      amplification and maintains structural integrity even for high degrees.

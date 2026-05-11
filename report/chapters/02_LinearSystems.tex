@@ -50,13 +50,14 @@
 		\centering
 		\captionof{table}{Forward Substitution Results}
 		\label{tab:forward_results}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lcc}
-			\hline
+			\toprule
 			System          & Dimension    & Computed Solution $\mathbf{x}^T$ \\
-			\hline
+			\midrule
 			$\mathcal{S}_1$ & $3 \times 3$ & $[2.0, 0.0, -5.0]$               \\
 			$\mathcal{S}_2$ & $4 \times 4$ & $[-1.0, -1.0, 0.0, 2.0]$         \\
-			\hline
+			\bottomrule
 		\end{tabular}
 	\end{center}
 
@@ -106,13 +107,14 @@
 		\centering
 		\captionof{table}{Backward Substitution Results}
 		\label{tab:backward_results}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lcc}
-			\hline
+			\toprule
 			System          & Dimension    & Computed Solution $\mathbf{x}^T$ \\
-			\hline
+			\midrule
 			$\mathcal{S}_3$ & $3 \times 3$ & $[2.0, -5.0, 2.0]$               \\
 			$\mathcal{S}_4$ & $4 \times 4$ & $[-3.3333\dots, 8.0, -1.0, 1.0]$ \\
-			\hline
+			\bottomrule
 		\end{tabular}
 	\end{center}
 
@@ -167,7 +169,7 @@
 	forms:
 
 	\begin{itemize}
-		\item \textbf{Matrix $A_1$ ($3\times3$):}
+		\item Matrix $A_1$ ($3\times3$):
 		      \[
 			      L_1 = \begin{bmatrix}
 				      1.0 & 0.0  & 0.0 \\
@@ -180,7 +182,7 @@
 				      0.0 & 0.0  & -2.0
 			      \end{bmatrix}
 		      \]
-		\item \textbf{Matrix $A_2$ ($4\times4$):}
+		\item Matrix $A_2$ ($4\times4$):
 		      \[
 			      L_2 = \begin{bmatrix}
 				      1.0  & 0.0  & 0.0  & 0.0 \\
@@ -195,7 +197,7 @@
 				      0.0 & 0.0  & 0.0  & 8.0
 			      \end{bmatrix}
 		      \]
-		\item \textbf{Matrix $A_3$ ($4\times4$):}
+		\item Matrix $A_3$ ($4\times4$):
 		      \[
 			      L_3 = \begin{bmatrix}
 				      1.0  & 0.0   & 0.0  & 0.0 \\
@@ -221,12 +223,13 @@
 
 	\begin{center}
 		\centering
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lc}
-			\hline
-			\textbf{Matrix} & \textbf{Determinant Error ($\det(L) \det(U) - \det(A)$)} \\ \hline
+			\toprule
+			Matrix & Determinant Error ($\det(L) \det(U) - \det(A)$) \\ \midrule
 			$A_1$           & $3.55 \times 10^{-15}$                                   \\
 			$A_2$           & $5.68 \times 10^{-14}$                                   \\
-			$A_3$           & $-1.42 \times 10^{-14}$                                  \\ \hline
+			$A_3$           & $-1.42 \times 10^{-14}$                                  \\ \bottomrule
 		\end{tabular}
 		\captionof{table}{Numerical discrepancy in determinant calculation using LU
 			factors.}
@@ -368,7 +371,7 @@
 	presented below:
 
 	\begin{itemize}
-		\item \textbf{Matrix $A_1$ ($3\times3$):}
+		\item Matrix $A_1$ ($3\times3$):
 		      \[
 			      L_1 = \begin{bmatrix}
 				      1.0 & 0.0    & 0.0 \\
@@ -384,7 +387,7 @@
 		      The residual $P_1 A_1 - L_1 U_1$ yielded a zero matrix, confirming an
 		      exact decomposition within machine precision.
 
-		\item \textbf{Matrix $A_2$ ($4\times4$):}
+		\item Matrix $A_2$ ($4\times4$):
 		      \[
 			      L_2 = \begin{bmatrix}
 				      1.0   & 0.0  & 0.0     & 0.0 \\
@@ -402,7 +405,7 @@
 		      The pivoting strategy effectively reordered the rows to maintain
 		      diagonal dominance, resulting in a zero residual matrix.
 
-		\item \textbf{Matrix $A_3$ ($4\times4$):}
+		\item Matrix $A_3$ ($4\times4$):
 		      \[
 			      L_3 = \begin{bmatrix}
 				      1.0  & 0.0  & 0.0       & 0.0 \\
@@ -433,12 +436,12 @@
 	\paragraph{Results for Exercise~\ref{ex:2.7} (Linear System with Pivoting)}
 	For the transformation matrix $\mathbf{A}$ and vector $\mathbf{z} = [2, 2, 1]^T$:
 	\begin{enumerate}
-		\item \textbf{Forward substitution:} Solving $L\mathbf{y} = P\mathbf{b}$
+		\item Forward substitution: Solving $L\mathbf{y} = P\mathbf{b}$
 		      where $\mathbf{b} = \mathbf{Az}$ gives:
 		      \[
 			      \mathbf{y} \approx [3.9543, 4.8878, 1.0]^T
 		      \]
-		\item \textbf{Backward substitution:} Solving $U\mathbf{x} = \mathbf{y}$ yields:
+		\item Backward substitution: Solving $U\mathbf{x} = \mathbf{y}$ yields:
 		      \[
 			      \mathbf{x} \approx [2.0, 1.9999999999999993, 1.0]^T
 		      \]
@@ -562,7 +565,7 @@
 		\end{bmatrix}.
 	\]
 
-	\item \textbf{Condition numbers of $\mathbf{L}$ and $\mathbf{U}$:}
+	\item Condition numbers of $\mathbf{L}$ and $\mathbf{U}$:
 	\[
 		\|\mathbf{L}\|_\infty = 1 + \left| \frac{-1}{\epsilon} \right|, \quad
 		\mathbf{L}^{-1} = \begin{bmatrix} 1 & 0 \\ 1/\epsilon & 1 \end{bmatrix} \implies
@@ -633,8 +636,8 @@
 	without pivoting, such that $\mathbf{N} = \mathbf{L}\mathbf{U}$. The solution
 	vector $\mathbf{x}$ is obtained through a two-step substitution process:
 	\begin{enumerate}
-		\item \textbf{Forward substitution}: Solve $\mathbf{L}\mathbf{c} = \mathbf{z}$ for $\mathbf{c}$.
-		\item \textbf{Backward substitution}: Solve $\mathbf{U}\mathbf{x} = \mathbf{c}$ for $\mathbf{x}$.
+		\item Forward substitution: Solve $\mathbf{L}\mathbf{c} = \mathbf{z}$ for $\mathbf{c}$.
+		\item Backward substitution: Solve $\mathbf{U}\mathbf{x} = \mathbf{c}$ for $\mathbf{x}$.
 	\end{enumerate}
 
 	\paragraph{Results}
@@ -674,10 +677,11 @@
 		      order to determine the most likely simple rational value of $\alpha$.
 
 		      \begin{center}
-			      \begin{tabular}{|l|c|c|}
-				      \hline
-				      \textbf{Planet} & \textbf{Distance from sun in Mkm} & \textbf{Orbital period in days} \\
-				      \hline
+			      \renewcommand{\arraystretch}{1.2}
+			      \begin{tabular}{lcc}
+				      \toprule
+				      Planet & Distance from sun in Mkm & Orbital period in days \\
+				      \midrule
 				      Mercury         & 57.59                             & 87.99                           \\
 				      Venus           & 108.11                            & 224.7                           \\
 				      Earth           & 149.57                            & 365.26                          \\
@@ -686,7 +690,7 @@
 				      Saturn          & 1427                              & 10759                           \\
 				      Uranus          & 2870.3                            & 30684                           \\
 				      Neptune         & 4499.9                            & 60188                           \\
-				      \hline
+				      \bottomrule
 			      \end{tabular}
 		      \end{center}
 
@@ -712,15 +716,16 @@
 	The fit yields $\alpha = 1.498$ and $c = 0.202$. The statistical quality of
 	the fit is exceptionally high, as evidenced by the following metrics:
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lc}
-			\hline
-			\textbf{Metric}    & \textbf{Value} \\
-			\hline
+			\toprule
+			Metric    & Value \\
+			\midrule
 			$\chi^2$           & 0.0641         \\
 			Degrees of Freedom & 6              \\
 			$\chi^2_{red}$     & 0.0107         \\
 			$p$-value          & 1.0            \\
-			\hline
+			\bottomrule
 		\end{tabular}
 	\end{center}
 
@@ -808,13 +813,14 @@
 	\begin{center}
 		\centering
 		\captionof{table}{Goodness-of-fit statistics evaluated over the continuous plotting grid.}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{l c c c c}
-			\hline
-			\textbf{Model}        & $\chi^2$ & \textbf{DoF} ($\nu$) & $\chi^2_\nu$ & \textbf{$p$-value} \\
-			\hline
+			\toprule
+			Model        & $\chi^2$ & DoF ($\nu$) & $\chi^2_\nu$ & $p$-value \\
+			\midrule
 			Polynomial (deg 6)    & 3.0115   & 393                  & 0.0077       & 1.0                \\
 			Fourier (2 harmonics) & 0.4565   & 395                  & 0.0012       & 1.0                \\
-			\hline
+			\bottomrule
 		\end{tabular}
 		\label{tab:fit_stats_periodic}
 	\end{center}
@@ -958,15 +964,15 @@
 	$\mathbf{y}$ contains the evaluated data points. The problem is solved using
 	three distinct numerical approaches:
 	\begin{enumerate}[label=(\alph*)]
-		\item \textbf{Normal Equations:} The system is transformed into the
+		\item Normal Equations: The system is transformed into the
 		      square system $P^T P \mathbf{c} = P^T \mathbf{y}$. The coefficients are obtained
 		      by applying an LU decomposition to the symmetric positive-definite matrix $P^T
 			      P$.
-		\item \textbf{Thin QR Decomposition:} We factor the matrix $P$ such that
+		\item Thin QR Decomposition: We factor the matrix $P$ such that
 		      $P = QR$, where $Q \in \mathbb{R}^{100 \times 15}$ has orthonormal columns and
 		      $R \in \mathbb{R}^{15 \times 15}$ is upper triangular. The system simplifies to
 		      $R\mathbf{c} = Q^T \mathbf{y}$, which is solved via backward substitution.
-		\item \textbf{Q-less QR Decomposition:} To circumvent the explicit
+		\item Q-less QR Decomposition: To circumvent the explicit
 		      construction and storage of $Q$, we apply the Modified Gram-Schmidt (MGS)
 		      orthogonalization to the augmented matrix $[P \mid \mathbf{y}]$. This directly
 		      yields the upper triangular factor $R$ and the updated right-hand side vector
@@ -980,9 +986,10 @@
 
 	\begin{center}
 		\centering
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lrr}
 			\toprule
-			\textbf{Method}         & \textbf{Computed $c_{15}$} & \textbf{Absolute Error} \\
+			Method         & Computed $c_{15}$ & Absolute Error \\
 			\midrule
 			Normal Equations (LU)   & -0.27504821                & 1.27504821              \\
 			Thin QR Decomposition   & 0.97293904                 & 0.02706096              \\
@@ -1001,9 +1008,10 @@
 
 	\begin{center}
 		\centering
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{lrr}
 			\toprule
-			\textbf{Method}         & \textbf{$\chi^2$}      & \textbf{Reduced $\chi^2$} \\
+			Method         & $\chi^2$      & Reduced $\chi^2$ \\
 			\midrule
 			Normal Equations (LU)   & $1.46 \times 10^{-10}$ & $3.78 \times 10^{-13}$    \\
 			Thin QR Decomposition   & $7.01 \times 10^{-12}$ & $1.82 \times 10^{-14}$    \\
@@ -1104,12 +1112,12 @@
 		\label{tab:qr_results}
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{ccccc}
-			\hline
-			$i$ & $\lambda_{QR}$      & $\lambda_{\text{true}}$ & Absolute Error         & $||\mathbf{A}\mathbf{v}_i - \lambda_i\mathbf{v}_i||_2$ \\ \hline
+			\toprule
+			$i$ & $\lambda_{QR}$      & $\lambda_{\text{true}}$ & Absolute Error         & $||\mathbf{A}\mathbf{v}_i - \lambda_i\mathbf{v}_i||_2$ \\ \midrule
 			1   & $5.745281240174138$ & $5.745281240174139$     & $8.88 \times 10^{-16}$ & $4.63 \times 10^{-11}$                                 \\
 			2   & $4.177282919112892$ & $4.177282919112894$     & $1.78 \times 10^{-15}$ & $4.63 \times 10^{-11}$                                 \\
 			3   & $2.822717080887108$ & $2.822717080887109$     & $4.44 \times 10^{-16}$ & $2.27 \times 10^{-13}$                                 \\
-			4   & $1.254718759825861$ & $1.254718759825861$     & $2.22 \times 10^{-16}$ & $1.02 \times 10^{-15}$                                 \\ \hline
+			4   & $1.254718759825861$ & $1.254718759825861$     & $2.22 \times 10^{-16}$ & $1.02 \times 10^{-15}$                                 \\ \bottomrule
 		\end{tabular}
 	\end{center}
 
@@ -1136,7 +1144,7 @@ The computational complexity and numerical stability of the algorithms discussed
 in this section vary significantly.
 
 \paragraph{LU Decomposition}
-The \textbf{LU decomposition} of an $n \times n$ matrix $\mathbf{A}$ requires
+The LU decomposition of an $n \times n$ matrix $\mathbf{A}$ requires
 approximately $\frac{2}{3}n^3$ flops for $n \gg 1$. In contrast, a direct
 evaluation of the determinant based on the Leibniz formula has a cost $\propto
 n!$, making it computationally infeasible for even moderately sized matrices.
@@ -1144,8 +1152,8 @@ Once the decomposition is performed, solving the resulting triangular systems
 via forward or backward substitution requires asymptotically $\sim n^2$ flops.
 
 \paragraph{Overdetermined Linear Systems}
-When solving \textbf{linear least-squares problems}, the computational cost
-depends on the method used to solve the \textbf{normal equations}. While both LU
+When solving linear least-squares problems, the computational cost
+depends on the method used to solve the normal equations. While both LU
 and Cholesky decompositions scale with $n^3$, the \textbf{Cholesky
 decomposition} is more efficient because it exploits the symmetry of the matrix
 $\mathbf{A}^T\mathbf{A}$, requiring roughly half the operations ($\sim
@@ -1156,8 +1164,8 @@ general LU decomposition without pivoting can be unstable if a small diagonal
 element appears during elimination.
 
 \paragraph{QR Decomposition}
-Alternatively, the \textbf{QR decomposition} offers a more stable approach. For
-an $m \times n$ matrix ($m \ge n$), the \textbf{thin QR decomposition} based on
+Alternatively, the QR decomposition offers a more stable approach. For
+an $m \times n$ matrix ($m \ge n$), the thin QR decomposition based on
 Gram-Schmidt orthogonalization requires approximately $2mn^2$ flops. This "thin"
 or compressed form increases efficiency in overdetermined systems by avoiding
 the calculation of the vectors $\mathbf{q}_{n+1}, \dots, \mathbf{q}_m$,
@@ -1167,7 +1175,7 @@ n$), the asymptotic cost scales as $\propto n^3$.
 
 \paragraph{Final observations}
 While the scaling is similar to LU, the QR-based approach is often preferred for
-linear least squares because it is \textbf{far more stable}. Specifically, it
+linear least squares because it is far more stable. Specifically, it
 can be shown that $\kappa_{2}(\mathbf{\hat{R}}) = \kappa_{2}(\mathbf{A})$. Thus,
 the precision of the solution is controlled by the condition number of the
 matrix $\mathbf{A}$ itself, rather than the much larger condition number of

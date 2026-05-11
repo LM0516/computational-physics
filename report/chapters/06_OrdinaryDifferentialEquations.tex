@@ -69,6 +69,7 @@
 
 	\vspace{1em}
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-1.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-error-1.pdf}                                              \\
@@ -143,6 +144,7 @@
 	propagation are displayed below.
 
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-es3-1.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-error-es3-1.pdf} \\
@@ -152,6 +154,7 @@
 	\end{center}
 
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-es3-2.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-error-es3-2.pdf} \\
@@ -161,6 +164,7 @@
 	\end{center}
 
 	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-es3-3.pdf} &
 			\includegraphics[width=0.45\textwidth]{figures/6-2/euler-method-error-es3-3.pdf} \\
@@ -175,18 +179,18 @@
 	guarantees a relatively small step size $h$, the stability of the method plays a
 	critical role in the error propagation:
 	\begin{itemize}
-		\item \textbf{System 1 (Oscillatory):} The homogeneous part of the ODE
+		\item System 1 (Oscillatory): The homogeneous part of the ODE
 		      yields purely imaginary eigenvalues ($\lambda = \pm 3i$). The stability region
 		      of the explicit Euler method strictly excludes the imaginary axis. Consequently,
 		      the numerical solution unconditionally amplifies the oscillations over time,
 		      leading to a linearly bounding envelope of the absolute error as a phase drift
 		      occurs.
-		\item \textbf{System 2 (Exponential Growth):} The exact solution
+		\item System 2 (Exponential Growth): The exact solution
 		      exhibits an exponentially growing term $e^{2t}$. Since the function values grow
 		      rapidly, the local truncation error, which is proportional to $y''(t)$, also
 		      scales exponentially. Thus, the absolute error diverges dramatically as $t \to
 			      1.5$.
-		\item \textbf{System 3 (Exponential Decay):} Due to the dampening factor
+		\item System 3 (Exponential Decay): Due to the dampening factor
 		      $e^{-2t}$, the exact transient solution decays toward the linear particular
 		      solution. The absolute error peaks during the transient phase near $t=0.5$ and
 		      subsequently decays. This behavior demonstrates that Euler's method performs
@@ -216,7 +220,7 @@
 		      $||u-\hat{u}||_\infty=\max_{0\leq i\leq n} |u_i-\hat{u}(t_i)|$ as a function of
 		      the \emph{number of function evaluations} in a log-log plot, together with a
 		      line showing the expected rate of convergence.
-		\item (\textbf{Optional}) Add the case of the ME2 and Heun's method.
+		\item (Optional) Add the case of the ME2 and Heun's method.
 	\end{enumerate}
 \end{exercise}
 
@@ -408,7 +412,7 @@
 
 		\item Verify that the norm of the wave function is approximately conserved in time.
 
-		\item \textbf{(Optional)} Use the analytic solution to determine the
+		\item (Optional) Use the analytic solution to determine the
 		      error due to the discretizations.
 	\end{enumerate}
 \end{exercise}
@@ -458,15 +462,15 @@
 		\centering
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{ll}
-			\hline
-			\textbf{Time ($t$)} & \textbf{Calculated Norm ($\mathcal{N}$)} \\
-			\hline
+			\toprule
+			Time ($t$) & Calculated Norm ($\mathcal{N}$) \\
+			\midrule
 			0.0                 & $1.0000000000000000$                     \\
 			2.0                 & $0.9999999999998901$                     \\
 			3.0                 & $0.9999999999998348$                     \\
 			4.0                 & $0.9999999999997797$                     \\
 			5.0                 & $0.9999999999997251$                     \\
-			\hline
+			\bottomrule
 		\end{tabular}
 		\captionof{table}{Conservation of the wave function norm over time.}
 		\label{tab:norm_conservation}
@@ -495,7 +499,7 @@
 				      are reasonable starting values for this study.]
 		\item Verify that the norm of the wave function is approximately
 		      conserved in time.
-		\item \textbf{(Optional)} Use the analytic solution to determine the
+		\item (Optional) Use the analytic solution to determine the
 		      error due to the discretizations.
 	\end{enumerate}
 \end{exercise}
@@ -545,13 +549,13 @@
 		\centering
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{ll}
-			\hline
-			\textbf{Time ($t$)} & \textbf{Calculated Norm ($\mathcal{N}$)} \\
-			\hline
+			\toprule
+			Time ($t$) & Calculated Norm ($\mathcal{N}$) \\
+			\midrule
 			0.0                 & $1.0000000000000000$                     \\
 			10.0                & $0.9999999978230356$                     \\
 			20.0                & $0.9999999956460712$                     \\
-			\hline
+			\bottomrule
 		\end{tabular}
 		\captionof{table}{Conservation of the wave function norm over time for the
 			moving wave packet.}
@@ -590,7 +594,7 @@
 		      squared of the wave function at the times $t=0,10,30$.
 		\item Compute the reflection and transmission coefficients and verify
 		      that $R+T\approx 1$.[\emph{Hint}: Consider a value of $t_{\rm max}\approx 30$.]
-		\item \textbf{(Optional)} Study the behavior of $R$ and $T$ as you vary
+		\item (Optional) Study the behavior of $R$ and $T$ as you vary
 		      the height and width of the potential and/or the parameters of the wave
 		      function.
 	\end{enumerate}
@@ -622,13 +626,13 @@
 		\centering
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{ll}
-			\hline
-			\textbf{Time ($t$)} & \textbf{Calculated Norm ($\mathcal{N}$)} \\
-			\hline
+			\toprule
+			Time ($t$) & Calculated Norm ($\mathcal{N}$) \\
+			\midrule
 			0.0                 & $1.0000000000000000$                     \\
 			10.0                & $0.9999999978230362$                     \\
 			30.0                & $0.9999999934691076$                     \\
-			\hline
+			\bottomrule
 		\end{tabular}
 		\captionof{table}{Conservation of the total probability norm over time.}
 		\label{tab:scattering_norm}
@@ -675,7 +679,7 @@
 		      binding energies together with the potential.[\emph{Hint}: Remember to normalize
 					the wave functions. Do you really need to compute the integral of the squared
 					wave function for that?]
-		\item \textbf{(Optional)} Compare the results that you found in point
+		\item (Optional) Compare the results that you found in point
 		      (a) for the energies $E_n$ with the exact solutions of the transcendental
 		      equations for the finite square well
 		      \[
