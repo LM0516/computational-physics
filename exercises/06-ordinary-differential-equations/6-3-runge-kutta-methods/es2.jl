@@ -25,7 +25,7 @@ function main()
 
     # Solve (a)
     ics_a = [[0.1, 0.0], [0.0, 1.9]]
-    p_a = plot(title="Phase Plane (a)", xlabel="x", ylabel="y", aspect_ratio=:equal)
+    p_a = plot(xlabel="x", ylabel="y", aspect_ratio=:equal)
     for u0 in ics_a
         t, u = rk4(f_a, a, b, n, u0)
         x = [ui[1] for ui in u]
@@ -35,7 +35,7 @@ function main()
 
     # Solve (b)
     ics_b = [[0.95, 0.0], [0.0, 1.05], [-2.5, 0.0]]
-    p_b = plot(title="Phase Plane (b)", xlabel="x", ylabel="y", aspect_ratio=:equal)
+    p_b = plot(xlabel="x", ylabel="y", aspect_ratio=:equal)
     for u0 in ics_b
         t, u = rk4(f_b, a, b, n, u0)
         x = [ui[1] for ui in u]

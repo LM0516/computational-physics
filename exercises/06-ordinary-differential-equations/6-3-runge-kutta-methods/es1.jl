@@ -42,7 +42,6 @@ function main()
 
     xlabel!("Number of function evaluations")
     ylabel!("Max Error")
-    title!("Convergence of IE2 and RK4")
 
     save_plot(p, "IE2-vs-RK4", "6-3")
     display(p)

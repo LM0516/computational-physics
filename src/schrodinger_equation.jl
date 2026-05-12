@@ -75,7 +75,6 @@ function compute_RT(t_target::Float64, t_min::Float64, dt::Float64, snap::Vector
         # E. Optional: Plotting
         p = plot(x_grid, abs2.(psi),
             label="t=30",
-            title="Scattering at t=30",
             xlabel="x", ylabel=L"|\psi(x,t)|^{2}",
             xlims=(-60, 60), # Zoom in to see the packets
             fill=(0, 0.2, :blue)
