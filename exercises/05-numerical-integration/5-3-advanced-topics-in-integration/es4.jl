@@ -28,7 +28,7 @@ function plot_errors(glq_integrals::Vector{Float64}, deq_integrals::Vector{Float
     deq_err = @. abs(deq_integrals - exact)
 
     println("Plotting the errors...")
-    p = scatter_generic(1:length(glq_err), make_log_safe(glq_err), label="Gauss-Legendre integration", title=function_eq, yscale=:log10)
+    p = scatter_generic(1:length(glq_err), make_log_safe(glq_err), label="Gauss-Legendre integration", yscale=:log10)
     scatter_add!(p, 1:length(deq_err), make_log_safe(deq_err), label="Double exponential quadrature integration")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Errors")

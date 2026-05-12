@@ -54,7 +54,7 @@ function main()
         yp_exact = [val[2] for val in exact]
 
         # Plot solution and derivative
-        p1 = plot_generic(t, y_num, label="Numerical y(t)", xlabel="Time (t)", ylabel="Value", title=func.title, lw=2)
+        p1 = plot_generic(t, y_num, label="Numerical y(t)", xlabel="Time (t)", ylabel="Value", lw=2)
         plot_add!(p1, t, yp_num, label="Numerical y'(t)", lw=2, linestyle=:dash)
         plot_add!(p1, t, y_exact, label="Exact y(t)", color=:black, linestyle=:dot)
         plot_add!(p1, t, yp_exact, label="Exact y'(t)", color=:grey, linestyle=:dot)
@@ -67,7 +67,7 @@ function main()
         error_y = abs.(y_num .- y_exact)
         error_yp = abs.(yp_num .- yp_exact)
 
-        p2 = plot_generic(t, error_y, label="Error y(t)", xlabel="Time (t)", ylabel="Absolute Error", title="Error for $(func.title)", lw=2)
+        p2 = plot_generic(t, error_y, label="Error y(t)", xlabel="Time (t)", ylabel="Absolute Error", lw=2)
         plot_add!(p2, t, error_yp, label="Error y'(t)", lw=2, linestyle=:dash)
 
         save_plot(p2, "euler-method-error-es3-$i", "6-2")

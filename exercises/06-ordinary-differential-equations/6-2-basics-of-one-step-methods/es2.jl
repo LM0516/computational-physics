@@ -32,7 +32,7 @@ function main()
     for (fig_name, f) in enumerate(functions)
         n = 320
         t, u = euler_method(f.f, f.a, f.b, n, f.u0)
-        p1 = plot_generic(t, u, label="Numerical (Euler)", xlabel="Time (t)", ylabel="u(t)", title=f.title)
+        p1 = plot_generic(t, u, label="Numerical (Euler)", xlabel="Time (t)", ylabel="u(t)")
         plot_add!(p1, t, f.g.(t), label="Analytical (Exact)", linestyle=:dash)
         save_plot(p1, "euler-method-$fig_name", "6-2")
         display(p1)

@@ -112,9 +112,9 @@ Each row must be a tuple with the same number of elements as `headers`.
 function print_method_table(title, rows; headers=("Function", "Convergence", "Cost"))
     num_cols = length(headers)
     formatted_rows = [tuple([format_metric(row[i]) for i in 1:num_cols]...) for row in rows]
-    
+
     widths = [maximum(length.([string(headers[i]); [string(row[i]) for row in formatted_rows]])) for i in 1:num_cols]
-    
+
     sep = "+" * join([repeat("-", w + 2) for w in widths], "+") * "+"
 
     println()

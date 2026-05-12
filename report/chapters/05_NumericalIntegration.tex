@@ -225,7 +225,8 @@
 \end{exercise}
 
 \begin{solution}
-	The Gauss-Legendre quadrature optimally approximates the integral of a
+
+	The Gauss-Legendre quadrature approximates the integral of a
 	function over $[-1, 1]$ using a specific set of points (nodes) and
 	corresponding weights. The nodes $x_k$ correspond to the roots of the $n$-th
 	degree Legendre polynomial, $P_n(x) = 0$.
@@ -271,9 +272,17 @@
 		\end{tabular}
 	\end{center}
 
+	\paragraph{Conclusion}
+	The implemented Gauss--Legendre quadrature algorithm accurately computed the
+	quadrature nodes and weights for low-order cases by combining Chebyshev-based
+	initial estimates with Newton iteration applied to the Legendre polynomials. The
+	results demonstrated rapid convergence to machine precision and excellent
+	agreement with the reference \texttt{GaussQuadrature.jl} implementation,
+	validating both the correctness and numerical stability of the method.
+
 \end{solution}
 
-\subsection{Advantage topics in integration}
+\subsection{Advanced topics in integration}
 
 \begin{exercise}
 	For each integral, compute approximations using Gauss-Legendre quadrature
@@ -291,8 +300,8 @@
 \begin{solution}
 
 	To analyze the convergence characteristics of numerical integration, we
-	extended the exercise to compare three distinct quadrature frameworks:
-	Gauss-Legendre Quadrature (GLQ) and the Fejér rule.
+	extended the exercise to compare two distinct quadrature frameworks:
+	Gauss--Legendre Quadrature (GLQ) and the Fejér rule.
 
 	For a given analytical integral $I$, the numerical approximation with $n$
 	nodes is denoted as $I_n$. The absolute error is defined as $E_n = |I_n - I|$.
@@ -307,37 +316,20 @@
 		\centering
 		\captionof{table}{Exact solutions versus numerical approximations at $n=40$}
 		\label{tab:results-glq}
-		\resizebox{\textwidth}{!}{
-			\renewcommand{\arraystretch}{1.2}
-			\begin{tabular}{c r r r}
-				\toprule
-				Integral & Exact Solution        & Fejér                 & Gauss-Legendre        \\
-				\midrule
-				1        & $13.644958598563875$  & $13.644958598563875$  & $13.644958598563878$  \\
-				2        & $0.5908048988396807$  & $0.5908048988396811$  & $0.5908048988396809$  \\
-				3        & $1.7315389664793173$  & $1.7315389664793175$  & $1.7315389664793173$  \\
-				4        & $0.8326971815988362$  & $0.8326971821009688$  & $0.8326971815925093$  \\
-				5        & $-0.9252754126021273$ & $-0.9252754126021280$ & $-0.9252754126021260$ \\
-				\bottomrule
-			\end{tabular}
-		}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c r r r}
+			\toprule
+			Integral & Exact Solution        & Fejér                 & Gauss-Legendre        \\
+			\midrule
+			1        & $13.644958598563875$  & $13.644958598563875$  & $13.644958598563878$  \\
+			2        & $0.5908048988396807$  & $0.5908048988396811$  & $0.5908048988396809$  \\
+			3        & $1.7315389664793173$  & $1.7315389664793175$  & $1.7315389664793173$  \\
+			4        & $0.8326971815988362$  & $0.8326971821009688$  & $0.8326971815925093$  \\
+			5        & $-0.9252754126021273$ & $-0.9252754126021280$ & $-0.9252754126021260$ \\
+			\bottomrule
+		\end{tabular}
 	\end{center}
 
-	\paragraph{Discussion and Conclusion}
-	The convergence profiles behave strictly according to theoretical expectations
-	for spectral methods. For strictly entire analytical functions, Gauss-Legendre
-	rule exhibit exponential convergence, rapidly descending to the noise floor
-	imposed by $\varepsilon_{\text{mach}}$. At this threshold, \textit{catastrophic
-		cancellation} and inherent rounding errors dominate, causing the error to
-	oscillate pseudo-randomly around $10^{-15}$.
-
-	Integral 4, $f(x) = (1+9x^2)^{-1}$, represents a classically ill-conditioned
-	scenario due to the presence of poles located at $x = \pm i/3$ in the complex
-	plane. Consequently, the asymptotic convergence rate is constrained by the
-	proximity of these poles to the integration domain, yielding a much shallower
-	descent in absolute error compared to the preceding entire functions.
-
-	\paragraph{Figures}
 	The evolution of the absolute errors on a semi-logarithmic scale are illustrated below.
 
 	\begin{center}
@@ -357,9 +349,25 @@
 		\includegraphics[width=0.45\textwidth]{figures/5-3/clenshaw-curtis-plot-5.pdf} \\
 		{\small Integral 5: $\int_{\pi/2}^{\pi} x^2 \sin(8x) dx$}
 	\end{center}
+
+	\paragraph{Conclusion}
+	The convergence profiles behave strictly according to theoretical expectations
+	for spectral methods. For strictly entire analytic functions, the
+	Gauss--Legendre rule exhibits exponential convergence, rapidly descending to the noise floor
+	imposed by $\varepsilon_{\text{mach}}$. At this threshold, \textit{catastrophic
+		cancellation} and inherent rounding errors dominate, causing the error to
+	oscillate pseudo-randomly around $10^{-15}$.
+
+	Integral 4, $f(x) = (1+9x^2)^{-1}$, represents an ill-conditioned scenario due
+	to the presence of poles located at $x = \pm i/3$ in the complex plane.
+	Consequently, the asymptotic convergence rate is constrained by the proximity of
+	these poles to the integration domain, yielding a much shallower descent in
+	absolute error compared to the preceding entire functions.
+
 \end{solution}
 
 \begin{exercise}
+
 	For each improper integral, compute approximations using the proper
 	double-exponential quadrature rule with $N=n/2$ and $n=4,6,8,\ldots,60$. Plot
 	the errors as functions of $n$ on a semi-log scale.
@@ -412,47 +420,22 @@
 		\captionof{table}{Exact solutions vs. Double-Exponential Quadrature
 			approximations at $n=60$ ($N=30$).}
 		\label{tab:de-results}
-		\resizebox{\textwidth}{!}{
-			\renewcommand{\arraystretch}{1.2}
-			\begin{tabular}{c r r}
-				\toprule
-				Integral & Exact Solution       & Computed Approximation ($n=60$) \\
-				\midrule
-				1        & $1.8137993642342178$ & $1.8137993642334227$            \\
-				2        & $1.3803884470431430$ & $1.3803884470431436$            \\
-				3        & $7.2859519436627430$ & $7.2859519436627450$            \\
-				4        & $1.5707963267948966$ & $1.5707963267948963$            \\
-				5        & $1.7724538509055159$ & $1.7724538509055163$            \\
-				\bottomrule
-			\end{tabular}
-		}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c r r}
+			\toprule
+			Integral & Exact Solution       & Computed Approximation ($n=60$) \\
+			\midrule
+			1        & $1.8137993642342178$ & $1.8137993642334227$            \\
+			2        & $1.3803884470431430$ & $1.3803884470431436$            \\
+			3        & $7.2859519436627430$ & $7.2859519436627450$            \\
+			4        & $1.5707963267948966$ & $1.5707963267948963$            \\
+			5        & $1.7724538509055159$ & $1.7724538509055163$            \\
+			\bottomrule
+		\end{tabular}
 	\end{center}
 
-	\paragraph{Discussion and Conclusion}
-	The results validate the exceptional power of double-exponential (DE)
-	quadrature. By applying an appropriate nonlinear conformal map to shift the
-	domain to $\mathbb{R}$, we achieve an extreme concentration of the transformed
-	integrand near the origin, with doubly-exponential tail decay.
-
-	As theoretically expected, the convergence rates displayed in the accompanying
-	figures are steep. For all five integrands—including Integral 5, which possesses
-	an inverse-square-root boundary singularity—the quadrature algorithm approaches
-	the double-precision noise floor $\varepsilon_{\text{mach}}$ by $n \approx 30
-		\sim 40$ (corresponding to $N \approx 15 \sim 20$). Beyond this optimal
-	saturation point, attempting to add more quadrature nodes ($n > 40$) yields no
-	further analytical benefit; rather, it introduces \textit{catastrophic
-		cancellation} due to the accumulation of floating-point rounding errors.
-
-	Furthermore, employing the alternative substitution $x(t) = \exp(t -
-		\exp(-t))$ for Integral 5 successfully mitigated numerical instability near the
-	singular origin $x=0$, enabling a convergence profile nearly identical to the
-	strictly smooth analytic integrals.
-
-	\paragraph{Figures}
 	The absolute errors $|I_n - I_{\text{exact}}|$ are evaluated and plotted as
 	functions of $n$ below.
-
-	\vspace{1em}
 
 	\begin{center}
 		\renewcommand{\arraystretch}{1.2}
@@ -472,6 +455,26 @@
 		{\small Integral 5: $\int_0^\infty \frac{e^{-x}}{\sqrt{x}} dx$}
 	\end{center}
 
+	\paragraph{Conclusion}
+	The results validate the exceptional power of double-exponential (DE)
+	quadrature. By applying an appropriate nonlinear conformal map to shift the
+	domain to $\mathbb{R}$, we achieve an extreme concentration of the transformed
+	integrand near the origin, with doubly-exponential tail decay.
+
+	As theoretically expected, the convergence rates displayed in the accompanying
+	figures are steep. For all five integrands, including Integral 5, which
+	possesses an inverse-square-root boundary singularity, the quadrature algorithm
+	approaches the double-precision noise floor $\varepsilon_{\text{mach}}$ by $n
+		\approx 30 \sim 40$ (corresponding to $N \approx 15 \sim 20$). Beyond this
+	optimal saturation point, attempting to add more quadrature nodes ($n > 40$)
+	yields no further analytical benefit; rather, it introduces catastrophic
+	cancellation due to the accumulation of floating-point rounding errors.
+
+	Furthermore, employing the alternative substitution $x(t) = \exp(t -
+		\exp(-t))$ for Integral 5 successfully mitigated numerical instability near the
+	singular origin $x=0$, enabling a convergence profile nearly identical to the
+	strictly smooth analytic integrals.
+
 \end{solution}
 
 \begin{exercise}
@@ -487,7 +490,6 @@
 		\item $\int_{0}^{\pi/2} \sqrt{\tan(x)}\, dx = \dfrac{\pi}{\sqrt{2}}$
 	\end{enumerate}
 \end{exercise}
-
 
 \begin{solution}
 
@@ -522,21 +524,19 @@
 		\centering
 		\captionof{table}{Final evaluated approximations at $n=60$ ($N=30$ for DE).}
 		\label{tab:comparison-results}
-		\resizebox{\textwidth}{!}{
-			\renewcommand{\arraystretch}{1.2}
-			\begin{tabular}{c r r r}
-				\toprule
-				Integral                 & Exact Solution        & GLQ ($n=60$)          & DEQ ($N=30$)          \\
-				\midrule
-				$\frac{1}{\sqrt{1-x^2}}$ & $1.5707963267948966$  & $1.5606199819857367$  & $1.5707963237302416$  \\
-				$\sqrt{x} \log x$        & $-0.4444444444444444$ & $-0.4444486588707492$ & $-0.4444444444444445$ \\
-				$\sqrt{1-x^2}$           & $0.7853981633974483$  & $0.7853988210355238$  & $0.7853981633974482$  \\
-				$(\log x)^2$             & $2.0000000000000000$  & $1.9965066840331340$  & $2.0000000042167450$  \\
-				$\log(\cos x)$           & $-1.0887930451518010$ & $-1.0885220739672092$ & $-1.0887930451517975$ \\
-				$\sqrt{\tan x}$          & $2.2214414690791830$  & $2.2034051373383350$  & $2.2214414784702050$  \\
-				\bottomrule
-			\end{tabular}
-		}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c r r r}
+			\toprule
+			Integral                 & Exact Solution        & GLQ ($n=60$)          & DEQ ($N=30$)          \\
+			\midrule
+			$\frac{1}{\sqrt{1-x^2}}$ & $1.5707963267948966$  & $1.5606199819857367$  & $1.5707963237302416$  \\
+			$\sqrt{x} \log x$        & $-0.4444444444444444$ & $-0.4444486588707492$ & $-0.4444444444444445$ \\
+			$\sqrt{1-x^2}$           & $0.7853981633974483$  & $0.7853988210355238$  & $0.7853981633974482$  \\
+			$(\log x)^2$             & $2.0000000000000000$  & $1.9965066840331340$  & $2.0000000042167450$  \\
+			$\log(\cos x)$           & $-1.0887930451518010$ & $-1.0885220739672092$ & $-1.0887930451517975$ \\
+			$\sqrt{\tan x}$          & $2.2214414690791830$  & $2.2034051373383350$  & $2.2214414784702050$  \\
+			\bottomrule
+		\end{tabular}
 	\end{center}
 
 	The numerical data confirms the theoretical limitations of Gauss-Legendre
@@ -554,13 +554,11 @@
 		x)^2 \to \infty$ as $x \to 0$ grow exceptionally fast, they aggressively combat
 	the boundary suppression provided by the tanh-sinh derivative.
 
-	\paragraph{Figures}
 	The error convergence profiles comparing GLQ and DEQ for all six integrals are
 	presented below. Note the distinct qualitative difference: DEQ typically
 	manifests a rapid, exponential descent, whereas GLQ exhibits a shallow, linear
 	decay on the semi-logarithmic axes.
 
-	\vspace{1em}
 	\begin{center}
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
@@ -579,4 +577,104 @@
 		\end{tabular}
 	\end{center}
 
+	\paragraph{Conclusion}
+	The numerical experiments clearly demonstrate the superior performance of
+	Double-Exponential Quadrature for integrals with endpoint singularities and
+	non-smooth behavior. While Gauss--Legendre quadrature remains highly effective
+	for analytic integrands, its convergence deteriorates substantially when the
+	smoothness assumptions are violated. The tanh-sinh transformation employed in
+	DEQ successfully regularizes these singular behaviors, enabling rapid
+	convergence to near machine precision with comparatively few function
+	evaluations. The observed error trends and benchmark comparisons therefore
+	validate the theoretical advantages of DEQ as a robust and highly accurate
+	method for evaluating improper and singular integrals.
+
 \end{solution}
+
+\subsection{Some observations about the algorithms used in this section}
+
+\paragraph{Automated validation}
+The numerical integration routines are also exercised by the Julia test suite in
+\texttt{test/submodules/numerical\_integration\_tests.jl}. The tests separate two
+aspects of the implementation: convergence, measured empirically on
+$\int_0^\pi \sin(x)\,dx=2$, and exactness or accuracy, checked on simple
+polynomial and Gaussian benchmark integrals. They also count the number of
+function evaluations, which is useful because quadrature rules differ not only in
+their asymptotic error but also in how much information they require from the
+integrand.
+
+\begin{center}
+	\centering
+	\captionof{table}{Validation metrics produced by the numerical integration
+		test suite. Convergence rates are reported for the composite Newton--Cotes
+		rules, while the remaining methods are summarized by the absolute error of
+		the selected exactness or accuracy check.}
+	\label{tab:quadrature-test-metrics}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{lrrl}
+		\toprule
+		Method             & Convergence rate & Accuracy                   & Computational cost          \\
+		\midrule
+		Trapezoidal        & $2.000186$       & --                         & $26$ evaluations ($m=12$)   \\
+		Simpson            & $4.000332$       & --                         & $25$ evaluations ($m=12$)   \\
+		Gauss--Legendre    & --               & $0.000000 \times 10^0$     & $4$ evaluations ($n=4$)     \\
+		Fejér              & --               & $1.110223 \times 10^{-16}$ & $8$ evaluations ($n=8$)     \\
+		Clenshaw--Curtis   & --               & $1.110223 \times 10^{-16}$ & $9$ evaluations ($n=8$)     \\
+		Double exponential & --               & $1.776357 \times 10^{-15}$ & $232$ evaluations ($N=100$) \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+The two empty entries in the accuracy column for the trapezoidal and Simpson
+rules are intentional: in this test they are used to estimate the empirical
+order of convergence, not to certify a single final error. Conversely, the
+free-node and transformed rules are tested on benchmark integrals for which the
+expected value is known exactly or to high precision, so their reported metric is
+the final absolute error. The Gauss--Legendre check integrates $x^5$ over
+$[-1,1]$ using a three-point rule, where exactness up to degree $2n-1=5$ gives a
+zero error in floating-point arithmetic. Fejér and Clenshaw--Curtis both recover
+the quadratic test integral to round-off accuracy, and the double-exponential
+rule evaluates the Gaussian integral $\int_{-\infty}^{\infty}e^{-x^2}\,dx$ with
+an error of order $10^{-15}$.
+
+The first two rows confirm the classical orders of the composite Newton--Cotes
+rules. The composite trapezoidal rule is a closed equally spaced rule based on a
+linear interpolant, and is exact for polynomials of degree at most one. Its
+global truncation error is $\mathcal{O}(h^2)$ when the integrand is sufficiently
+smooth, so halving the step size reduces the leading error by approximately a
+factor of four. Simpson's rule is also closed and equally spaced, but uses the
+endpoints and midpoint of each panel. Although it is derived from a quadratic
+interpolant, its symmetry makes it exact for cubic polynomials, and the smooth
+case improves to $\mathcal{O}(h^4)$. The measured rates, $2.000186$ and
+$4.000332$, therefore match the theoretical second- and fourth-order behavior.
+
+Gauss--Legendre quadrature belongs to the class of free-node rules. Its nodes are
+chosen as the zeros of Legendre polynomials rather than being fixed on an
+equally spaced grid. This choice maximizes the algebraic degree of exactness:
+with $n$ nodes, the rule is exact for every polynomial of degree at most
+$2n-1$. For analytic integrands this usually produces geometric convergence, and
+the positivity of the weights provides good numerical stability. The principal
+practical drawback is that the nodes are not nested: increasing $n$ changes the
+interior nodes, so function values from a lower-order computation are generally
+not reusable.
+
+Fejér and Clenshaw--Curtis quadrature use Chebyshev points and are therefore
+closely related to polynomial interpolation in a Chebyshev basis. The Fejér rule
+implemented here uses the zeros of the Chebyshev polynomial and avoids the
+endpoints, while Clenshaw--Curtis uses Chebyshev extrema and therefore includes
+the interval endpoints. These rules typically do not maximize the degree of
+exactness in the same way as Gaussian quadrature, but they are simple, stable,
+and computationally attractive. Their Chebyshev structure also makes nested or
+partly reusable refinements natural in many implementations.
+
+The double-exponential rule, also known as tanh--sinh quadrature on finite
+intervals, changes variables before applying a trapezoidal rule. For
+$[-1,1]$ the characteristic map is
+\[
+	x=\tanh\left(\frac{\pi}{2}\sinh(t)\right),
+\]
+whose derivative decays extremely rapidly as $|t|$ grows. This transformation is
+especially effective for endpoint singularities: the Jacobian suppresses the
+singular behavior at the physical interval boundaries and leaves a transformed
+integrand that is well suited to the trapezoidal rule on a truncated infinite
+interval.

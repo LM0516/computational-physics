@@ -62,12 +62,10 @@
 	lines. By definition, the final-time error is bounded from above by the
 	$L^\infty$ norm ($|u_n - \hat{u}(t_n)| \leq ||u-\hat{u}||_\infty$).
 
-	\paragraph{Figures}
 	The transient numerical solutions at $n=320$ (left column) and the
 	corresponding log-log $L^\infty$ vs. boundary convergence analyses (right
 	column) are presented below.
 
-	\vspace{1em}
 	\begin{center}
 		\renewcommand{\arraystretch}{1.2}
 		\begin{tabular}{cc}
@@ -82,6 +80,16 @@
 			{\small (3a) Solution for $(1+t^3)uu' = t^2$}                          & {\small (3b) Convergence for $(1+t^3)uu' = t^2$} \\
 		\end{tabular}
 	\end{center}
+
+	\paragraph{Conclusion}
+	The numerical experiments confirm the theoretical first-order convergence
+	properties of the explicit Euler method. As the temporal discretization was
+	progressively refined, both the global maximum error and the final-time boundary
+	error decreased proportionally to $\mathcal{O}(h)$, matching the expected
+	analytical error behavior. The computed solutions accurately reproduced the
+	exact trajectories for sufficiently small step sizes, while the log-log
+	convergence profiles demonstrated the characteristic linear decay associated
+	with first-order schemes.
 
 \end{solution}
 
