@@ -58,7 +58,7 @@ Finally, divide to isolate $q$:
 \begin{equation*}
 	q \approx \frac{\ln(d_{k+1} / d_k)}{\ln(d_k / d_{k-1})}
 \end{equation*}
-This equation allow us to calculate the convergence rate without knowing the
+This equation allows us to calculate the convergence rate without knowing the
 exact root of an equation.
 
 \paragraph{Asymptotic error constant:}
@@ -67,7 +67,7 @@ defined by the limit:
 \begin{equation*}
 	\lim_{k \to \infty} \frac{|\epsilon_{k+1}|}{|\epsilon_k|^q} = C
 \end{equation*}
-Where the error is $\epsilon_k = x_k - r$.
+Here, the error is $\epsilon_k = x_k - r$.
 For a sufficiently large $k$ (meaning we have run the algorithm for a few steps
 and are close to the root), we can drop the limit and write this as an
 approximation:
@@ -558,7 +558,7 @@ We make the substitution $r \approx x_{final}$:
 	\end{align*}
 	Visual inspection of the functions (Figure~\ref{fig:secant_plots}) reveals
 	that each interval contains exactly one valid root. The boundaries of the given intervals were
-	utilised as the initial guesses, $x_0$ and $x_1$.
+	utilized as the initial guesses, $x_0$ and $x_1$.
 
 	\begin{center}
 		\centering

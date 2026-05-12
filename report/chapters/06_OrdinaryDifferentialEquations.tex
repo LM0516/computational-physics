@@ -319,36 +319,55 @@
 
 \begin{solution}
 
-	We utilize the classical fourth-order Runge-Kutta (RK4) method to integrate two systems of coupled nonlinear ordinary differential equations (ODEs). The integration is carried out over the interval $t \in [0, 10]$.
+	We utilize the classical fourth-order Runge-Kutta (RK4) method to integrate
+	two systems of coupled nonlinear ordinary differential equations (ODEs). The
+	integration is carried out over the interval $t \in [0, 10]$.
 
 	\paragraph{Results}
 	The computed phase trajectories are presented in Figure \ref{fig:phase_plane}.
-	For System (a), the trajectories initiated at $[0.1, 0]$ (inside the unit circle) spiral outward, while those starting at $[0, 1.9]$ (outside) spiral inward, both converging asymptotically to a circle of radius $1$.
-	For System (b), the trajectory starting at $[0.95, 0]$ rapidly collapses toward the origin. In contrast, trajectories initialized at $[0, 1.05]$ and $[-2.5, 0]$ converge to an invariant circle of radius $2$.
+	For System (a), the trajectories initiated at $[0.1, 0]$ (inside the unit
+	circle) spiral outward, while those starting at $[0, 1.9]$ (outside) spiral
+	inward, both converging asymptotically to a circle of radius $1$.
+	For System (b), the trajectory starting at $[0.95, 0]$ rapidly collapses
+	toward the origin. In contrast, trajectories initialized at $[0, 1.05]$ and
+	$[-2.5, 0]$ converge to an invariant circle of radius $2$.
 
 	\begin{center}
 		\centering
 		\includegraphics[width=\textwidth]{figures/6-3/rk4-integrator.pdf}
-		\captionof{figure}{Phase plane portraits for two non-linear ODE systems integrated using the RK4 method ($n=1000$). Left: System (a) exhibits a single stable limit cycle at $r=1$. Right: System (b) demonstrates complex stability behavior with a stable origin, an unstable limit cycle at $r=1$, and a stable limit cycle at $r=2$.}
+		\captionof{figure}{Phase plane portraits for two non-linear ODE systems
+		integrated using the RK4 method ($n=1000$). Left: System (a) exhibits a single
+		stable limit cycle at $r=1$. Right: System (b) demonstrates complex stability
+		behavior with a stable origin, an unstable limit cycle at $r=1$, and a stable
+		limit cycle at $r=2$.}
 		\label{fig:phase_plane}
 	\end{center}
 
 	\paragraph{Discussion}
-	The observed numerical results can be validated by transforming the systems into polar coordinates ($x = r\cos\theta$, $y = r\sin\theta$).
-	For System (a), the radial dynamics simplify to:
+	The observed numerical results can be validated by transforming the systems
+	into polar coordinates ($x = r\cos\theta$, $y = r\sin\theta$). For System (a),
+	the radial dynamics simplify to:
 	\[
 		r' = r(1-r^2).
 	\]
-	Here, $r=1$ is a stable fixed point of the radial ODE, which manifests as a globally stable limit cycle in the Cartesian plane. Any perturbation away from $r=1$ is naturally suppressed by the dynamical system.
+	Here, $r=1$ is a stable fixed point of the radial ODE, which manifests as a
+	globally stable limit cycle in the Cartesian plane. Any perturbation away from
+	$r=1$ is naturally suppressed by the dynamical system.
 
 	Conversely, for System (b), the radial ODE is given by:
 	\[
 		r' = -\frac{1}{4} r (1-r^2)(4-r^2).
 	\]
-	The roots of this polynomial dictate the invariant sets: $r=0$, $r=1$, and $r=2$. Evaluating the sign of $r'$ between these roots confirms that $r=1$ acts as an unstable limit cycle, strictly dividing the phase space. Initial conditions with $r < 1$ (e.g., $[0.95, 0]$) are attracted to the stable origin $r=0$. Initial conditions with $r > 1$ (e.g., $[0, 1.05]$ and $[-2.5, 0]$) are pushed away from $r=1$ and pulled toward the stable limit cycle at $r=2$.
+	The roots of this polynomial dictate the invariant sets: $r=0$, $r=1$, and
+	$r=2$. Evaluating the sign of $r'$ between these roots confirms that $r=1$ acts
+	as an unstable limit cycle, strictly dividing the phase space. Initial
+	conditions with $r < 1$ (e.g., $[0.95, 0]$) are attracted to the stable origin
+	$r=0$. Initial conditions with $r > 1$ (e.g., $[0, 1.05]$ and $[-2.5, 0]$) are
+	pushed away from $r=1$ and pulled toward the stable limit cycle at $r=2$.
 
 	\paragraph{Conclusion}
-	The RK4 integrator flawlessly captured the limiting behaviors, including both stable and unstable limit cycles.
+	The RK4 integrator flawlessly captured the limiting behaviors, including both
+	stable and unstable limit cycles.
 
 \end{solution}
 
@@ -606,25 +625,45 @@
 
 \begin{solution}
 
-	We investigate the quantum mechanical scattering of a wave packet directed at a rectangular potential barrier. The system is described by the time-dependent Schr\"odinger equation (TDSE) governed by the potential $V(x) = 2$ for $x \in [-1, 1]$, and $V(x) = 0$ elsewhere. The initial state is a moving Gaussian wave packet centered at $x_0 = -20.0$, with a spatial dispersion $\sigma = 2.0$ and a momentum of $k_0 = 2.0$:
+	We investigate the quantum mechanical scattering of a wave packet directed at
+	a rectangular potential barrier. The system is described by the time-dependent
+	Schr\"odinger equation (TDSE) governed by the potential $V(x) = 2$ for $x \in
+	[-1, 1]$, and $V(x) = 0$ elsewhere. The initial state is a moving Gaussian wave
+	packet centered at $x_0 = -20.0$, with a spatial dispersion $\sigma = 2.0$ and a
+	momentum of $k_0 = 2.0$:
 	\[
-		\psi(x, 0) = \frac{1}{(2\pi\sigma^2)^{1/4}} \exp\left( -\frac{(x - x_0)^2}{4\sigma^2} \right) \exp(i k_0 x).
+		\psi(x, 0) = \frac{1}{(2\pi\sigma^2)^{1/4}} \exp\left( -\frac{(x -
+		x_0)^2}{4\sigma^2} \right) \exp(i k_0 x).
 	\]
-	Assuming natural units ($\hbar = m = 1$), the expectation value of the kinetic energy is $E \approx k_0^2/2 = 2.0$, which coincides precisely with the barrier height $V_0 = 2.0$. This represents a critical regime where quantum tunneling and reflection phenomena are highly pronounced.
+	Assuming natural units ($\hbar = m = 1$), the expectation value of the kinetic
+	energy is $E \approx k_0^2/2 = 2.0$, which coincides precisely with the barrier
+	height $V_0 = 2.0$. This represents a critical regime where quantum tunneling
+	and reflection phenomena are highly pronounced.
 
-	The spatial domain spans $x \in [-100, 100]$ discretized with $\Delta x = 0.1$, and the temporal domain covers $t \in [0, 40]$ with $\Delta t = 0.01$.
+	The spatial domain spans $x \in [-100, 100]$ discretized with $\Delta x =
+	0.1$, and the temporal domain covers $t \in [0, 40]$ with $\Delta t = 0.01$.
 
 	\paragraph{Results}
-	The time evolution of the probability density $|\psi(x,t)|^2$ was recorded at $t \in \{0.0, 10.0, 30.0\}$. As illustrated in Figure \ref{fig:schrodinger_scattering}, at $t = 10.0$ the incident wave packet translates uniformly toward the barrier. By $t = 30.0$, the interaction with the barrier has concluded, resulting in a distinct bifurcation of the wave packet into a transmitted component (propagating right) and a reflected component (propagating left).
+	The time evolution of the probability density $|\psi(x,t)|^2$ was recorded at
+	$t \in \{0.0, 10.0, 30.0\}$. As illustrated in Figure
+	\ref{fig:schrodinger_scattering}, at $t = 10.0$ the incident wave packet
+	translates uniformly toward the barrier. By $t = 30.0$, the interaction with the
+	barrier has concluded, resulting in a distinct bifurcation of the wave packet
+	into a transmitted component (propagating right) and a reflected component
+	(propagating left).
 
 	\begin{center}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/6-5/schrodinger-equaiton-3.pdf}
-		\captionof{figure}{Probability density $|\psi(x,t)|^2$ at selected times. The initial wave packet ($t=0$) moves rightwards, interacts with the potential barrier, and splits into reflected and transmitted packets by $t=30$.}
+		\captionof{figure}{Probability density $|\psi(x,t)|^2$ at selected times.
+		The initial wave packet ($t=0$) moves rightwards, interacts with the potential
+		barrier, and splits into reflected and transmitted packets by $t=30$.}
 		\label{fig:schrodinger_scattering}
 	\end{center}
 
-	The stability of the scheme during the scattering event is confirmed by the continuous conservation of the wave function norm, $\mathcal{N}(t) \approx \sum_j |\psi(x_j, t)|^2 \Delta x$, detailed in Table \ref{tab:scattering_norm}.
+	The stability of the scheme during the scattering event is confirmed by the
+	continuous conservation of the wave function norm, $\mathcal{N}(t) \approx
+	\sum_j |\psi(x_j, t)|^2 \Delta x$, detailed in Table \ref{tab:scattering_norm}.
 
 	\begin{center}
 		\centering
@@ -642,26 +681,52 @@
 		\label{tab:scattering_norm}
 	\end{center}
 
-	To quantify the scattering probabilities, the Reflection ($R$) and Transmission ($T$) coefficients are evaluated post-collision ($t = 30.0$) by integrating the probability density over the respective half-spaces (see Figure \ref{fig:barrier_plot}):
+	To quantify the scattering probabilities, the Reflection ($R$) and
+	Transmission ($T$) coefficients are evaluated post-collision ($t = 30.0$) by
+	integrating the probability density over the respective half-spaces (see Figure
+	\ref{fig:barrier_plot}):
 	\[
 		R = \int_{-100}^{-1} |\psi(x, 30)|^2 \, dx, \qquad T = \int_{1}^{100} |\psi(x, 30)|^2 \, dx.
 	\]
-	The computation yields $R = 0.6911$ and $T = 0.3089$. The total probability $R + T = 1.0000$ perfectly conserves unity, indicating that exactly $0.0\%$ of the probability density remains trapped inside the barrier region ($|x| \le 1$) at $t = 30.0$.
+	The computation yields $R = 0.6911$ and $T = 0.3089$. The total probability $R
+	+ T = 1.0000$ perfectly conserves unity, indicating that exactly $0.0\%$ of the
+	probability density remains trapped inside the barrier region ($|x| \le 1$) at
+	$t = 30.0$.
 
 	\begin{center}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/6-5/barrier-plot.pdf}
-		\captionof{figure}{Analysis of the reflection and transmission spatial zones relative to the potential barrier at $t=30$. The integration over the left and right sub-domains yields the macroscopic $R$ and $T$ coefficients.}
+		\captionof{figure}{Analysis of the reflection and transmission spatial zones
+		relative to the potential barrier at $t=30$. The integration over the left and
+		right sub-domains yields the macroscopic $R$ and $T$ coefficients.}
 		\label{fig:barrier_plot}
 	\end{center}
 
-	\paragraph{Discussion}
-	The finite difference methodology captures the non-classical physics of wave packet scattering. Classically, a particle with energy equal to the barrier height ($E=V_0=2$) would face an ambiguous deterministic outcome. Quantum mechanically, because the initial state is a localized wave packet, it is composed of a continuous superposition of momentum plane waves (via Fourier transform). The spread in momentum, $\Delta p \approx 1/\sigma = 0.5$, implies that the packet contains energy components both strictly below ($E < V_0$) and above ($E > V_0$) the barrier height.
+	\paragraph{Discussion} The finite difference methodology captures the
+	non-classical physics of wave packet scattering. Classically, a particle with
+	energy equal to the barrier height ($E=V_0=2$) would face an ambiguous
+	deterministic outcome. Quantum mechanically, because the initial state is a
+	localized wave packet, it is composed of a continuous superposition of momentum
+	plane waves (via Fourier transform). The spread in momentum, $\Delta p \approx
+	1/\sigma = 0.5$, implies that the packet contains energy components both
+	strictly below ($E < V_0$) and above ($E > V_0$) the barrier height.
 
-	The sub-barrier components experience exponential attenuation (tunneling) and contribute primarily to reflection, while the above-barrier components undergo partial transmission. The superposition of these scattering outcomes results in the macroscopic coefficients $R \approx 0.69$ and $T \approx 0.31$. Furthermore, the norm conservation up to $\mathcal{O}(10^{-9})$ affirms that the sharp spatial discontinuity of the rectangular barrier at $x = \pm 1$ does not induce catastrophic numerical instability or dissipate probability, underscoring the robustness of the implicit, unitary time-stepping approach.
+	The sub-barrier components experience exponential attenuation (tunneling) and
+	contribute primarily to reflection, while the above-barrier components undergo
+	partial transmission. The superposition of these scattering outcomes results in
+	the macroscopic coefficients $R \approx 0.69$ and $T \approx 0.31$. Furthermore,
+	the norm conservation up to $\mathcal{O}(10^{-9})$ affirms that the sharp
+	spatial discontinuity of the rectangular barrier at $x = \pm 1$ does not induce
+	catastrophic numerical instability or dissipate probability, underscoring the
+	robustness of the implicit, unitary time-stepping approach.
 
 	\paragraph{Conclusion}
-	The computational framework successfully resolves the quantum tunneling and partial reflection of a Gaussian wave packet interacting with a finite potential barrier. The rigorous conservation of the empirical reflection and transmission coefficients ($R + T = 1$) provides strong validation of both the numerical discretization and the physical accuracy of the time evolution.
+	The computational framework successfully resolves the quantum tunneling and
+	partial reflection of a Gaussian wave packet interacting with a finite potential
+	barrier. The rigorous conservation of the empirical reflection and transmission
+	coefficients ($R + T = 1$) provides strong validation of both the numerical
+	discretization and the physical accuracy of the time evolution.
+
 \end{solution}
 
 \begin{exercise}
@@ -713,40 +778,83 @@
 
 \begin{solution}
 
-	We aim to solve the time-independent Schr\"odinger equation (TISE), $\hat{H}\varphi_n = E_n\varphi_n$, for a finite square well potential. Assuming natural units where $\hbar^2/2m = 1$, the continuous kinetic energy operator is approximated using a second-order central finite difference scheme. The spatial domain is truncated to $x \in [-5, 5]$ and discretized into a uniform grid with spacing $\Delta x = 0.05$. 
+	We aim to solve the time-independent Schr\"odinger equation (TISE),
+	$\hat{H}\varphi_n = E_n\varphi_n$, for a finite square well potential. Assuming
+	natural units where $\hbar^2/2m = 1$, the continuous kinetic energy operator is
+	approximated using a second-order central finite difference scheme. The spatial
+	domain is truncated to $x \in [-5, 5]$ and discretized into a uniform grid with
+	spacing $\Delta x = 0.05$. 
 
-	This discretization maps the continuous Hamiltonian operator $\hat{H} = -\frac{d^2}{dx^2} + V(x)$ into a finite-dimensional, symmetric, tridiagonal matrix $H$. The spectral decomposition of $H$ is performed using the pure QR algorithm limited to 200 iterations. The bound states correspond to the eigenvectors whose associated eigenvalues (energies) satisfy $E_n < 0$.
+	This discretization maps the continuous Hamiltonian operator $\hat{H} =
+	-\frac{d^2}{dx^2} + V(x)$ into a finite-dimensional, symmetric, tridiagonal
+	matrix $H$. The spectral decomposition of $H$ is performed using the pure QR
+	algorithm limited to 200 iterations. The bound states correspond to the
+	eigenvectors whose associated eigenvalues (energies) satisfy $E_n < 0$.
 
-	Regarding the normalization of the wave functions, numerical integration of the squared wave function is unnecessary. Because $H$ is a real symmetric matrix, its eigenvectors $v^{(n)}$ are mutually orthogonal and intrinsically normalized with respect to the discrete Euclidean norm, $\sum_i |v^{(n)}_i|^2 = 1$. To map this discrete vector to the continuous $L_2$-normalized wave function $\varphi_n(x_i)$, we simply scale the eigenvector by the square root of the grid spacing:
+	Regarding the normalization of the wave functions, numerical integration of
+	the squared wave function is unnecessary. Because $H$ is a real symmetric
+	matrix, its eigenvectors $v^{(n)}$ are mutually orthogonal and intrinsically
+	normalized with respect to the discrete Euclidean norm, $\sum_i |v^{(n)}_i|^2 =
+	1$. To map this discrete vector to the continuous $L_2$-normalized wave function
+	$\varphi_n(x_i)$, we simply scale the eigenvector by the square root of the grid
+	spacing:
 	\[
-			\int |\varphi_n(x)|^2 \, dx \approx \sum_i |\varphi_n(x_i)|^2 \Delta x = 1 \implies \varphi_n(x_i) = \frac{v^{(n)}_i}{\sqrt{\Delta x}}.
+		\int |\varphi_n(x)|^2 \, dx \approx \sum_i |\varphi_n(x_i)|^2 \Delta x = 1
+		\implies \varphi_n(x_i) = \frac{v^{(n)}_i}{\sqrt{\Delta x}}.
 	\]
 
 	\paragraph{Results}
-	The spectral analysis yields exactly three bound states ($E_n < 0$) localized within the potential well. The computed energy eigenvalues are:
+	The spectral analysis yields exactly three bound states ($E_n < 0$) localized
+	within the potential well. The computed energy eigenvalues are:
 	\begin{align*}
 			E_1 &= -9.1473 \quad \text{(Ground state, even parity)}\\
 			E_2 &= -6.6501 \quad \text{(First excited state, odd parity)}\\
 			E_3 &= -2.8071 \quad \text{(Second excited state, even parity)}
 	\end{align*}
-	It should be noted that while the pure QR algorithm triggered a convergence warning at 200 iterations, the bound state eigenvalues at the lower extremum of the spectrum effectively converge much faster than the dense positive energy continuum.
+	It should be noted that while the pure QR algorithm triggered a convergence
+	warning at 200 iterations, the bound state eigenvalues at the lower extremum of
+	the spectrum effectively converge much faster than the dense positive energy
+	continuum.
 
-	The uncoupled, normalized probability densities $|\varphi_n(x)|^2$ corresponding to these bound states are superimposed onto their respective energy levels $E_n$ and plotted alongside the potential well in Figure \ref{fig:bound_states}.
+	The uncoupled, normalized probability densities $|\varphi_n(x)|^2$
+	corresponding to these bound states are superimposed onto their respective
+	energy levels $E_n$ and plotted alongside the potential well in Figure
+	\ref{fig:bound_states}.
 
 	\begin{center}
 			\centering
 			\includegraphics[width=0.85\textwidth]{figures/6-5/schrodinger-equation-5.pdf}
-			\captionof{figure}{Probability densities $|\varphi_n(x)|^2$ of the bound states for a finite square well ($V_0 = 10, a=1$), shifted vertically by their corresponding energy eigenvalues $E_n$. The solutions exhibit the expected alternating even/odd parity.}
+			\captionof{figure}{Probability densities $|\varphi_n(x)|^2$ of the bound
+			states for a finite square well ($V_0 = 10, a=1$), shifted vertically by their
+			corresponding energy eigenvalues $E_n$. The solutions exhibit the expected
+			alternating even/odd parity.}
 			\label{fig:bound_states}
 	\end{center}
 
 	\paragraph{Discussion}
-	The numerical solutions exhibit excellent qualitative agreement with quantum mechanical principles. The wave functions strictly alternate in parity, with the ground state possessing zero nodes, the first excited state possessing one node, and the second excited state possessing two nodes. As energy increases ($E_1 \rightarrow E_3$), the wave function tails extend further into the classically forbidden region ($|x| > 1$), illustrating the increased probability of quantum tunneling for less tightly bound states.
+	The numerical solutions exhibit excellent qualitative agreement with quantum
+	mechanical principles. The wave functions strictly alternate in parity, with the
+	ground state possessing zero nodes, the first excited state possessing one node,
+	and the second excited state possessing two nodes. As energy increases ($E_1
+	\rightarrow E_3$), the wave function tails extend further into the classically
+	forbidden region ($|x| > 1$), illustrating the increased probability of quantum
+	tunneling for less tightly bound states.
 
-	The truncation of the spatial domain to $[-5, 5]$ using Dirichlet boundary conditions ($\varphi(\pm 5) = 0$) is justified because the bound state wave functions decay exponentially in the classically forbidden regions. As seen in Figure \ref{fig:bound_states}, the probability densities are virtually zero at the boundaries, ensuring that finite-size effects do not artificially artificially elevate the computed energy levels.
+	The truncation of the spatial domain to $[-5, 5]$ using Dirichlet boundary
+	conditions ($\varphi(\pm 5) = 0$) is justified because the bound state wave
+	functions decay exponentially in the classically forbidden regions. As seen in
+	Figure \ref{fig:bound_states}, the probability densities are virtually zero at
+	the boundaries, ensuring that finite-size effects do not artificially elevate
+	the computed energy levels.
 
 	\paragraph{Conclusion}
-	The finite difference discretization combined with the QR algorithm successfully identifies the complete set of bound states for the finite square well. The mathematical relationship between the discrete Euclidean norm and the continuous $L_2$ norm elegantly circumvents the need for post-processing quadrature, offering a highly efficient method for extracting properly normalized probability densities.
+	The finite difference discretization combined with the QR algorithm
+	successfully identifies the complete set of bound states for the finite square
+	well. The mathematical relationship between the discrete Euclidean norm and the
+	continuous $L_2$ norm elegantly circumvents the need for post-processing
+	quadrature, offering a highly efficient method for extracting properly
+	normalized probability densities.
+
 \end{solution}
 
 \subsection{Some observations about the algorithms used in this section}
