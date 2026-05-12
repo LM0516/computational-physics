@@ -750,3 +750,114 @@
 	\paragraph{Conclusion}
 	The finite difference discretization combined with the QR algorithm successfully identifies the complete set of bound states for the finite square well. The mathematical relationship between the discrete Euclidean norm and the continuous $L_2$ norm elegantly circumvents the need for post-processing quadrature, offering a highly efficient method for extracting properly normalized probability densities.
 \end{solution}
+
+\subsection{Some observations about the algorithms used in this section}
+
+The numerical results reported in this section are validated by the Julia test
+suites in \texttt{ode\_tests.jl} and
+\texttt{schrodinger\_tests.jl}. The first file checks the
+empirical convergence rates and function-evaluation counts for the ODE
+integrators, while the second verifies the main structural properties of the
+Schr\"odinger solvers, including sparse Hermitian Hamiltonian construction and
+approximate conservation of the wave-function norm.
+
+\paragraph{Measured ODE performance}
+For the scalar test problem $u'=u$ on $[0,1]$, the ODE tests estimate the
+observed convergence orders by refining the mesh and comparing the final-time
+error with the exact value $e$. They also count the number of calls to the
+right-hand side for $n=25$ steps. The resulting work-precision summary is:
+
+\begin{center}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{lcc}
+		\toprule
+		Method & Convergence rate & Computational cost \\
+		\midrule
+		Euler & $0.963913$ & $25$ evaluations ($n=25$) \\
+		IE2   & $1.968661$ & $50$ evaluations ($n=25$) \\
+		RK4   & $3.965480$ & $100$ evaluations ($n=25$) \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+These rates closely match the theoretical orders $p=1$, $p=2$, and $p=4$,
+respectively. The slight deviations from integer values are expected because the
+orders are estimated from finite step sizes rather than from the asymptotic limit
+$h\to0$.
+
+\paragraph{Euler method}
+The explicit Euler method is the simplest one-step scheme. Starting from
+$u_i\approx u(t_i)$, it advances the solution by following the tangent line at
+the current point,
+\[
+	u_{i+1}=u_i+h f(t_i,u_i).
+\]
+Its main advantage is cost: each step requires only one evaluation of
+$f(t,u)$. This makes it useful for introducing time discretization and for cheap
+qualitative experiments.
+
+The price of this simplicity is low accuracy and restrictive stability. The
+local truncation error is $\mathcal{O}(h^2)$, but the accumulated global error is
+only $\mathcal{O}(h)$. For the scalar stability test equation $u'=\lambda u$
+with $\lambda<0$, the amplification factor is $1+h\lambda$, so stability on the
+negative real axis requires
+\[
+	|1+h\lambda|<1,
+	\qquad\text{equivalently}\qquad
+	h<\frac{2}{|\lambda|}.
+\]
+Thus Euler's method can oscillate or diverge unless the time step is chosen very
+small. This limitation is especially visible for oscillatory systems, where the
+explicit Euler stability region does not include the imaginary axis.
+
+\paragraph{Improved Euler method}
+The Improved Euler method used here is the midpoint second-order Runge-Kutta
+scheme. It first evaluates the slope at the beginning of the interval, uses that
+slope to predict the midpoint value, and then takes the full step using the
+midpoint slope:
+\[
+	u_{i+1}
+	= u_i + h f\left(t_i+\frac{h}{2},
+	u_i+\frac{h}{2}f(t_i,u_i)\right).
+\]
+Because it samples the vector field inside the interval rather than only at its
+left endpoint, it cancels the leading global error term of Euler's method. Its
+local truncation error is $\mathcal{O}(h^3)$ and its global error is
+$\mathcal{O}(h^2)$.
+
+The method requires two evaluations of $f$ per step, so for the same number of
+steps it costs twice as much as Euler. In return, the error decreases
+quadratically with the step size, which usually makes IE2 much more efficient
+than Euler for smooth problems. It belongs to the broader family of second-order
+Runge-Kutta methods, alongside variants such as Heun's method and the modified
+Euler method.
+
+\paragraph{Fourth-order Runge-Kutta method}
+The classical fourth-order Runge-Kutta method (RK4) is a four-stage scheme. It
+computes four slopes,
+\[
+\begin{aligned}
+	k_1 &= f(t_i,u_i),\\
+	k_2 &= f\left(t_i+\frac{h}{2},u_i+\frac{h}{2}k_1\right),\\
+	k_3 &= f\left(t_i+\frac{h}{2},u_i+\frac{h}{2}k_2\right),\\
+	k_4 &= f(t_i+h,u_i+hk_3),
+\end{aligned}
+\]
+and combines them as
+\[
+	u_{i+1}=u_i+\frac{h}{6}(k_1+2k_2+2k_3+k_4).
+\]
+The resulting global error is $\mathcal{O}(h^4)$, so reducing the step size gives
+a much faster decrease in error than for Euler or IE2.
+
+RK4 requires four evaluations of the right-hand side per step. Nevertheless, the
+large gain in accuracy often outweighs this cost, which is why RK4 is a standard
+choice in many computational physics calculations when the solution is smooth
+and fixed step sizes are adequate.
+
+\paragraph{Summary comparison}
+Overall, Euler's method is most useful for conceptual understanding and simple
+diagnostics. IE2 is a meaningful improvement at modest extra cost. RK4 is the
+preferred practical method for many of the ordinary differential equation
+examples in this section because its fourth-order convergence gives high
+accuracy before the cost of function evaluations becomes dominant.
