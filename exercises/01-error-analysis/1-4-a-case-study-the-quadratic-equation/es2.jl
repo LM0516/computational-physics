@@ -75,7 +75,7 @@ function main()
     κ_naive = condition_number_analysis(x_vals, f)
     κ_true = condition_number_analysis(x_vals, f_true)
 
-    p1 = plot_generic(x_vals, κ_naive, title="Condition Number",
+    p1 = plot_generic(x_vals, κ_naive,
         xlabel=L"x", ylabel=L"\kappa_f(x)", label="Naive results")
     plot_add!(p1, x_vals, κ_true, label="expm1 results", linestyle=:dash)
 
@@ -87,7 +87,7 @@ function main()
     @show f_true_test - f_mclaurin_test
 
     p2 = plot_generic(x_test, f_naive, xscale=:log10, label="Naive",
-        xlabel=L"x", ylabel=L"f(x)", title="Comparison of Algorithms", linewidth=1)
+        xlabel=L"x", ylabel=L"f(x)", linewidth=1)
     plot_add!(p2, x_test, f_mclaurin_test, label="Maclaurin (n=$best_n)", linewidth=1)
     plot_add!(p2, x_test, f_true_test, label="expm1 (Truth)", linestyle=:dash, linewidth=1)
 

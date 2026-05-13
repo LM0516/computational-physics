@@ -43,7 +43,9 @@ export euler_method, ie2, rk4
 include("schrodinger_equation.jl")
 export t_independent_hamiltonian, schrodinger_solver1D, plot_snapshots, compute_RT
 
+# TODO: Implement this if there is time
 # include("fft.jl")
+
 include("helpers.jl")
 export make_log_safe
 export absolute_error, relative_error

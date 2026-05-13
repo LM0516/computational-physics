@@ -54,8 +54,7 @@ function main()
     # Plot
     p = plot_generic(z_eval, f.(z_eval),
         label=L"f(z) = (z^2 - 2z + 2)^{-1}", linewidth=1,
-        xlabel="z", ylabel="f(z)",
-        title="Real Line Interpolation via Chebyshev Nodes")
+        xlabel="z", ylabel="f(z)")
 
     plot_add!(p, z_eval, p_interp,
         label="Interpolant q(z)", linewidth=2, linestyle=:dash)

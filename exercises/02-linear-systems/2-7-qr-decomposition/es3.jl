@@ -45,8 +45,8 @@ function main()
     println("="^80)
     println()
 
-    h(t) = exp(sin(4*t)) / 2006.787453080206 
-    t = [i/99 for i in 0:99]
+    h(t) = exp(sin(4 * t)) / 2006.787453080206
+    t = [i / 99 for i in 0:99]
 
     b = h.(t)
 
@@ -62,7 +62,7 @@ function main()
     # === Plot ===
     t_plot = range(0, stop=1, length=400)
     y_true = h.(t_plot)
-    
+
     # Evaluate polynomial fits
     y_lu = [sum(coeffs_lu[j+1] * x^j for j in 0:14) for x in t_plot]
     y_qr = [sum(coeffs_qr[j+1] * x^j for j in 0:14) for x in t_plot]
@@ -72,15 +72,15 @@ function main()
     fit_goodness(y_lu, y_true, coeffs_lu)
     fit_goodness(y_qr, y_true, coeffs_qr)
     fit_goodness(y_qless, y_true, coeffs_qless)
-    
-    p1 = plot_generic(t_plot, y_true, label=L"h(t)=e^{\sin(4t)}/2006.78", lw=2, 
-              xlabel="t", ylabel="y", title="Least Squares Polynomial Fits (degree 14)")
+
+    p1 = plot_generic(t_plot, y_true, label=L"h(t)=e^{\sin(4t)}/2006.78", lw=2,
+        xlabel="t", ylabel="y")
     scatter_add!(p1, t, b, label="data points", ms=3, alpha=0.6)
-    
+
     plot_add!(p1, t_plot, y_lu, label="(a) Normal Equations", lw=1.5, ls=:dash)
     plot_add!(p1, t_plot, y_qr, label="(b) QR Decomposition", lw=1.5, ls=:dot)
     plot_add!(p1, t_plot, y_qless, label="(c) Q-less QR", lw=1.5, ls=:dashdot)
-    
+
     save_plot(p1, "multiple-least-square", "2-7")
     display(p1)
 

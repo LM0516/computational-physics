@@ -16,7 +16,7 @@ function plot_interpolation(n_values::Int, a::Float64, b::Float64, f::Function, 
     # Plot for f in log-scale
     p1 = plot_generic(x_eval_range, make_log_safe(f.(x_eval_range)),
         label="y = $foo", linewidth=1,
-        xlabel="x", ylabel=L"\log(y)", title=title_str,
+        xlabel="x", ylabel=L"\log(y)",
         yaxis=:log, legend=true)
 
     # Create nodes based on interpolation type

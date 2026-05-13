@@ -31,7 +31,7 @@ function main()
     y_ft = F_plot * coeffs_ft
     y_true = g(t_plot)
 
-    p1 = plot_generic(t_plot, y_true, label=L"g(t)=e^{\sin(t-1)}", lw=2, xlabel="t", ylabel="y", title="Least squares fits")
+    p1 = plot_generic(t_plot, y_true, label=L"g(t)=e^{\sin(t-1)}", lw=2, xlabel="t", ylabel="y")
     scatter_add!(p1, t, b, label="data", ms=4)
     plot_add!(p1, t_plot, y_pol, label="polynomial fit (deg 6)", lw=2, ls=:dash)
     plot_add!(p1, t_plot, y_ft, label="FT fit (2 harmonics)", lw=2, ls=:dash)
@@ -56,7 +56,7 @@ function main()
     println("=== Fourier Transform Fit Analysis ===")
     println()
     println("Chi-square: ", round(chi2_ft, digits=4))
-    println("Degrees of freedom: ", dof_ft )
+    println("Degrees of freedom: ", dof_ft)
     println("Reduced chi-square: ", round(chi2r_ft, digits=4))
     println("P-value: ", round(p_ft, digits=4))
 

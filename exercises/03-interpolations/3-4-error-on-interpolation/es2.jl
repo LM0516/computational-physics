@@ -32,7 +32,7 @@ function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, f
     # Plot for f
     p1 = plot_generic(x_eval_range, make_log_safe(f.(x_eval_range)),
         label="y = $function_name",
-        xlabel="x", ylabel=L"\log(y)", title=title_str,
+        xlabel="x", ylabel=L"\log(y)",
         yaxis=:log)
 
     for (idx, n) in enumerate(n_values)
@@ -66,7 +66,7 @@ function plot_interpolation(n_values::Array{Int}, a::Int, b::Int, f::Function, f
     p2 = plot_generic(n_values, inf_norm,
         linewidth=1, xlabel="n", ylabel=L"||f - p||_{\infty}",
         yaxis=:log, marker=:circle,
-        title="Interpolation Error", legend=false)
+        legend=false)
 
     # Plot both plots
     p = multi_plot(p1, p2, layout=(1, 2), size=(1200, 600))
@@ -93,7 +93,7 @@ function main()
     plot_interpolation(n, a, b, f_d, L"\sin(\cosh(x))", interp_type=cheb, fig_name="fd")
 
     println("\n=== EQUIDISTANT NODES ===")
-    plot_interpolation(n, a, b, f_a, L"\frac{1}{(25x^2 + 1)}", interp_type=cheb, fig_name="fa")
+    plot_interpolation(n, a, b, f_a, L"\frac{1}{(25x^2 + 1)}", interp_type=lag, fig_name="fa")
     plot_interpolation(n, a, b, f_b, L"\tanh(5x + 2)", interp_type=lag, fig_name="fb")
     plot_interpolation(n, a, b, f_c, L"\cosh(\sin(x))", interp_type=lag, fig_name="fc")
     plot_interpolation(n, a, b, f_d, L"\sin(\cosh(x))", interp_type=lag, fig_name="fd")

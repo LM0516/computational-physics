@@ -267,13 +267,13 @@
 		\centering
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fa-chebyshev.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fa-Barycentric Chebyshev Interpolation.pdf}
 			\captionof{figure}{Chebyshev interpolation: $1/(25x^2+1)$.}
 			\label{fig:runge_cheb}
 		\end{minipage}\hfill
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fa-lagrange.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fa-Barycentric Lagrange Interpolation.pdf}
 			\captionof{figure}{Equidistant interpolation: $1/(25x^2+1)$.}
 			\label{fig:runge_lag}
 		\end{minipage}
@@ -283,12 +283,12 @@
 		\centering
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fb-chebyshev.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fb-Barycentric Chebyshev Interpolation.pdf}
 			\captionof{figure}{Chebyshev interpolation: $\tanh(5x+2)$.}
 		\end{minipage}\hfill
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fb-lagrange.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fb-Barycentric Lagrange Interpolation.pdf}
 			\captionof{figure}{Equidistant interpolation: $\tanh(5x+2)$.}
 		\end{minipage}
 	\end{center}
@@ -297,12 +297,12 @@
 		\centering
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fc-chebyshev.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fc-Barycentric Chebyshev Interpolation.pdf}
 			\captionof{figure}{Chebyshev interpolation: $\cosh(\sin x)$.}
 		\end{minipage}\hfill
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fc-lagrange.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fc-Barycentric Lagrange Interpolation.pdf}
 			\captionof{figure}{Equidistant interpolation: $\cosh(\sin x)$.}
 		\end{minipage}
 	\end{center}
@@ -311,12 +311,12 @@
 		\centering
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fd-chebyshev.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fd-Barycentric Chebyshev Interpolation.pdf}
 			\captionof{figure}{Chebyshev interpolation: $\sin(\cosh x)$.}
 		\end{minipage}\hfill
 		\begin{minipage}{0.48\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/3-4/fd-lagrange.pdf}
+			\includegraphics[width=\linewidth]{figures/3-4/fd-Barycentric Lagrange Interpolation.pdf}
 			\captionof{figure}{Equidistant interpolation: $\sin(\cosh x)$.}
 			\label{fig:sincosh_lag}
 		\end{minipage}
@@ -581,8 +581,8 @@ vary significantly depending on the chosen basis and node distribution.
 
 \paragraph{Direct Linear Systems}
 Solving the polynomial interpolation problem by setting up a general $n \times
-	n$ linear system, such as using the power basis with a \textbf{Vandermonde
-	matrix} $\mathbf{V}_n \mathbf{c} = \mathbf{f}$, is often impractical for large
+	n$ linear system, such as using the power basis with a Vandermonde
+	matrix $\mathbf{V}_n \mathbf{c} = \mathbf{f}$, is often impractical for large
 $n$. The cost of solving such a system using general-purpose decompositions like
 LU or QR scales as $\propto n^3$.
 

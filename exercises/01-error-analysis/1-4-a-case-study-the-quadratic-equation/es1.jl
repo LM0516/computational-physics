@@ -21,7 +21,7 @@ function generate_stability(offsets, datasets)
     plt = plot_generic(offsets, [err_sp32, err_dp32, err_sp64, err_dp64],
         xaxis=:log10, yaxis=:log10,
         label=["Single-Pass F32" "Double-Pass F32" "Single-Pass F64" "Double-Pass F64"],
-        title="Numerical Stability: Variance Algorithms",
+        # title="Numerical Stability: Variance Algorithms",
         xlabel="Data Offset (C)",
         ylabel="Relative Error")
 

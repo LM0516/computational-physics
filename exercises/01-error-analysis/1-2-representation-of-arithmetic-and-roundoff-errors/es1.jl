@@ -72,7 +72,7 @@ function main()
   plot_add!(p2, N_vals, n -> 1.0 ./ n, label=L"O(1/n)", ls=:dash)
 
   # Combine and display
-  combined = multi_plot(p1, p2, plot_title="Convergence Error", layout=(1, 2), size=(1000, 800))
+  combined = multi_plot(p1, p2, layout=(1, 2), size=(1000, 800))
   save_plot(combined, "single_and_double_precision", "1-2")
   display(combined)
   readline()
