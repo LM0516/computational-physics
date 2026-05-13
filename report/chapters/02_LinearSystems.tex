@@ -1153,8 +1153,8 @@ via forward or backward substitution requires asymptotically $\sim n^2$ flops.
 \paragraph{Overdetermined Linear Systems}
 When solving linear least-squares problems, the computational cost
 depends on the method used to solve the normal equations. While both LU
-and Cholesky decompositions scale with $n^3$, the \textbf{Cholesky
-decomposition} is more efficient because it exploits the symmetry of the matrix
+and Cholesky decompositions scale with $n^3$, the Cholesky
+decomposition is more efficient because it exploits the symmetry of the matrix
 $\mathbf{A}^T\mathbf{A}$, requiring roughly half the operations ($\sim
 \frac{1}{3}n^3$ flops) of a standard LU decomposition ($\sim \frac{2}{3}n^3$
 flops). However, stability is a concern. While $\mathbf{A}^T\mathbf{A}$ is

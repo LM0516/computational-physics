@@ -194,7 +194,7 @@ function plot_convergence_analysis(x, r; skip_initial::Int=0, save_dir::String="
         label=L"Data ($\log_{10}|\epsilon_{n+1}|) vs (\log_{10}|\epsilon_n|))$",
         xlabel=L"\log_{10}|\epsilon_n|",
         ylabel=L"\log_{10}|\epsilon_{n+1}|",
-        title="Convergence Analysis (Skipping first $skip_initial iterations)",
+        # title="Convergence Analysis (Skipping first $skip_initial iterations)",
         legend=:topleft,
         markershape=:circle,
         markerstrokewidth=0
@@ -407,7 +407,7 @@ function plot_global_convergence(x::Vector{Float64}, r::Float64; save_dir::Strin
         label=L"Data $(n, a_n)$",
         xlabel=L"Iteration $n$",
         ylabel=L"a_n = -\log_{10}|\epsilon_n|",
-        title="Global Convergence Analysis",
+        # title="Global Convergence Analysis",
         legend=:topleft,
         markershape=:circle,
         markerstrokewidth=0

@@ -226,8 +226,8 @@ We make the substitution $r \approx x_{final}$:
 	\end{center}
 
 	\paragraph{Discussion}
-	The discrepancy noted in the previous step-by-step analysis—where $q$ and
-	$C$ fluctuated based on the number of skipped iterations—is resolved by the
+	The discrepancy noted in the previous step-by-step analysis, where $q$ and
+	$C$ fluctuated based on the number of skipped iterations, is resolved by the
 	global $a_n$ vs. $n$ approach. While the distance between the midpoint $m_n$
 	and the true root $r$ can fluctuate non-monotonically (causing "noise" in
 	the $\epsilon_{n+1}/\epsilon_n$ ratio), the maximum possible error is
@@ -293,7 +293,7 @@ We make the substitution $r \approx x_{final}$:
 	\paragraph{Numerical Methodology}
 	The core algorithm computes the Newton sequence via the recurrence relation $x_{n+1} = x_n - f(x_n)/f'(x_n)$.
 
-	To evaluate the convergence rate $q$ and the asymptotic error constant $C$, I
+	To evaluate the convergence rate $q$ and the asymptotic error constant $C$, we
 	used the algorithm explained in the Section~\ref{sec:convergence-rate}.
 
 	\paragraph{Results}
@@ -735,7 +735,7 @@ We make the substitution $r \approx x_{final}$:
 	in very few iterations. As a result, there are not enough valid, monotonically
 	decreasing data points before catastrophic cancellation corrupts the sequence.
 	The global, logarithmic regression of Algorithm 1 bypasses this local noise,
-	making it the superior—and necessary—choice for evaluating rapidly converging
+	making it the superior, and necessary, choice for evaluating rapidly converging
 	algorithms.
 \end{solution}
 

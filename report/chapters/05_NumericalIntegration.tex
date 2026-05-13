@@ -354,8 +354,8 @@
 	The convergence profiles behave strictly according to theoretical expectations
 	for spectral methods. For strictly entire analytic functions, the
 	Gauss--Legendre rule exhibits exponential convergence, rapidly descending to the noise floor
-	imposed by $\varepsilon_{\text{mach}}$. At this threshold, \textit{catastrophic
-		cancellation} and inherent rounding errors dominate, causing the error to
+	imposed by $\varepsilon_{\text{mach}}$. At this threshold, catastrophic
+		cancellation and inherent rounding errors dominate, causing the error to
 	oscillate pseudo-randomly around $10^{-15}$.
 
 	Integral 4, $f(x) = (1+9x^2)^{-1}$, represents an ill-conditioned scenario due
@@ -595,7 +595,7 @@
 
 \paragraph{Automated validation}
 The numerical integration routines are also exercised by the Julia test suite in
-\texttt{test/submodules/numerical\_integration\_tests.jl}. The tests separate two
+\texttt{numerical\_integration\_tests.jl}. The tests separate two
 aspects of the implementation: convergence, measured empirically on
 $\int_0^\pi \sin(x)\,dx=2$, and exactness or accuracy, checked on simple
 polynomial and Gaussian benchmark integrals. They also count the number of

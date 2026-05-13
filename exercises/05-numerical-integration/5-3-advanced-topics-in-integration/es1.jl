@@ -29,7 +29,7 @@ function solutions(f::Function, a::Real, b::Real, exact::Real, function_name; fi
     scatter_add!(p, 1:length(glq_err), make_log_safe(glq_err), label="Gauss-Legendre")
     xlabel!(p, "Number of nodes")
     ylabel!(p, "Error")
-    title!(function_name)
+    # title!(function_name)
     save_plot(p, "clenshaw-curtis-plot-$fig_name", "5-3")
     display(p)
     readline()
@@ -42,7 +42,7 @@ function main()
     b1 = 1
     exact_sol1 = sinh(4) / 2
     @show exact_sol1
-    solutions(f1, a1, b1, exact_sol1, L"\frac{\sinh(4)}{2}", fig_name="1")
+    solutions(f1, a1, b1, exact_sol1, L"e^{-4x}", fig_name="1")
 
     # exp(-9x^2)
     f2 = x -> exp(-9x^2)

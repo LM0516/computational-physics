@@ -22,9 +22,9 @@ function main()
 
     p_time = plot_generic(t, y, label="Prey (y)", xlabel="Time (t)", ylabel="Population", linewidth=1.5)
     plot_add!(p_time, t, z, label="Predator (z)", linewidth=1.5)
-    title!(p_time, "Population Dynamics")
+    # title!(p_time, "Population Dynamics")
 
-    p_phase = plot(title="Phase Plane ", xlabel="y", ylabel="z", aspect_ratio=:equal)
+    p_phase = plot(xlabel="y", ylabel="z", aspect_ratio=:equal)
     plot_add!(p_phase, y, z, label="IC: $ics")
 
     p = multi_plot(p_time, p_phase)
