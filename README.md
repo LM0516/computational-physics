@@ -1,6 +1,6 @@
 # Computational Physics
 
-A collection of numerical methods and exercises written in **Julia**, developed as part of the Computational Physics course at **Università di Milano Bicocca (UniMiB)**. Algorithms are implemented from scratch, paired with worked exercises and a companion LaTeX report.
+A comprehensive collection of numerical methods and exercises written in **Julia**, developed as part of the Computational Physics course at **Università di Milano Bicocca (UniMiB)**. All algorithms are implemented from scratch, accompanied by detailed worked exercises and a comprehensive LaTeX report.
 
 ## Topics
 
@@ -29,22 +29,25 @@ computational-physics/
 │   ├── visualizations.jl             # Consistent plot style and save helpers
 │   └── helpers.jl                    # Utility functions (e.g., make_log_safe)
 ├── exercises/                        # One subdirectory per course topic
-│   ├── 01-error-analysis/
-│   ├── 02-linear-systems/
-│   ├── 03-interpolations/
-│   ├── 04-roots-of-nonlinear-equations/
-│   ├── 05-numerical-integration/
-│   └── 06-ordinary-differential-equations/
+│   ├── 01-error-analysis/            # Machine epsilon, roundoff errors, condition numbers
+│   ├── 02-linear-systems/            # Direct and iterative solvers, conditioning
+│   ├── 03-interpolations/            # Lagrange, least-squares, error analysis
+│   ├── 04-roots-of-nonlinear-equations/  # Root-finding algorithms, convergence
+│   ├── 05-numerical-integration/     # Quadrature methods, adaptive integration
+│   └── 06-ordinary-differential-equations/  # ODE solvers, Schrödinger equation
 ├── notebooks/                        # Jupyter/Pluto notebooks for exploration
-│   ├── 3body_problem.ipynb
+│   ├── 3body_problem.ipynb           # Three-body problem simulation
+│   ├── julia_test.ipynb
 │   └── ...
 ├── test/                             # Test suite
 │   ├── runtests.jl                   # Standard Julia test entry point
-│   ├── test_suite.jl
-│   └── test_all.sh
+│   ├── submodules/                   # Individual module tests
+│   └── test_all.sh                   # Convenience test runner
 ├── report/                           # LaTeX report with full write-ups
-│   ├── main.tex
-│   └── chapters/
+│   ├── main.tex                      # Main report document
+│   ├── preamble.sty                  # Custom LaTeX style
+│   ├── chapters/                     # Per-topic LaTeX chapters
+│   └── figures/                      # Generated plots and diagrams
 ├── output/                           # Generated figures and GIFs
 ├── Project.toml                      # Julia package manifest
 └── Manifest.toml
@@ -59,11 +62,12 @@ All implementations live in `src/` and are exposed through the `ComputationalPhy
 | `error_analysis.jl` | `var_double_pass32/64`, `var_single_pass32/64`, `mclaurin_series`, `kappa_f` |
 | `linear_systems.jl` | `forward_substitution`, `backward_substitution`, `lu_decomposition`, `lu_decomposition_pivoting`, `plu_factorization`, `determinant_plu`, `matrix_condition_number`, `solve_least_squares`, `qr_mgs`, `pure_qr_algorithm`, `matrix_infinity_norm` |
 | `interpolations.jl` | `barycentric_lagrange`, `chi_square`, `p_value`, `fit_goodness` |
-| `nonlinear_equatioins.jl` | `bisection`, `newton_method`, `secant_method`, `inverse_quadratic_interpolation`, `convergence`, `plot_convergence_analysis`, `plot_global_convergence` |
+| `nonlinear_equations.jl` | `bisection`, `newton_method`, `secant_method`, `inverse_quadratic_interpolation`, `convergence`, `plot_convergence_analysis`, `plot_global_convergence` |
 | `numerical_integration.jl` | `composite_trapezoidal`, `composite_simpson`, `gauss_legendre_quadrature`, `fajer_rule`, `clenshaw_curtis_rule`, `double_exponential_quadrature` |
 | `ode.jl` | `euler_method`, `ie2`, `rk4` |
 | `schrodinger_equation.jl` | `t_independent_hamiltonian`, `schrodinger_solver1D`, `plot_snapshots`, `compute_RT` |
 | `visualizations.jl` | `plot_init`, `plot_generic`, `scatter_generic`, `plot_add!`, `scatter_add!`, `multi_plot`, `plot_comparison`, `plot_convergence`, `save_plot`, `save_gif` |
+| `helpers.jl` | `make_log_safe` and other utility functions |
 
 ## Getting Started
 
@@ -86,6 +90,8 @@ Each exercise is a standalone Julia script that loads the package via a relative
 julia --project=. exercises/01-error-analysis/1-2-representation-of-arithmetic-and-roundoff-errors/es1.jl
 ```
 
+Exercise subdirectories typically contain multiple exercises (e.g., `es1.jl`, `es2.jl`) related to the same topic.
+
 ### Running the Test Suite
 
 ```bash
@@ -100,14 +106,18 @@ bash test/test_all.sh
 
 ### Building the Report
 
+The comprehensive LaTeX report can be built using `latexmk`:
+
 ```bash
 cd report && latexmk -pdf main.tex
 ```
 
+The report includes full derivations, numerical results, and all generated figures organized by topic.
+
 ## Author
 
-**Lorenzo Minuz**
+**Lorenzo Minuz** — [GitHub](https://github.com/LM0516)
 
 ## License
 
-This project is provided for educational purposes.
+This project is provided for educational purposes under the MIT License.
